@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://375q7q3tls6t"
-path="res://.godot/imported/IronBlock.png-e78dd9dcfdde02f7ff1f5068326429f6.ctex"
+uid="uid://dqjrup6sul8vp"
+path="res://.godot/imported/wrech.png-2949c2bd39fd5088099fead96d5f205c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Icons/IronBlock.png"
-dest_files=["res://.godot/imported/IronBlock.png-e78dd9dcfdde02f7ff1f5068326429f6.ctex"]
+source_file="res://Textures/Icons/wrech.png"
+dest_files=["res://.godot/imported/wrech.png-2949c2bd39fd5088099fead96d5f205c.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdkyajnt0fx0m"
-path="res://.godot/imported/Buildtool.png-0f64b90c68938417b00dbcb2d6e67968.ctex"
+uid="uid://375q7q3tls6t"
+path="res://.godot/imported/IronBlock.png-48a8828a41ee05c2d3cf45f5c1c1d2ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Icons/Buildtool.png"
-dest_files=["res://.godot/imported/Buildtool.png-0f64b90c68938417b00dbcb2d6e67968.ctex"]
+source_file="res://Textures/PartTextures/IronBlock.png"
+dest_files=["res://.godot/imported/IronBlock.png-48a8828a41ee05c2d3cf45f5c1c1d2ab.ctex"]
 
 [params]
 

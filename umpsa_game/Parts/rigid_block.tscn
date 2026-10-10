@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dpa5c35mwnxju"]
 
-[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="1_ga7ff"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="1_ga7ff"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 

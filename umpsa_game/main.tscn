@@ -2,17 +2,18 @@
 
 [ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://Game Scripts/buildingarea.gd" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://Parts/block.tscn" id="2_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="3_efxa6"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="3_efxa6"]
 [ext_resource type="Script" uid="uid://b24i0oi0vp5oq" path="res://Game Scripts/play.gd" id="4_lquwl"]
 [ext_resource type="Texture2D" uid="uid://1pkac67hplm6" path="res://Textures/Icons/startOrPlayButtton.png" id="5_dg77c"]
 [ext_resource type="PackedScene" uid="uid://d2supgtgs14fr" path="res://Parts/wheel.tscn" id="6_7mycd"]
 [ext_resource type="Texture2D" uid="uid://w8n8sary7svv" path="res://Textures/Icons/pngtree-realistic-car-wheel-tyre-png-image_12219562.png" id="7_5vw27"]
 [ext_resource type="Script" uid="uid://s3ksefud0kvb" path="res://Game Scripts/Tool Scripts/select_tool.gd" id="8_kek77"]
-[ext_resource type="Texture2D" uid="uid://c6q162r47rf8u" path="res://Textures/Icons/wrench.png" id="9_4c57u"]
+[ext_resource type="Texture2D" uid="uid://dqjrup6sul8vp" path="res://Textures/Icons/wrech.png" id="9_ycdy4"]
 [ext_resource type="Script" uid="uid://c72bv5pbimaj" path="res://Game Scripts/Tool Scripts/spawner_tool.gd" id="10_4c57u"]
-[ext_resource type="Texture2D" uid="uid://bdkyajnt0fx0m" path="res://Textures/Icons/Buildtool.png" id="11_efxa6"]
+[ext_resource type="Texture2D" uid="uid://1idwa30ya7ig" path="res://Textures/Icons/Hammer.png" id="11_w48qg"]
 [ext_resource type="Script" uid="uid://xu3f43skh4c" path="res://Game Scripts/Tool Scripts/delete_tool.gd" id="12_dg77c"]
-[ext_resource type="Texture2D" uid="uid://b7u7s5mrw2kqj" path="res://Textures/Icons/Delete.png" id="13_ycdy4"]
+[ext_resource type="Texture2D" uid="uid://c3sx2draw4oo7" path="res://Textures/Icons/CloseLid.png" id="13_vivmo"]
+[ext_resource type="Texture2D" uid="uid://dbvtoa6725d61" path="res://Textures/Icons/OpenLid.png" id="14_2cqfq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
@@ -40,7 +41,7 @@ position = Vector2(417, 301)
 scale = Vector2(0.35, 0.35)
 
 [node name="BlockCloner" type="Area2D" parent="." unique_id=1639796886]
-position = Vector2(1962.8572, -722.8571)
+position = Vector2(1285.7144, -677.1429)
 scale = Vector2(-9.785782, 9.191264)
 collision_layer = 4
 script = ExtResource("1_0xm2m")
@@ -80,8 +81,8 @@ scale = Vector2(0.29435614, 0.29435614)
 texture = ExtResource("5_dg77c")
 
 [node name="WheelCloner" type="Area2D" parent="." unique_id=120399294]
-position = Vector2(1628.5713, -699.99994)
-scale = Vector2(-2.7823334, -2.7823334)
+position = Vector2(985.71436, -662.85724)
+scale = Vector2(-2.3540852, -2.3540852)
 script = ExtResource("1_0xm2m")
 part_scene = ExtResource("6_7mycd")
 
@@ -94,11 +95,14 @@ scale = Vector2(4.7884727, 4.7884727)
 shape = SubResource("CircleShape2D_g4v7s")
 
 [node name="SelectTool" type="Area2D" parent="." unique_id=1768975826]
+position = Vector2(928.5715, -1131.4286)
+scale = Vector2(0.7596728, 0.7596728)
 script = ExtResource("8_kek77")
 
 [node name="Sprite2D" type="Sprite2D" parent="SelectTool" unique_id=1152373873]
 position = Vector2(1182.857, 708.5714)
-texture = ExtResource("9_4c57u")
+scale = Vector2(0.22378896, 0.22378896)
+texture = ExtResource("9_ycdy4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SelectTool" unique_id=837493369]
 position = Vector2(1185.7144, 708.5714)
@@ -106,11 +110,14 @@ scale = Vector2(0.99999964, 0.99999964)
 shape = SubResource("RectangleShape2D_aj3s1")
 
 [node name="BuildTool" type="Area2D" parent="." unique_id=295933461]
+position = Vector2(920, -414.2857)
+scale = Vector2(0.7765496, 0.7765496)
 script = ExtResource("10_4c57u")
 
 [node name="Sprite2D" type="Sprite2D" parent="BuildTool" unique_id=670084493]
 position = Vector2(1168.5713, 217.14288)
-texture = ExtResource("11_efxa6")
+scale = Vector2(0.24284133, 0.24284133)
+texture = ExtResource("11_w48qg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BuildTool" unique_id=792160556]
 position = Vector2(1171.4286, 217.14282)
@@ -118,13 +125,20 @@ scale = Vector2(0.99999964, 0.99999964)
 shape = SubResource("RectangleShape2D_aj3s1")
 
 [node name="DeleteTool" type="Area2D" parent="." unique_id=1464393887]
-position = Vector2(-459.99997, 482.85712)
+position = Vector2(925.7143, -60.000015)
+scale = Vector2(0.77613276, 0.77613276)
 script = ExtResource("12_dg77c")
 
-[node name="Sprite2D" type="Sprite2D" parent="DeleteTool" unique_id=102306250]
+[node name="ClosedLid" type="Sprite2D" parent="DeleteTool" unique_id=102306250]
 position = Vector2(1168.5713, 217.14288)
-scale = Vector2(0.82551426, 0.7608666)
-texture = ExtResource("13_ycdy4")
+scale = Vector2(0.22611389, 0.20840646)
+texture = ExtResource("13_vivmo")
+
+[node name="OpenedLid" type="Sprite2D" parent="DeleteTool" unique_id=1064541021]
+visible = false
+position = Vector2(1168.5713, 217.14288)
+scale = Vector2(0.22398283, 0.20644228)
+texture = ExtResource("14_2cqfq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeleteTool" unique_id=1462903936]
 position = Vector2(1171.4286, 217.14282)

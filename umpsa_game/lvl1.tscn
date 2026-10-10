@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://duhv38vos12fq"]
 
 [ext_resource type="Script" uid="uid://cqwkoaku0mdy4" path="res://Game Scripts/Level Scripts/LVL1.gd" id="1_vhjmk"]
-[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="2_hppyo"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="2_hppyo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(1232, 57)
