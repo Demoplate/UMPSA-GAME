@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dpa5c35mwnxju"]
 
-[ext_resource type="Texture2D" uid="uid://clprbafk40il4" path="res://Textures/Icons/icon.svg" id="2_54hlg"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="1_ga7ff"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
@@ -9,8 +9,8 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=675145379]
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("2_54hlg")
+scale = Vector2(0.0487105, 0.0487105)
+texture = ExtResource("1_ga7ff")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1572802918]
 scale = Vector2(4.7884727, 4.7884727)

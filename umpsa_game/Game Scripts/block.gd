@@ -5,11 +5,21 @@ var is_dragging := false
 var is_in_build_area := false
 
 func _ready():
-	is_dragging = true
 	area_entered.connect(_on_area_entered)
 	area_exited.connect(_on_area_exited)
+	
+	# Only start dragging if we are actually in SPAWN mode!
+	if GameData.current_tool == GameData.ToolMode.SPAWN:
+		is_dragging = true
+	else:
+		is_dragging = false
+		queue_free() # Instantly remove if spawned while select tool is active
 
 func start_dragging():
+	# If the Select Tool is active, ignore the spawn/drag request entirely
+	if GameData.current_tool == GameData.ToolMode.SELECT:
+		return
+		
 	is_dragging = true
 
 func _input(event):
@@ -37,6 +47,40 @@ func _input(event):
 			global_position = global_position.snapped(Vector2(grid_size, grid_size))
 		else:
 			queue_free()
+
+func _input_event(_viewport, event, _shape_idx):
+	if is_dragging:
+		return
+		
+	var is_click = (event is InputEventScreenTouch and event.pressed) or \
+				   (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed)
+				   
+	if is_click:
+		if GameData.current_tool == GameData.ToolMode.SELECT:
+			select_this_part()
+		elif GameData.current_tool == GameData.ToolMode.DELETE:
+			delete_this_part()
+
+func select_this_part():
+	if GameData.selected_part and is_instance_valid(GameData.selected_part):
+		var old_sprite = GameData.selected_part.get_node_or_null("Sprite2D")
+		if old_sprite:
+			old_sprite.modulate = Color(1, 1, 1)
+			
+	GameData.selected_part = self
+	print("Selected part: ", name)
+	
+	var sprite = get_node_or_null("Sprite2D")
+	if sprite:
+		sprite.modulate = Color(1.4, 1.4, 0.6)
+
+func delete_this_part():
+	# Clear selection reference if this was the selected part
+	if GameData.selected_part == self:
+		GameData.selected_part = null
+		
+	print("Deleted part: ", name)
+	queue_free()
 
 func _on_area_entered(area):
 	if not is_dragging:

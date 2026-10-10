@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://d2supgtgs14fr"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_a35t4"]
+[ext_resource type="Texture2D" uid="uid://w8n8sary7svv" path="res://Textures/Icons/pngtree-realistic-car-wheel-tyre-png-image_12219562.png" id="1_w0kfg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+
+[node name="wheel" type="Area2D" unique_id=120399294]
+script = ExtResource("1_a35t4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=408816850]
+scale = Vector2(0.3107974, 0.3107974)
+texture = ExtResource("1_w0kfg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=704263885]
+scale = Vector2(4.7884727, 4.7884727)
+shape = SubResource("CircleShape2D_g4v7s")

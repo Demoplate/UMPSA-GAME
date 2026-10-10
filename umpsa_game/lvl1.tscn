@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://duhv38vos12fq"]
 
 [ext_resource type="Script" uid="uid://cqwkoaku0mdy4" path="res://Game Scripts/Level Scripts/LVL1.gd" id="1_vhjmk"]
-[ext_resource type="Texture2D" uid="uid://c3sblxd8v4m6q" path="res://Textures/Icons/playbutton.png" id="2_hppyo"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="2_hppyo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(1232, 57)
@@ -18,5 +18,5 @@ shape = SubResource("RectangleShape2D_g4v7s")
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=471140598]
 position = Vector2(295, 2)
-scale = Vector2(3.7727273, 0.19999999)
+scale = Vector2(3.7375996, 0.05026039)
 texture = ExtResource("2_hppyo")

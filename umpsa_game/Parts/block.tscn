@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cr52j1kepsbnr"]
 
 [ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_xfwl5"]
-[ext_resource type="Texture2D" uid="uid://clprbafk40il4" path="res://Textures/Icons/icon.svg" id="2_5d32t"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/Icons/IronBlock.png" id="2_aj3s1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
@@ -11,8 +11,8 @@ collision_mask = 3
 script = ExtResource("1_xfwl5")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=675145379]
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("2_5d32t")
+scale = Vector2(0.04802783, 0.04802783)
+texture = ExtResource("2_aj3s1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1572802918]
 scale = Vector2(4.787707, 4.787707)

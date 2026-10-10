@@ -19,13 +19,24 @@ func transition_to_new_scene():
 	for area in build_area.get_overlapping_areas():
 		if area.name != "BuildingArea" and not area.is_dragging:
 			var current_path = area.scene_file_path
-			var rigid_path = current_path.replace("block.tscn", "rigid_block.tscn")
 			
-			GameData.saved_parts.append({
-				"scene_path": rigid_path,
-				"global_position": area.global_position,
-				"rotation": area.global_rotation
-			})
+			# Check if the part is a wheel or a standard block based on its file path name
+			if "wheel" in current_path.to_lower():
+				var rigid_wheel_path = current_path.replace("wheel.tscn", "rigid_wheel.tscn")
+				GameData.saved_parts.append({
+					"type": "wheel",
+					"scene_path": rigid_wheel_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation
+				})
+			else:
+				var rigid_block_path = current_path.replace("block.tscn", "rigid_block.tscn")
+				GameData.saved_parts.append({
+					"type": "block",
+					"scene_path": rigid_block_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation
+				})
 			
 	print("Saved ", GameData.saved_parts.size(), " parts! Switching scenes...")
 	get_tree().change_scene_to_file(target_scene_path)
