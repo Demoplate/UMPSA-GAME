@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dpa5c35mwnxju"]
+
+[ext_resource type="Texture2D" uid="uid://clprbafk40il4" path="res://Textures/Icons/icon.svg" id="2_54hlg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="Block" type="RigidBody2D" unique_id=828762731]
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=675145379]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_54hlg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1572802918]
+scale = Vector2(4.7884727, 4.7884727)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1199927128]
+target_position = Vector2(0, -60)
+
+[node name="RayCast2D_Bottom" type="RayCast2D" parent="." unique_id=645364651]
+target_position = Vector2(0, 60)
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=1732006256]
+target_position = Vector2(-60, 0)
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=476740747]
+target_position = Vector2(60, 0)

@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://bg1y50qq6a8o1"]
 
-[ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://building[art.gd" id="1_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://block.tscn" id="2_1bvp3"]
+[ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://Game Scripts/buildingarea.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://Parts/block.tscn" id="2_1bvp3"]
 [ext_resource type="Texture2D" uid="uid://clprbafk40il4" path="res://Textures/Icons/icon.svg" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://b24i0oi0vp5oq" path="res://Game Scripts/play.gd" id="4_lquwl"]
+[ext_resource type="Texture2D" uid="uid://c3sblxd8v4m6q" path="res://Textures/Icons/playbutton.png" id="5_7mycd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
@@ -18,6 +20,7 @@ offset = Vector3(1.2, -1000, 0)
 noise = SubResource("FastNoiseLite_h2yge")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(10, 20)
 
 [node name="Node2D" type="Node2D" unique_id=1757792821]
 position = Vector2(417, 301)
@@ -50,9 +53,14 @@ position = Vector2(-322.85718, 74.285706)
 scale = Vector2(-2.9829235, 3.317358)
 texture = SubResource("NoiseTexture2D_gatpv")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=559970560]
+[node name="PLayButton" type="Area2D" parent="." unique_id=559970560]
+position = Vector2(1728.5713, 659.99994)
+script = ExtResource("4_lquwl")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2105066597]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PLayButton" unique_id=2105066597]
+position = Vector2(-5, 0)
+scale = Vector2(55.724785, 27.544525)
 shape = SubResource("RectangleShape2D_57qmd")
 
-[node name="Sprite2D" type="Sprite2D" parent="Area2D" unique_id=407851751]
+[node name="Sprite2D" type="Sprite2D" parent="PLayButton" unique_id=407851751]
+texture = ExtResource("5_7mycd")

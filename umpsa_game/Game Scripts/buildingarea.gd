@@ -14,11 +14,12 @@ func spawn_and_drag(pos: Vector2):
 		
 	var new_part = part_scene.instantiate()
 	
-	# Add directly to the root viewport/scene tree
-	get_tree().root.add_child(new_part)
+	# 1. Add it to the current scene instead of the root viewport
+	get_tree().current_scene.add_child(new_part)
 	
-	# Force scale back to normal and set global position
-	new_part.scale = Vector2(1, 1)
+	# 2. Tell it to ignore parent scaling so it stays the correct size
+	new_part.top_level = true
+	
 	new_part.global_position = pos
 	
 	if new_part.has_method("start_dragging"):
