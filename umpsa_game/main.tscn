@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://bg1y50qq6a8o1"]
+
+[ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://building[art.gd" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://block.tscn" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://clprbafk40il4" path="res://Textures/Icons/icon.svg" id="2_h2yge"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(37.94526, 4.563732)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_h2yge"]
+noise_type = 4
+frequency = 0.0001
+offset = Vector3(1.2, -1000, 0)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gatpv"]
+noise = SubResource("FastNoiseLite_h2yge")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+
+[node name="Node2D" type="Node2D" unique_id=1757792821]
+position = Vector2(417, 301)
+scale = Vector2(0.35, 0.35)
+
+[node name="BlockCloner" type="Area2D" parent="." unique_id=1639796886]
+position = Vector2(1962.8572, -722.8571)
+scale = Vector2(-9.785782, 9.191264)
+collision_layer = 4
+script = ExtResource("1_0xm2m")
+part_scene = ExtResource("2_1bvp3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlockCloner" unique_id=583443685]
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="BlockCloner" unique_id=2062581300]
+scale = Vector2(-0.158, 0.158)
+texture = ExtResource("2_h2yge")
+
+[node name="BuildingArea" type="Area2D" parent="." unique_id=372788814]
+position = Vector2(-25.714285, -17.142857)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingArea" unique_id=505646001]
+position = Vector2(-312.85712, 82.857056)
+scale = Vector2(35.46462, 308.01855)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="Sprite2D" type="Sprite2D" parent="BuildingArea" unique_id=2066735478]
+position = Vector2(-322.85718, 74.285706)
+scale = Vector2(-2.9829235, 3.317358)
+texture = SubResource("NoiseTexture2D_gatpv")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=559970560]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2105066597]
+shape = SubResource("RectangleShape2D_57qmd")
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D" unique_id=407851751]

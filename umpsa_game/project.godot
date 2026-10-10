@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="UMPSA GAME"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://Textures/Icons/icon.svg"
+
+[autoload]
+
+GameData="*uid://88mohl87n6yr"
 
 [display]
 
