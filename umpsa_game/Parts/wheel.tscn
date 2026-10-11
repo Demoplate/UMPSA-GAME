@@ -1,17 +1,22 @@
 [gd_scene format=3 uid="uid://d2supgtgs14fr"]
 
 [ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_a35t4"]
-[ext_resource type="Texture2D" uid="uid://w8n8sary7svv" path="res://Textures/Icons/pngtree-realistic-car-wheel-tyre-png-image_12219562.png" id="1_w0kfg"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="2_21tx5"]
+[ext_resource type="Texture2D" uid="uid://krfvxnt4eh38" path="res://Textures/PartTextures/PoweredWheel/Wheel.png" id="3_eed8t"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vivmo"]
 
 [node name="wheel" type="Area2D" unique_id=120399294]
 script = ExtResource("1_a35t4")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=408816850]
-scale = Vector2(0.3107974, 0.3107974)
-texture = ExtResource("1_w0kfg")
+[node name="Base" type="Sprite2D" parent="." unique_id=408816850]
+scale = Vector2(0.04788441, 0.04788441)
+texture = ExtResource("2_21tx5")
+
+[node name="Wheel" type="Sprite2D" parent="." unique_id=1112163946]
+scale = Vector2(0.04788441, 0.04788441)
+texture = ExtResource("3_eed8t")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=704263885]
 scale = Vector2(4.7884727, 4.7884727)
-shape = SubResource("CircleShape2D_g4v7s")
+shape = SubResource("RectangleShape2D_vivmo")

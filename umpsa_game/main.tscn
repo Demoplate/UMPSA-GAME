@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="3_efxa6"]
 [ext_resource type="Script" uid="uid://b24i0oi0vp5oq" path="res://Game Scripts/play.gd" id="4_lquwl"]
 [ext_resource type="Texture2D" uid="uid://1pkac67hplm6" path="res://Textures/Icons/startOrPlayButtton.png" id="5_dg77c"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="5_w48qg"]
 [ext_resource type="PackedScene" uid="uid://d2supgtgs14fr" path="res://Parts/wheel.tscn" id="6_7mycd"]
-[ext_resource type="Texture2D" uid="uid://w8n8sary7svv" path="res://Textures/Icons/pngtree-realistic-car-wheel-tyre-png-image_12219562.png" id="7_5vw27"]
+[ext_resource type="Texture2D" uid="uid://krfvxnt4eh38" path="res://Textures/PartTextures/PoweredWheel/Wheel.png" id="6_vivmo"]
 [ext_resource type="Script" uid="uid://s3ksefud0kvb" path="res://Game Scripts/Tool Scripts/select_tool.gd" id="8_kek77"]
 [ext_resource type="Texture2D" uid="uid://dqjrup6sul8vp" path="res://Textures/Icons/wrech.png" id="9_ycdy4"]
 [ext_resource type="Script" uid="uid://c72bv5pbimaj" path="res://Game Scripts/Tool Scripts/spawner_tool.gd" id="10_4c57u"]
@@ -16,6 +17,9 @@
 [ext_resource type="Texture2D" uid="uid://dbvtoa6725d61" path="res://Textures/Icons/OpenLid.png" id="14_2cqfq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aj3s1"]
+size = Vector2(439.28577, 446.42865)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
 size = Vector2(37.94526, 4.563732)
@@ -30,11 +34,6 @@ noise = SubResource("FastNoiseLite_h2yge")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
 size = Vector2(10, 20)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_aj3s1"]
-size = Vector2(439.28577, 446.42865)
 
 [node name="Node2D" type="Node2D" unique_id=1757792821]
 position = Vector2(417, 301)
@@ -54,93 +53,105 @@ shape = SubResource("RectangleShape2D_g4v7s")
 scale = Vector2(-0.010315237, 0.010206742)
 texture = ExtResource("3_efxa6")
 
-[node name="BuildingArea" type="Area2D" parent="." unique_id=372788814]
-position = Vector2(-25.714285, -17.142857)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingArea" unique_id=505646001]
-position = Vector2(-312.85712, 82.857056)
-scale = Vector2(35.46462, 308.01855)
-shape = SubResource("RectangleShape2D_yf5fn")
-
-[node name="Sprite2D" type="Sprite2D" parent="BuildingArea" unique_id=2066735478]
-position = Vector2(-322.85718, 74.285706)
-scale = Vector2(-2.9829235, 3.317358)
-texture = SubResource("NoiseTexture2D_gatpv")
-
-[node name="PlayButton" type="Area2D" parent="." unique_id=559970560]
-position = Vector2(1728.5713, 659.99994)
-script = ExtResource("4_lquwl")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayButton" unique_id=2105066597]
-position = Vector2(-5, 0)
-scale = Vector2(55.724785, 27.544525)
-shape = SubResource("RectangleShape2D_57qmd")
-
-[node name="Sprite2D" type="Sprite2D" parent="PlayButton" unique_id=407851751]
-scale = Vector2(0.29435614, 0.29435614)
-texture = ExtResource("5_dg77c")
-
 [node name="WheelCloner" type="Area2D" parent="." unique_id=120399294]
-position = Vector2(985.71436, -662.85724)
+position = Vector2(1074.2858, -671.42865)
+rotation = 3.1415927
 scale = Vector2(-2.3540852, -2.3540852)
 script = ExtResource("1_0xm2m")
 part_scene = ExtResource("6_7mycd")
 
-[node name="Sprite2D" type="Sprite2D" parent="WheelCloner" unique_id=408816850]
-scale = Vector2(0.3107974, 0.3107974)
-texture = ExtResource("7_5vw27")
+[node name="Base" type="Sprite2D" parent="WheelCloner" unique_id=408816850]
+position = Vector2(0, -10.923298)
+scale = Vector2(0.03068509, 0.03068509)
+texture = ExtResource("5_w48qg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WheelCloner" unique_id=704263885]
-scale = Vector2(4.7884727, 4.7884727)
-shape = SubResource("CircleShape2D_g4v7s")
+[node name="Wheel" type="Sprite2D" parent="WheelCloner" unique_id=988898290]
+position = Vector2(0, -10.923298)
+scale = Vector2(0.047090475, 0.047090475)
+texture = ExtResource("6_vivmo")
 
-[node name="SelectTool" type="Area2D" parent="." unique_id=1768975826]
-position = Vector2(928.5715, -1131.4286)
-scale = Vector2(0.7596728, 0.7596728)
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="WheelCloner" unique_id=1330583409]
+position = Vector2(-7.6293945e-06, -2.4274254)
+scale = Vector2(4.156936, -3.904389)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Tools" type="Node" parent="." unique_id=2068795873]
+
+[node name="SelectTool" type="Area2D" parent="Tools" unique_id=1768975826]
+position = Vector2(742, -95)
+scale = Vector2(0.26588547, 0.26588547)
 script = ExtResource("8_kek77")
 
-[node name="Sprite2D" type="Sprite2D" parent="SelectTool" unique_id=1152373873]
+[node name="Sprite2D" type="Sprite2D" parent="Tools/SelectTool" unique_id=1152373873]
 position = Vector2(1182.857, 708.5714)
 scale = Vector2(0.22378896, 0.22378896)
 texture = ExtResource("9_ycdy4")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectTool" unique_id=837493369]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/SelectTool" unique_id=837493369]
 position = Vector2(1185.7144, 708.5714)
 scale = Vector2(0.99999964, 0.99999964)
 shape = SubResource("RectangleShape2D_aj3s1")
 
-[node name="BuildTool" type="Area2D" parent="." unique_id=295933461]
-position = Vector2(920, -414.2857)
-scale = Vector2(0.7765496, 0.7765496)
+[node name="BuildTool" type="Area2D" parent="Tools" unique_id=295933461]
+position = Vector2(739, 156)
+scale = Vector2(0.27179235, 0.27179235)
 script = ExtResource("10_4c57u")
 
-[node name="Sprite2D" type="Sprite2D" parent="BuildTool" unique_id=670084493]
+[node name="Sprite2D" type="Sprite2D" parent="Tools/BuildTool" unique_id=670084493]
 position = Vector2(1168.5713, 217.14288)
 scale = Vector2(0.24284133, 0.24284133)
 texture = ExtResource("11_w48qg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildTool" unique_id=792160556]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/BuildTool" unique_id=792160556]
 position = Vector2(1171.4286, 217.14282)
 scale = Vector2(0.99999964, 0.99999964)
 shape = SubResource("RectangleShape2D_aj3s1")
 
-[node name="DeleteTool" type="Area2D" parent="." unique_id=1464393887]
-position = Vector2(925.7143, -60.000015)
-scale = Vector2(0.77613276, 0.77613276)
+[node name="DeleteTool" type="Area2D" parent="Tools" unique_id=1464393887]
+position = Vector2(741, 280)
+scale = Vector2(0.27164647, 0.27164647)
 script = ExtResource("12_dg77c")
 
-[node name="ClosedLid" type="Sprite2D" parent="DeleteTool" unique_id=102306250]
+[node name="ClosedLid" type="Sprite2D" parent="Tools/DeleteTool" unique_id=102306250]
 position = Vector2(1168.5713, 217.14288)
 scale = Vector2(0.22611389, 0.20840646)
 texture = ExtResource("13_vivmo")
 
-[node name="OpenedLid" type="Sprite2D" parent="DeleteTool" unique_id=1064541021]
+[node name="OpenedLid" type="Sprite2D" parent="Tools/DeleteTool" unique_id=1064541021]
 visible = false
 position = Vector2(1168.5713, 217.14288)
 scale = Vector2(0.22398283, 0.20644228)
 texture = ExtResource("14_2cqfq")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DeleteTool" unique_id=1462903936]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/DeleteTool" unique_id=1462903936]
 position = Vector2(1171.4286, 217.14282)
 scale = Vector2(0.99999964, 0.99999964)
 shape = SubResource("RectangleShape2D_aj3s1")
+
+[node name="BuildingArea" type="Area2D" parent="Tools" unique_id=372788814]
+position = Vector2(408, 295)
+scale = Vector2(0.35, 0.35)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/BuildingArea" unique_id=505646001]
+position = Vector2(-312.85712, 82.857056)
+scale = Vector2(35.46462, 308.01855)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/BuildingArea" unique_id=2066735478]
+position = Vector2(-322.85718, 74.285706)
+scale = Vector2(-2.9829235, 3.317358)
+texture = SubResource("NoiseTexture2D_gatpv")
+
+[node name="PlayButton" type="Area2D" parent="Tools" unique_id=559970560]
+position = Vector2(1021.99994, 532)
+scale = Vector2(0.35, 0.35)
+script = ExtResource("4_lquwl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/PlayButton" unique_id=2105066597]
+position = Vector2(-5, 0)
+scale = Vector2(55.724785, 27.544525)
+shape = SubResource("RectangleShape2D_57qmd")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/PlayButton" unique_id=407851751]
+scale = Vector2(0.29435614, 0.29435614)
+texture = ExtResource("5_dg77c")

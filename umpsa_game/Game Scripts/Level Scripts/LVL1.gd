@@ -6,153 +6,134 @@ func _ready():
 	if GameData.saved_parts.is_empty():
 		return
 		
-	var block_data_list = []
-	var wheel_data_list = []
+	var all_parts = GameData.saved_parts
+	var part_nodes = []
+	var data_to_node = {}
+	var node_to_scan = {}
 	
-	for part in GameData.saved_parts:
-		if part.get("type") == "wheel":
-			wheel_data_list.append(part)
-		else:
-			block_data_list.append(part)
+	# 1. Instantiate all saved parts temporarily
+	for p in all_parts:
+		var scene = load(p["scene_path"])
+		if scene:
+			var instance = scene.instantiate()
+			get_tree().current_scene.add_child(instance)
+			instance.global_position = p["global_position"]
+			instance.rotation = p["rotation"]
 			
-	# 1. Group connected blocks into islands using scene RayCasts and spawn the RigidBody2D chassis
-	var islands = await _find_block_islands_with_scene_raycasts(block_data_list)
-	var created_bodies = []
+			part_nodes.append(instance)
+			data_to_node[instance] = p
+			node_to_scan[instance] = instance
+
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+
+	# 2. Group parts into islands where every part starts in its own individual island
+	var islands = []
+	var part_to_island = {}
 	
+	for node in part_nodes:
+		var island = [node]
+		islands.append(island)
+		part_to_island[node] = island
+
+	# Force raycasts to update and merge islands dynamically when a connection is found
+	for curr_instance in part_nodes:
+		var scan_node = node_to_scan[curr_instance]
+		var raycasts = []
+		if scan_node is Node:
+			for child in scan_node.find_children("*", "RayCast2D", true, false):
+				raycasts.append(child)
+		
+		for rc in raycasts:
+			rc.collision_mask = 2
+			rc.add_exception(curr_instance)
+			rc.force_raycast_update()
+			
+			if rc.is_colliding():
+				var collider = rc.get_collider()
+				var hit_instance = _find_part_instance_from_collider(collider, part_nodes)
+				
+				if hit_instance and hit_instance != curr_instance:
+					var island_a = part_to_island[curr_instance]
+					var island_b = part_to_island[hit_instance]
+					
+					# If they are in different islands, merge them together!
+					if island_a != island_b:
+						print("[MERGE] Connecting part at ", curr_instance.global_position, " with part at ", hit_instance.global_position)
+						for node in island_b:
+							island_a.append(node)
+							part_to_island[node] = island_a
+						islands.erase(island_b)
+
+	print("\n--- FINAL ISLAND COUNT AFTER MERGING: ", islands.size(), " ---\n")
+
+	# 3. Build unified RigidBody2D chassis islands
 	for island in islands:
 		var center_pos = Vector2.ZERO
-		for b in island:
-			center_pos += b["global_position"]
+		for inst in island:
+			center_pos += inst.global_position
 		center_pos /= island.size()
 		
 		var master_body = RigidBody2D.new()
 		get_tree().current_scene.add_child(master_body)
 		master_body.global_position = center_pos
-		created_bodies.append(master_body)
 		
-		for b in island:
-			var scene = load(b["scene_path"])
-			if scene:
-				var instance = scene.instantiate()
-				for child in instance.get_children():
+		for inst in island:
+			var p_data = data_to_node[inst]
+			var is_wheel = (p_data.get("type") == "wheel")
+			
+			if not is_wheel:
+				for child in inst.get_children():
 					if child is CollisionShape2D or child is Sprite2D:
+						var global_pos = child.global_position
+						var global_rot = child.global_rotation
+						
 						var dup = child.duplicate()
 						master_body.add_child(dup)
-						dup.global_position = b["global_position"] + child.position.rotated(b["rotation"])
-						dup.rotation = b["rotation"] + child.rotation
-						dup.position = master_body.to_local(dup.global_position)
-				instance.queue_free()
-
-	# Give physics a frame to register the new chassis bodies in space
-	await get_tree().physics_frame
-
-	# 2. Spawn wheels and use their internal RayCast2D nodes to detect and attach to nearby chassis bodies
-	for w in wheel_data_list:
-		var wheel_scene = load(w["scene_path"])
-		if wheel_scene:
-			var wheel_body = wheel_scene.instantiate()
-			get_tree().current_scene.add_child(wheel_body)
-			wheel_body.global_position = w["global_position"]
-			wheel_body.rotation = w["rotation"]
-			
-			# Check wheel's raycasts to see if they hit any of our created chassis bodies
-			var attached_body = null
-			for child in wheel_body.get_children():
-				if child is RayCast2D:
-					child.add_exception(wheel_body) # Prevent self-collision with wheel itself
-					child.force_raycast_update()
-					if child.is_colliding():
-						var collider = child.get_collider()
-						var hit_body = _find_body_from_collider(collider, created_bodies)
-						if hit_body:
-							attached_body = hit_body
-							break
-			
-			# If a wheel raycast successfully touched a chassis body, link them via PinJoint2D!
-			if attached_body:
-				var hinge = PinJoint2D.new()
-				get_tree().current_scene.add_child(hinge)
-				hinge.global_position = w["global_position"]
-				hinge.node_a = attached_body.get_path()
-				hinge.node_b = wheel_body.get_path()
-				hinge.disable_collision = true
+						dup.global_position = global_pos
+						dup.global_rotation = global_rot
+						dup.position = master_body.to_local(global_pos)
 			else:
-				print("Wheel raycasts hit nothing—left independent!")
+				for child in inst.get_children():
+					if child is RayCast2D or child.name == "WheelRolling" or child is PinJoint2D:
+						continue
+					if child is CollisionShape2D or child is Sprite2D or child is Node2D:
+						var global_pos = child.global_position
+						var global_rot = child.global_rotation
+						
+						var dup = child.duplicate()
+						master_body.add_child(dup)
+						dup.global_position = global_pos
+						dup.global_rotation = global_rot
+						dup.position = master_body.to_local(global_pos)
 				
-	print("Vehicle and wheels spawned successfully using native RayCasts!")
+				var wheel_rolling = inst.get_node_or_null("WheelRolling")
+				var pin_joint = inst.get_node_or_null("PinJoint2D")
+				
+				if wheel_rolling:
+					var rolling_body = wheel_rolling.duplicate()
+					get_tree().current_scene.add_child(rolling_body)
+					rolling_body.global_position = wheel_rolling.global_position
+					rolling_body.rotation = wheel_rolling.global_rotation
+					
+					if pin_joint:
+						var new_pin = pin_joint.duplicate()
+						get_tree().current_scene.add_child(new_pin)
+						new_pin.global_position = pin_joint.global_position
+						new_pin.node_a = master_body.get_path()
+						new_pin.node_b = rolling_body.get_path()
+						new_pin.disable_collision = true
+
+	for inst in part_nodes:
+		inst.queue_free()
+
+	print("Vehicle built successfully with dynamic island merging!")
 	GameData.saved_parts.clear()
 
-# Helper: Traces a collider up the parent tree to check if it belongs to a chassis body
-func _find_body_from_collider(collider: Object, bodies: Array) -> RigidBody2D:
+func _find_part_instance_from_collider(collider: Object, part_nodes: Array) -> Node:
 	var curr = collider
 	while curr and curr is Node:
-		if curr in bodies:
-			return curr
-		curr = curr.get_parent()
-	return null
-
-# Helper: Uses block scene RayCasts with self-collision ignored
-func _find_block_islands_with_scene_raycasts(blocks: Array) -> Array:
-	var block_nodes = []
-	var block_to_data = {}
-	
-	for b in blocks:
-		var scene = load(b["scene_path"])
-		if scene:
-			var instance = scene.instantiate()
-			get_tree().current_scene.add_child(instance)
-			instance.global_position = b["global_position"]
-			instance.rotation = b["rotation"]
-			block_nodes.append(instance)
-			block_to_data[instance] = b
-
-	await get_tree().physics_frame
-
-	var unvisited = block_nodes.duplicate()
-	var islands = []
-
-	while not unvisited.is_empty():
-		var current_island_nodes = []
-		var queue = [unvisited.pop_front()]
-		current_island_nodes.append(queue[0])
-
-		while not queue.is_empty():
-			var current_node = queue.pop_front()
-			
-			for child in current_node.get_children():
-				if child is RayCast2D:
-					child.add_exception(current_node)
-					child.force_raycast_update()
-					
-					if child.is_colliding():
-						var collider = child.get_collider()
-						if collider:
-							var hit_block = _find_block_node_from_collider(collider, block_nodes)
-							if hit_block and hit_block in unvisited and hit_block != current_node:
-								current_island_nodes.append(hit_block)
-								queue.append(hit_block)
-								unvisited.erase(hit_block)
-
-		islands.append(current_island_nodes)
-
-	var final_islands = []
-	for node_island in islands:
-		var data_island = []
-		for node in node_island:
-			if block_to_data.has(node):
-				data_island.append(block_to_data[node])
-		final_islands.append(data_island)
-
-	for node in block_nodes:
-		node.queue_free()
-
-	return final_islands
-
-# Helper: Traces a collider to find which block node it belongs to
-func _find_block_node_from_collider(collider: Object, block_nodes: Array) -> Node:
-	var curr = collider
-	while curr and curr is Node:
-		if curr in block_nodes:
+		if curr in part_nodes:
 			return curr
 		curr = curr.get_parent()
 	return null
