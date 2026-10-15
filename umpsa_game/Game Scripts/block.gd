@@ -63,19 +63,18 @@ func _input_event(_viewport, event, _shape_idx):
 
 func select_this_part():
 	if GameData.selected_part and is_instance_valid(GameData.selected_part):
-		var old_sprite = GameData.selected_part.get_node_or_null("Sprite2D")
-		if old_sprite:
-			old_sprite.modulate = Color(1, 1, 1)
+		# Find any Sprite2D anywhere inside the old selected part to reset its color
+		for child in GameData.selected_part.find_children("*", "Sprite2D", true, false):
+			child.modulate = Color(1, 1, 1)
 			
 	GameData.selected_part = self
 	print("Selected part: ", name)
 	
-	var sprite = get_node_or_null("Sprite2D")
-	if sprite:
-		sprite.modulate = Color(1.4, 1.4, 0.6)
+	# Find any Sprite2D inside this part to highlight it
+	for child in find_children("*", "Sprite2D", true, false):
+		child.modulate = Color(1.4, 1.4, 0.6)
 
 func delete_this_part():
-	# Clear selection reference if this was the selected part
 	if GameData.selected_part == self:
 		GameData.selected_part = null
 		

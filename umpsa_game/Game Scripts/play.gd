@@ -20,17 +20,25 @@ func transition_to_new_scene():
 		if area.name != "BuildingArea" and not area.is_dragging:
 			var current_path = area.scene_file_path
 			
-			# Check if the part is a wheel or a standard block based on its file path name
+			# Swap folder from cloned_parts to rigid_blocks and match the rigid filename
 			if "wheel" in current_path.to_lower():
-				var rigid_wheel_path = current_path.replace("wheel.tscn", "rigid_wheel.tscn")
+				var rigid_wheel_path = current_path.replace("cloned_parts", "rigid_blocks").replace("wheel.tscn", "rigid_wheel.tscn")
 				GameData.saved_parts.append({
 					"type": "wheel",
 					"scene_path": rigid_wheel_path,
 					"global_position": area.global_position,
 					"rotation": area.global_rotation
 				})
+			elif "thruster" in current_path.to_lower():
+				var rigid_thruster_path = current_path.replace("cloned_parts", "rigid_blocks").replace("thruster.tscn", "rigid_thruster.tscn")
+				GameData.saved_parts.append({
+					"type": "thruster",
+					"scene_path": rigid_thruster_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation
+				})
 			else:
-				var rigid_block_path = current_path.replace("block.tscn", "rigid_block.tscn")
+				var rigid_block_path = current_path.replace("cloned_parts", "rigid_blocks").replace("block.tscn", "rigid_block.tscn")
 				GameData.saved_parts.append({
 					"type": "block",
 					"scene_path": rigid_block_path,

@@ -10,9 +10,9 @@ var saved_parts: Array = []
 func set_tool(new_tool: ToolMode):
 	if current_tool == ToolMode.SELECT and new_tool != ToolMode.SELECT:
 		if selected_part and is_instance_valid(selected_part):
-			var sprite = selected_part.get_node_or_null("Sprite2D")
-			if sprite:
-				sprite.modulate = Color(1, 1, 1)
+			# Reset any Sprite2D children anywhere inside the selected part
+			for child in selected_part.find_children("*", "Sprite2D", true, false):
+				child.modulate = Color(1, 1, 1)
 		selected_part = null
 		
 	current_tool = new_tool

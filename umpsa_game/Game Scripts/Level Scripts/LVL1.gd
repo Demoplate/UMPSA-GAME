@@ -36,34 +36,58 @@ func _ready():
 		islands.append(island)
 		part_to_island[node] = island
 
-	# Force raycasts to update and merge islands dynamically when a connection is found
+	# Force raycasts to update and merge islands dynamically with connection rules
 	for curr_instance in part_nodes:
 		var scan_node = node_to_scan[curr_instance]
+		var p_data = data_to_node[curr_instance]
+		var scene_path = p_data.get("scene_path", "").to_lower()
+		
 		var raycasts = []
 		if scan_node is Node:
 			for child in scan_node.find_children("*", "RayCast2D", true, false):
 				raycasts.append(child)
 		
+		# Rule 1: Thrusters only connect if Raycast2D_Top is used
+		if "thruster" in scene_path:
+			raycasts = raycasts.filter(func(rc): return rc.name == "Raycast2D_Top")
+		
+		var colliding_rcs = []
 		for rc in raycasts:
 			rc.collision_mask = 2
 			rc.add_exception(curr_instance)
 			rc.force_raycast_update()
 			
 			if rc.is_colliding():
-				var collider = rc.get_collider()
-				var hit_instance = _find_part_instance_from_collider(collider, part_nodes)
+				colliding_rcs.append(rc)
+		
+		# Rule 2: Wheels don't connect if the bottom is the ONLY place connected
+		if "wheel" in scene_path:
+			var has_bottom = false
+			var has_others = false
+			for rc in colliding_rcs:
+				if rc.name == "Raycast2D_Bottom":
+					has_bottom = true
+				else:
+					has_others = true
+			
+			if has_bottom and not has_others:
+				colliding_rcs.clear()
+		
+		for rc in colliding_rcs:
+			var collider = rc.get_collider()
+			var hit_instance = _find_part_instance_from_collider(collider, part_nodes)
+			
+			if hit_instance and hit_instance != curr_instance:
+				var island_a = part_to_island[curr_instance]
+				var island_b = part_to_island[hit_instance]
 				
-				if hit_instance and hit_instance != curr_instance:
-					var island_a = part_to_island[curr_instance]
-					var island_b = part_to_island[hit_instance]
-					
-					# If they are in different islands, merge them together!
-					if island_a != island_b:
-						print("[MERGE] Connecting part at ", curr_instance.global_position, " with part at ", hit_instance.global_position)
-						for node in island_b:
-							island_a.append(node)
-							part_to_island[node] = island_a
-						islands.erase(island_b)
+				# If they are in different islands, merge them together!
+				if island_a != island_b:
+					print("[MERGE] Connecting part at ", curr_instance.global_position, " with part at ", hit_instance.global_position)
+					for node in island_b:
+						island_a.append(node)
+						part_to_island[node] = island_a
+					islands.erase(island_b)
 
 	print("\n--- FINAL ISLAND COUNT AFTER MERGING: ", islands.size(), " ---\n")
 
@@ -84,7 +108,7 @@ func _ready():
 			
 			if not is_wheel:
 				for child in inst.get_children():
-					if child is CollisionShape2D or child is Sprite2D:
+					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D:
 						var global_pos = child.global_position
 						var global_rot = child.global_rotation
 						

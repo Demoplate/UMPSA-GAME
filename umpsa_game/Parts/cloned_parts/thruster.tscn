@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://b8g6ajf44ul1f"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_mp2as"]
+[ext_resource type="Texture2D" uid="uid://2bps0ce0raoo" path="res://Textures/wwwimages.jpeg" id="1_ttqdu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="thruster" type="Area2D" unique_id=1791717103]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_mp2as")
+
+[node name="Thruster" type="Sprite2D" parent="." unique_id=853384960]
+scale = Vector2(0.17928246, 0.17928246)
+texture = ExtResource("1_ttqdu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1453138059]
+scale = Vector2(4.788, 4.788)
+shape = SubResource("RectangleShape2D_g4v7s")
