@@ -31,11 +31,18 @@ func transition_to_new_scene():
 				})
 			elif "thruster" in current_path.to_lower():
 				var rigid_thruster_path = current_path.replace("cloned_parts", "rigid_blocks").replace("thruster.tscn", "rigid_thruster.tscn")
+				
+				# Safely grab the assigned key from the cloned thruster instance if it exists
+				var key_assigned = ""
+				if "assigned_key" in area:
+					key_assigned = area.assigned_key
+				
 				GameData.saved_parts.append({
 					"type": "thruster",
 					"scene_path": rigid_thruster_path,
 					"global_position": area.global_position,
-					"rotation": area.global_rotation
+					"rotation": area.global_rotation,
+					"assigned_key": key_assigned
 				})
 			else:
 				var rigid_block_path = current_path.replace("cloned_parts", "rigid_blocks").replace("block.tscn", "rigid_block.tscn")
