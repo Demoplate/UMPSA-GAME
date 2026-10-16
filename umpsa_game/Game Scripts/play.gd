@@ -9,6 +9,10 @@ func _input_event(_viewport, event, _shape_idx):
 		transition_to_new_scene()
 
 func transition_to_new_scene():
+	# Ensure tool is set to BUILD before transitioning
+	if "current_tool" in GameData and "ToolMode" in GameData:
+		GameData.current_tool = GameData.ToolMode.SPAWN
+
 	GameData.saved_parts.clear()
 	
 	var build_area = get_node_or_null(build_area_path)
