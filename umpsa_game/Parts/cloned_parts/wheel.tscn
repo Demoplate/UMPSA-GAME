@@ -8,15 +8,18 @@
 
 [node name="wheel" type="Area2D" unique_id=120399294]
 script = ExtResource("1_a35t4")
+assigned_key = "W"
+reverse_key = "S"
+grid_size = 16.0
 
 [node name="Base" type="Sprite2D" parent="." unique_id=408816850]
-scale = Vector2(0.04788441, 0.04788441)
+scale = Vector2(0.024, 0.024)
 texture = ExtResource("2_21tx5")
 
 [node name="Wheel" type="Sprite2D" parent="." unique_id=1112163946]
-scale = Vector2(0.04788441, 0.04788441)
+scale = Vector2(0.024, 0.024)
 texture = ExtResource("3_eed8t")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=704263885]
-scale = Vector2(4.7884727, 4.7884727)
+scale = Vector2(2.394, 2.394)
 shape = SubResource("RectangleShape2D_vivmo")

@@ -1,11 +1,15 @@
 extends Node2D
 
 @export var grid_size: float = 16.0
+@export var thruster_power: float = 2000.0
+@export var wheel_power: float = 20000.0
 
-# Dictionary to hold lists of individual thruster data grouped by key
+# Unified dictionaries for key inputs and groups
+var active_keys = {}
 var thruster_groups = {}
-# Dictionary to track which keys are currently being held down on mobile
-var active_thruster_keys = {}
+var wheel_forward_groups = {}
+var wheel_reverse_groups = {}
+
 # Array to store active thruster visual indicators for the current frame
 var active_thrust_indicators = []
 
@@ -132,8 +136,8 @@ func _ready():
 		
 		for inst in island:
 			var p_data = data_to_node[inst]
-			var is_wheel = (p_data.get("type") == "wheel")
-			var is_thruster = (p_data.get("type") == "thruster")
+			var is_wheel = (p_data.get("type") == "wheel") or ("wheel" in p_data.get("scene_path", "").to_lower())
+			var is_thruster = (p_data.get("type") == "thruster") or ("thruster" in p_data.get("scene_path", "").to_lower())
 			
 			if not is_wheel:
 				var duplicated_particles = null
@@ -153,14 +157,14 @@ func _ready():
 						if is_thruster and dup is CPUParticles2D:
 							duplicated_particles = dup
 				
-				# Track thrusters with live references to the duplicated particles on the master body
+				# Track thrusters using the shared UI system
 				if is_thruster:
 					var assigned_key = p_data.get("assigned_key", "")
 					if assigned_key != "":
 						if not thruster_groups.has(assigned_key):
 							thruster_groups[assigned_key] = []
-							active_thruster_keys[assigned_key] = false
-							_create_ui_button(assigned_key)
+						
+						_create_ui_button(assigned_key)
 						
 						thruster_groups[assigned_key].append({
 							"body": master_body,
@@ -203,19 +207,40 @@ func _ready():
 						new_pin.node_a = master_body.get_path()
 						new_pin.node_b = rolling_body.get_path()
 						new_pin.disable_collision = true
+					
+					# Track forward key for powered wheels
+					var assigned_key = p_data.get("assigned_key", "")
+					if assigned_key != "":
+						if not wheel_forward_groups.has(assigned_key):
+							wheel_forward_groups[assigned_key] = []
+						_create_ui_button(assigned_key)
+						wheel_forward_groups[assigned_key].append({
+							"rolling_body": rolling_body
+						})
+
+					# Track reverse key for powered wheels
+					var reverse_key = p_data.get("reverse_key", "")
+					if reverse_key != "":
+						if not wheel_reverse_groups.has(reverse_key):
+							wheel_reverse_groups[reverse_key] = []
+						_create_ui_button(reverse_key)
+						wheel_reverse_groups[reverse_key].append({
+							"rolling_body": rolling_body
+						})
 
 	for inst in part_nodes:
 		inst.queue_free()
 
-	print("Vehicle built successfully with safe CPU particle tracking!")
-	GameData.saved_parts.clear()
+	print("Vehicle built successfully with dual wheel controls and exported power settings!")
 
 func _physics_process(_delta: float):
 	active_thrust_indicators.clear()
 	
-	# Continuously apply force and toggle CPU particles every frame while a button is held down
-	for key in active_thruster_keys.keys():
-		var is_key_pressed = active_thruster_keys[key]
+	# Loop through all active key states and apply actions for thrusters and wheels
+	for key in active_keys.keys():
+		var is_key_pressed = active_keys[key]
+		
+		# 1. Handle Thrusters and Particles for this key
 		if thruster_groups.has(key):
 			for t_data in thruster_groups[key]:
 				var body: RigidBody2D = t_data["body"]
@@ -226,50 +251,64 @@ func _physics_process(_delta: float):
 						var local_pos = t_data["local_pos"]
 						var local_rot = t_data["local_rot"]
 						
-						# Rotate local position offset by current body rotation so application point updates live
 						var rotated_local_pos = local_pos.rotated(body.global_rotation)
 						var current_global_pos = body.global_position + rotated_local_pos
 						
-						# Dynamically compute current global rotation of the thruster
 						var current_global_rot = body.global_rotation + local_rot
 						var direction = Vector2.UP.rotated(current_global_rot)
-						var force = direction * 2000.0 # Adjust thrust strength here
+						var force = direction * thruster_power
 						
-						# Apply force at the dynamically rotated local position offset
 						body.apply_force(force, rotated_local_pos)
 						
-						# Safely turn CPU particles on if valid
 						if is_instance_valid(particles):
 							particles.emitting = true
 						
-						# Record visual indicator data for drawing the arrow
 						active_thrust_indicators.append({
 							"pos": current_global_pos,
 							"dir": direction
 						})
 					else:
-						# Safely turn CPU particles off when released
 						if is_instance_valid(particles):
 							particles.emitting = false
+
+		# 2. Handle Forward Wheels (Positive Torque)
+		if wheel_forward_groups.has(key) and is_key_pressed:
+			for w_data in wheel_forward_groups[key]:
+				var rolling_body: RigidBody2D = w_data["rolling_body"]
+				if is_instance_valid(rolling_body):
+					rolling_body.apply_torque(wheel_power)
+
+		# 3. Handle Reverse Wheels (Negative Torque)
+		if wheel_reverse_groups.has(key) and is_key_pressed:
+			for w_data in wheel_reverse_groups[key]:
+				var rolling_body: RigidBody2D = w_data["rolling_body"]
+				if is_instance_valid(rolling_body):
+					rolling_body.apply_torque(-wheel_power)
 	
 	queue_redraw()
 
+# Shared UI button creator for all control keys
 func _create_ui_button(key: String):
+	if active_keys.has(key):
+		return
+		
+	active_keys[key] = false
+	
 	var container = canvas_layer.get_node_or_null("ButtonContainer")
 	if not container:
 		return
 		
 	var btn = Button.new()
-	btn.text =  key
+	btn.text = key
 	btn.custom_minimum_size = Vector2(100, 50)
 	container.add_child(btn)
 	
 	btn.button_down.connect(func():
-		active_thruster_keys[key] = true
+		active_keys[key] = true
 	)
 	
 	btn.button_up.connect(func():
-		active_thruster_keys[key] = false
+		active_keys[key] = false
 	)
 
 func _find_part_instance_from_collider(collider: Object, part_nodes: Array) -> Node:

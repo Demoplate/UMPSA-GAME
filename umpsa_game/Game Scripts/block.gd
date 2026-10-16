@@ -2,6 +2,7 @@ extends Area2D
 
 @export var is_thruster: bool = false
 @export var assigned_key: String = ""
+@export var reverse_key: String = "" # Added to support wheel reverse controls
 @export var grid_size: float = 32.0
 @export var is_selectable: bool = true
 @export var max_search_cells: int = 10
@@ -151,9 +152,12 @@ func select_this_part():
 	for child in find_children("*", "Sprite2D", true, false):
 		child.modulate = Color(1.4, 1.4, 0.6)
 
-	if is_thruster:
-		var popup_ui = get_tree().current_scene.get_node_or_null("Properties")
-		if popup_ui and popup_ui.has_method("open_for_thruster"):
+	# Open configuration UI for any selectable part (thruster or wheel)
+	var popup_ui = get_tree().current_scene.get_node_or_null("Properties")
+	if popup_ui:
+		if popup_ui.has_method("open_for_part"):
+			popup_ui.open_for_part(self)
+		elif popup_ui.has_method("open_for_thruster"):
 			popup_ui.open_for_thruster(self)
 
 func delete_this_part():
