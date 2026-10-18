@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://beduqvgn83oig"]
+
+[sub_resource type="SystemFont" id="SystemFont_yf5fn"]
+font_names = PackedStringArray("VCR OSD Mono")
+msdf_size = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+line_spacing = 6.66
+font = SubResource("SystemFont_yf5fn")
+font_size = 65
+
+[sub_resource type="SystemFont" id="SystemFont_d0u6y"]
+font_names = PackedStringArray("VCR OSD Mono")
+
+[sub_resource type="SystemFont" id="SystemFont_57qmd"]
+font_names = PackedStringArray("VCR OSD Mono")
+
+[node name="Node2D" type="Node2D" unique_id=1897243380]
+
+[node name="Control" type="Control" parent="." unique_id=2113157327]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 484.0
+offset_top = 256.0
+offset_right = 524.0
+offset_bottom = 296.0
+
+[node name="Label" type="Label" parent="Control" unique_id=2016053910]
+layout_mode = 0
+offset_left = -232.0
+offset_top = -97.0
+offset_right = 340.0
+offset_bottom = -39.0
+scale = Vector2(0.9737964, 1.0664837)
+theme_override_font_sizes/font_size = 1
+text = "Finished Level!"
+label_settings = SubResource("LabelSettings_g4v7s")
+
+[node name="Button" type="Button" parent="Control" unique_id=2115376732]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 109.0
+offset_right = 427.0
+offset_bottom = 168.0
+scale = Vector2(0.7601976, 1.3136922)
+theme_override_fonts/font = SubResource("SystemFont_d0u6y")
+theme_override_font_sizes/font_size = 57
+text = "Next Level"
+
+[node name="Button2" type="Button" parent="Control" unique_id=1757613445]
+layout_mode = 0
+offset_left = -208.0
+offset_top = 112.0
+offset_right = -118.0
+offset_bottom = 143.0
+scale = Vector2(0.8626112, 1.1099577)
+theme_override_fonts/font = SubResource("SystemFont_57qmd")
+theme_override_font_sizes/font_size = 67
+text = "Menu"

@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var target_scene_path: String = "res://lvl1.tscn"
+@export var target_scene_path: String = "res://Level_Scenes/lvl1.tscn"
 @export var build_area_path: NodePath = NodePath("../BuildingArea")
 
 func _input_event(_viewport, event, _shape_idx):
@@ -60,6 +60,14 @@ func transition_to_new_scene():
 					"global_position": area.global_position,
 					"rotation": area.global_rotation,
 					"assigned_key": key_assigned
+				})
+			elif "command" in current_path.to_lower():
+				var rigid_command_path = current_path.replace("cloned_parts", "rigid_blocks").replace("command.tscn", "rigid_command.tscn")
+				GameData.saved_parts.append({
+					"type": "command",
+					"scene_path": rigid_command_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation
 				})
 			else:
 				var rigid_block_path = current_path.replace("cloned_parts", "rigid_blocks").replace("block.tscn", "rigid_block.tscn")

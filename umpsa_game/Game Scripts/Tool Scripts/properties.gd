@@ -34,11 +34,16 @@ func _process(_delta: float) -> void:
 	last_tool = GameData.current_tool
 
 func open_for_part(part: Node2D) -> void:
+	var scene_path = part.scene_file_path.to_lower() if "scene_file_path" in part else ""
+	
+	# If it's a standard block or command part, they don't use keys—don't open UI
+	if not "wheel" in scene_path and not "thruster" in scene_path and not "watergun" in scene_path:
+		return
+
 	target_part = part
 	show()
 	
-	var scene_path = part.scene_file_path.to_lower() if "scene_file_path" in part else ""
-	is_target_wheel = ("wheel" in scene_path) or (part.get("is_thruster") == false)
+	is_target_wheel = "wheel" in scene_path
 	
 	wheel_group.visible = is_target_wheel
 	thruster_group.visible = not is_target_wheel
@@ -51,6 +56,7 @@ func open_for_part(part: Node2D) -> void:
 		line_edit_forwards.grab_focus()
 		line_edit_forwards.select_all()
 	else:
+		# Handles both thrusters and waterguns since they both use a single assigned key
 		if "assigned_key" in part:
 			line_edit_thruster.text = part.assigned_key
 		line_edit_thruster.grab_focus()
@@ -61,6 +67,9 @@ func open_for_thruster(thruster: Node2D) -> void:
 
 func open_for_wheel(wheel: Node2D) -> void:
 	open_for_part(wheel)
+
+func open_for_watergun(watergun: Node2D) -> void:
+	open_for_part(watergun)
 
 func _on_confirm_pressed() -> void:
 	if target_part and is_instance_valid(target_part):
@@ -78,7 +87,7 @@ func _on_confirm_pressed() -> void:
 			var typed_text = line_edit_thruster.text.strip_edges()
 			if typed_text.length() > 0:
 				target_part.assigned_key = typed_text[0].to_upper()
-				print("Assigned key ", target_part.assigned_key, " to thruster.")
+				print("Assigned key ", target_part.assigned_key, " to part.")
 	
 	close_ui()
 

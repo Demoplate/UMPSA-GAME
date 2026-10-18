@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://ctve5lhvxtgo6"]
+
+[ext_resource type="Texture2D" uid="uid://cb0mr0g5k6wd8" path="res://Textures/comandplaceholder.png" id="1_jvt4p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v0usf"]
+
+[node name="CommandModule" type="RigidBody2D" unique_id=1453128315]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1325686745]
+scale = Vector2(0.23853067, 0.23840997)
+texture = ExtResource("1_jvt4p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=986404679]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_v0usf")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1616263035]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, -60)
+
+[node name="RayCast2D_Bottom" type="RayCast2D" parent="." unique_id=1617439960]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, 60)
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=461107105]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(-60, 0)
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=230825571]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(60, 0)

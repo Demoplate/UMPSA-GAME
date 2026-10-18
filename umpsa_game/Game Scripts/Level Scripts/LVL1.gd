@@ -11,28 +11,64 @@ var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
 var watergun_groups = {}
 
-# Array to store active thruster visual indicators for the current frame
 var active_thrust_indicators = []
-
 var canvas_layer: CanvasLayer
+var ui_root: Control = null
+
+# State tracker for UI layout editing
+var is_ui_unlocked: bool = false
+var toggle_edit_btn: Button = null
 
 func _ready():
 	if GameData.saved_parts.is_empty():
+		print("[BUILD] Warning: GameData.saved_parts is empty!")
 		return
 		
-	# Setup UI Canvas Layer for mobile buttons dynamically if it doesn't exist
+	# Setup UI Canvas Layer and full-rect wrapper control for correct layout scaling
 	canvas_layer = get_node_or_null("CanvasLayer")
 	if not canvas_layer:
 		canvas_layer = CanvasLayer.new()
 		canvas_layer.name = "CanvasLayer"
 		add_child(canvas_layer)
 		
-		var vbox = VBoxContainer.new()
-		vbox.name = "ButtonContainer"
-		vbox.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		vbox.offset_left = -120
-		vbox.offset_top = -200
-		canvas_layer.add_child(vbox)
+	ui_root = canvas_layer.get_node_or_null("UIRoot")
+	if not ui_root:
+		ui_root = Control.new()
+		ui_root.name = "UIRoot"
+		ui_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+		ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		canvas_layer.add_child(ui_root)
+		
+		# GridContainer for organized vehicle controls at the bottom right
+		var grid = GridContainer.new()
+		grid.name = "ButtonContainer"
+		grid.columns = 2
+		grid.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+		grid.offset_left = -240
+		grid.offset_top = -300
+		grid.offset_right = -20
+		grid.offset_bottom = -20
+		grid.add_theme_constant_override("h_separation", 10)
+		grid.add_theme_constant_override("v_separation", 10)
+		ui_root.add_child(grid)
+		
+		# Toggle edit button pinned strictly to the TOP RIGHT
+		toggle_edit_btn = Button.new()
+		toggle_edit_btn.name = "ToggleEditButton"
+		toggle_edit_btn.text = "Unlock UI"
+		toggle_edit_btn.custom_minimum_size = Vector2(110, 45)
+		toggle_edit_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		toggle_edit_btn.offset_left = -140
+		toggle_edit_btn.offset_top = 20
+		toggle_edit_btn.offset_right = -20
+		toggle_edit_btn.offset_bottom = 65
+		ui_root.add_child(toggle_edit_btn)
+		
+		toggle_edit_btn.pressed.connect(_on_toggle_edit_pressed)
+	else:
+		toggle_edit_btn = ui_root.get_node_or_null("ToggleEditButton")
+		if toggle_edit_btn and not toggle_edit_btn.pressed.is_connected(_on_toggle_edit_pressed):
+			toggle_edit_btn.pressed.connect(_on_toggle_edit_pressed)
 
 	var all_parts = GameData.saved_parts
 	var part_nodes = []
@@ -55,7 +91,7 @@ func _ready():
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 
-	# 2. Group parts into islands where every part starts in its own individual island
+	# 2. Group parts into islands
 	var islands = []
 	var part_to_island = {}
 	
@@ -64,7 +100,6 @@ func _ready():
 		islands.append(island)
 		part_to_island[node] = island
 
-	# Force raycasts to update and merge islands dynamically with connection rules
 	for curr_instance in part_nodes:
 		var scan_node = node_to_scan[curr_instance]
 		var p_data = data_to_node[curr_instance]
@@ -75,14 +110,11 @@ func _ready():
 			for child in scan_node.find_children("*", "RayCast2D", true, false):
 				raycasts.append(child)
 		
-		# Rule 1: Thrusters only connect if Raycast2D_Top is used
 		if "thruster" in scene_path:
 			raycasts = raycasts.filter(func(rc): return rc.name == "Raycast2D_Top")
 		
 		var colliding_rcs = []
 		for rc in raycasts:
-			# WaterCast is a gameplay ray, not a part-connection ray. Keep its
-			# fire-detection mask instead of replacing it with the build mask.
 			if rc.name == "water_cast":
 				continue
 			rc.collision_mask = 2
@@ -92,7 +124,6 @@ func _ready():
 			if rc.is_colliding():
 				colliding_rcs.append(rc)
 		
-		# Rule 2: Wheels don't connect if the bottom is the ONLY place connected
 		if "wheel" in scene_path:
 			var has_bottom = false
 			var has_others = false
@@ -113,15 +144,11 @@ func _ready():
 				var island_a = part_to_island[curr_instance]
 				var island_b = part_to_island[hit_instance]
 				
-				# If they are in different islands, merge them together!
 				if island_a != island_b:
-					print("[MERGE] Connecting part at ", curr_instance.global_position, " with part at ", hit_instance.global_position)
 					for node in island_b:
 						island_a.append(node)
 						part_to_island[node] = island_a
 					islands.erase(island_b)
-
-	print("\n--- FINAL ISLAND COUNT AFTER MERGING: ", islands.size(), " ---\n")
 
 	# 3. Build unified RigidBody2D chassis islands
 	for island in islands:
@@ -134,10 +161,21 @@ func _ready():
 		get_tree().current_scene.add_child(master_body)
 		master_body.global_position = center_pos
 		
-		# Apply custom physics material override for chassis friction
 		var chassis_mat = PhysicsMaterial.new()
 		chassis_mat.friction = 0.4
 		master_body.physics_material_override = chassis_mat
+		
+		var has_command = false
+		for inst in island:
+			var p_data = data_to_node[inst]
+			if (p_data.get("type") == "command") or ("command" in p_data.get("scene_path", "").to_lower()):
+				has_command = true
+				break
+				
+		if has_command:
+			var camera = Camera2D.new()
+			master_body.add_child(camera)
+			camera.make_current()
 		
 		for inst in island:
 			var p_data = data_to_node[inst]
@@ -160,24 +198,19 @@ func _ready():
 						dup.global_rotation = global_rot
 						dup.position = master_body.to_local(global_pos)
 						
-						# Capture reference to duplicated CPU particles
 						if (is_thruster or is_watergun) and dup is CPUParticles2D:
 							duplicated_particles = dup
 							
-						# Capture reference to WaterCast raycast
 						if is_watergun and dup is RayCast2D and dup.name == "water_cast":
 							dup.collision_mask = 1
 							duplicated_water_cast = dup
 				
-				# Track thrusters using the shared UI system
 				if is_thruster:
 					var assigned_key = p_data.get("assigned_key", "")
 					if assigned_key != "":
 						if not thruster_groups.has(assigned_key):
 							thruster_groups[assigned_key] = []
-						
 						_create_ui_button(assigned_key)
-						
 						thruster_groups[assigned_key].append({
 							"body": master_body,
 							"local_pos": master_body.to_local(inst.global_position),
@@ -185,15 +218,12 @@ func _ready():
 							"particles": duplicated_particles
 						})
 						
-				# Track waterguns using the shared UI system
 				if is_watergun:
 					var assigned_key = p_data.get("assigned_key", "")
 					if assigned_key != "":
 						if not watergun_groups.has(assigned_key):
 							watergun_groups[assigned_key] = []
-						
 						_create_ui_button(assigned_key)
-						
 						watergun_groups[assigned_key].append({
 							"particles": duplicated_particles,
 							"water_cast": duplicated_water_cast
@@ -221,7 +251,6 @@ func _ready():
 					rolling_body.global_position = wheel_rolling.global_position
 					rolling_body.rotation = wheel_rolling.global_rotation
 					
-					# Apply higher friction material for wheel traction
 					var wheel_mat = PhysicsMaterial.new()
 					wheel_mat.friction = 0.8
 					rolling_body.physics_material_override = wheel_mat
@@ -234,7 +263,6 @@ func _ready():
 						new_pin.node_b = rolling_body.get_path()
 						new_pin.disable_collision = true
 					
-					# Track forward key for powered wheels
 					var assigned_key = p_data.get("assigned_key", "")
 					if assigned_key != "":
 						if not wheel_forward_groups.has(assigned_key):
@@ -244,7 +272,6 @@ func _ready():
 							"rolling_body": rolling_body
 						})
 
-					# Track reverse key for powered wheels
 					var reverse_key = p_data.get("reverse_key", "")
 					if reverse_key != "":
 						if not wheel_reverse_groups.has(reverse_key):
@@ -257,16 +284,12 @@ func _ready():
 	for inst in part_nodes:
 		inst.queue_free()
 
-	print("Vehicle built successfully with dual wheel controls and exported power settings!")
-
 func _physics_process(_delta: float):
 	active_thrust_indicators.clear()
 	
-	# Loop through all active key states and apply actions for thrusters, waterguns, and wheels
 	for key in active_keys.keys():
 		var is_key_pressed = active_keys[key]
 		
-		# 1. Handle Thrusters and Particles for this key
 		if thruster_groups.has(key):
 			for t_data in thruster_groups[key]:
 				var body: RigidBody2D = t_data["body"]
@@ -276,10 +299,8 @@ func _physics_process(_delta: float):
 					if is_key_pressed:
 						var local_pos = t_data["local_pos"]
 						var local_rot = t_data["local_rot"]
-						
 						var rotated_local_pos = local_pos.rotated(body.global_rotation)
 						var current_global_pos = body.global_position + rotated_local_pos
-						
 						var current_global_rot = body.global_rotation + local_rot
 						var direction = Vector2.UP.rotated(current_global_rot)
 						var force = direction * thruster_power
@@ -288,16 +309,10 @@ func _physics_process(_delta: float):
 						
 						if is_instance_valid(particles):
 							particles.emitting = true
-						
-						active_thrust_indicators.append({
-							"pos": current_global_pos,
-							"dir": direction
-						})
 					else:
 						if is_instance_valid(particles):
 							particles.emitting = false
 
-		# 2. Handle Waterguns (Particles and WaterCast to delete Fire)
 		if watergun_groups.has(key):
 			for w_data in watergun_groups[key]:
 				var particles: CPUParticles2D = w_data.get("particles")
@@ -313,7 +328,6 @@ func _physics_process(_delta: float):
 					if is_key_pressed and water_cast.is_colliding():
 						var collider = water_cast.get_collider()
 						if collider:
-							# Resolve either a direct Fire hit or a child collider of Fire.
 							var fire_node: Node = null
 							if collider.name == "Fire" or (collider.has_meta("is_fire") and collider.get_meta("is_fire")):
 								fire_node = collider
@@ -322,14 +336,12 @@ func _physics_process(_delta: float):
 							if fire_node:
 								_fade_out_fire(fire_node)
 
-		# 3. Handle Forward Wheels (Positive Torque)
 		if wheel_forward_groups.has(key) and is_key_pressed:
 			for w_data in wheel_forward_groups[key]:
 				var rolling_body: RigidBody2D = w_data["rolling_body"]
 				if is_instance_valid(rolling_body):
 					rolling_body.apply_torque(wheel_power)
 
-		# 4. Handle Reverse Wheels (Negative Torque)
 		if wheel_reverse_groups.has(key) and is_key_pressed:
 			for w_data in wheel_reverse_groups[key]:
 				var rolling_body: RigidBody2D = w_data["rolling_body"]
@@ -339,7 +351,6 @@ func _physics_process(_delta: float):
 	queue_redraw()
 
 func _draw():
-	# Draw enabled watergun rays over the level for runtime debugging.
 	for key in watergun_groups:
 		if not active_keys.get(key, false):
 			continue
@@ -360,7 +371,6 @@ func _fade_out_fire(fire_node: Node) -> void:
 		return
 	fire_node.set_meta("is_fading", true)
 
-	# Stop further ray hits while the visual fades away.
 	for collision_shape in fire_node.find_children("*", "CollisionShape2D", true, false):
 		collision_shape.set_deferred("disabled", true)
 	if fire_node is CollisionObject2D:
@@ -374,29 +384,39 @@ func _fade_out_fire(fire_node: Node) -> void:
 	else:
 		fire_node.queue_free()
 
-# Shared UI button creator for all control keys
 func _create_ui_button(key: String):
-	if active_keys.has(key):
+	if key == "" or active_keys.has(key):
 		return
 		
 	active_keys[key] = false
 	
-	var container = canvas_layer.get_node_or_null("ButtonContainer")
+	var container = ui_root.get_node_or_null("ButtonContainer")
 	if not container:
 		return
 		
-	var btn = Button.new()
+	var btn = DraggableButton.new()
 	btn.text = key
 	btn.custom_minimum_size = Vector2(100, 50)
 	container.add_child(btn)
 	
 	btn.button_down.connect(func():
-		active_keys[key] = true
+		if not is_ui_unlocked:
+			active_keys[key] = true
 	)
 	
 	btn.button_up.connect(func():
-		active_keys[key] = false
+		if not is_ui_unlocked:
+			active_keys[key] = false
 	)
+
+func _on_toggle_edit_pressed():
+	is_ui_unlocked = not is_ui_unlocked
+	if is_ui_unlocked:
+		toggle_edit_btn.text = "Lock UI"
+		print("[UI] UI layout unlocked. Drag buttons to move them!")
+	else:
+		toggle_edit_btn.text = "Unlock UI"
+		print("[UI] UI layout locked.")
 
 func _find_part_instance_from_collider(collider: Object, part_nodes: Array) -> Node:
 	var curr = collider
@@ -405,3 +425,35 @@ func _find_part_instance_from_collider(collider: Object, part_nodes: Array) -> N
 			return curr
 		curr = curr.get_parent()
 	return null
+
+class DraggableButton extends Button:
+	var is_dragging: bool = false
+	var drag_offset: Vector2 = Vector2.ZERO
+
+	func _gui_input(event: InputEvent) -> void:
+		var main_node = get_tree().current_scene
+		if main_node and "is_ui_unlocked" in main_node and main_node.is_ui_unlocked:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+				if event.pressed:
+					is_dragging = true
+					drag_offset = get_global_mouse_position() - global_position
+					accept_event()
+				else:
+					is_dragging = false
+			elif event is InputEventMouseMotion and is_dragging:
+				if get_parent() is GridContainer or get_parent() is VBoxContainer:
+					var current_pos = global_position
+					var parent_container = get_parent()
+					parent_container.remove_child(self)
+					
+					# Re-parent directly to UIRoot for free-floating movement
+					var ui_root_node = main_node.get_node_or_null("CanvasLayer/UIRoot")
+					if ui_root_node:
+						ui_root_node.add_child(self)
+					else:
+						main_node.add_child(self)
+						
+					global_position = current_pos
+				
+				global_position = get_global_mouse_position() - drag_offset
+				accept_event()

@@ -1,6 +1,6 @@
 extends Button
 
-@export var build_scene_path: String = "res://builder_scene.tscn" # Update to your builder scene filename
+@export var build_scene_path: String = "res://Level_Scenes/builder_scene.tscn" # Update to your builder scene filename
 
 func _ready() -> void:
 	if not pressed.is_connected(_on_return_pressed):

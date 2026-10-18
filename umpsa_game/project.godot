@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="PURTAL"
-run/main_scene="res://builder_scene.tscn"
+run/main_scene="res://Level_Scenes/builder_scene.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://Textures/Icons/icon.svg"
 
