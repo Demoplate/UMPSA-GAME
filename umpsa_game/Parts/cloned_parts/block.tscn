@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cr52j1kepsbnr"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_xfwl5"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="2_aj3s1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="Block" type="Area2D" unique_id=1063619873]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_xfwl5")
+grid_size = 16.0
+is_selectable = false
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=675145379]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("2_aj3s1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1572802918]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_g4v7s")

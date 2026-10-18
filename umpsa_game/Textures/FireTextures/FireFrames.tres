@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://Textures/FireTextures/Fire1.png" id="1_fire1"]
+[ext_resource type="Texture2D" path="res://Textures/FireTextures/Fire2.png" id="2_fire2"]
+[ext_resource type="Texture2D" path="res://Textures/FireTextures/Fire3.png" id="3_fire3"]
+[ext_resource type="Texture2D" path="res://Textures/FireTextures/Fire4(1).png" id="4_fire4"]
+
+[resource]
+animations = [{
+"frames": [{"duration": 1.0, "texture": ExtResource("1_fire1")}, {"duration": 1.0, "texture": ExtResource("2_fire2")}, {"duration": 1.0, "texture": ExtResource("3_fire3")}, {"duration": 1.0, "texture": ExtResource("4_fire4")}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]

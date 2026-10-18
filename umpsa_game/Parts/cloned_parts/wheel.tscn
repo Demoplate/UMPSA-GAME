@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://d2supgtgs14fr"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_a35t4"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="2_21tx5"]
+[ext_resource type="Texture2D" uid="uid://krfvxnt4eh38" path="res://Textures/PartTextures/PoweredWheel/Wheel.png" id="3_eed8t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vivmo"]
+
+[node name="wheel" type="Area2D" unique_id=120399294]
+script = ExtResource("1_a35t4")
+assigned_key = "W"
+reverse_key = "S"
+grid_size = 16.0
+
+[node name="Base" type="Sprite2D" parent="." unique_id=408816850]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("2_21tx5")
+
+[node name="Wheel" type="Sprite2D" parent="." unique_id=1112163946]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("3_eed8t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=704263885]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_vivmo")

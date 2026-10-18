@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://cjvofieyrl0u4"]
+
+[ext_resource type="Texture2D" uid="uid://bu280rrm0cgxy" path="res://Textures/PartTextures/ThrusterBodyNoFire.png" id="1_kyux6"]
+
+[sub_resource type="Gradient" id="Gradient_kyux6"]
+interpolation_mode = 2
+colors = PackedColorArray(1, 0.64705884, 0, 1, 1, 1, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7numd"]
+gradient = SubResource("Gradient_kyux6")
+width = 32
+height = 32
+
+[sub_resource type="Curve" id="Curve_p1u0y"]
+_data = [Vector2(0.042553194, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="rigid_thruster" type="RigidBody2D" unique_id=12629719]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1094317608]
+position = Vector2(0, 22)
+emitting = false
+amount = 30
+texture = SubResource("GradientTexture2D_7numd")
+lifetime = 0.34
+speed_scale = 4.17
+lifetime_randomness = 0.59
+direction = Vector2(1, 23.935)
+spread = 5.79
+gravity = Vector2(0, 0)
+initial_velocity_min = 39.6
+initial_velocity_max = 405.94
+linear_accel_min = 5.94
+linear_accel_max = 100.0
+angle_max = 720.0
+scale_amount_min = 0.8
+scale_amount_curve = SubResource("Curve_p1u0y")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1151716569]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("1_kyux6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=353074111]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1063740900]
+rotation = 3.1387663
