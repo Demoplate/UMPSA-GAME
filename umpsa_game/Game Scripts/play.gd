@@ -9,7 +9,7 @@ func _input_event(_viewport, event, _shape_idx):
 		transition_to_new_scene()
 
 func transition_to_new_scene():
-	# Ensure tool is set to BUILD before transitioning
+	# Ensure tool is set appropriately before transitioning
 	if "current_tool" in GameData and "ToolMode" in GameData:
 		GameData.current_tool = GameData.ToolMode.SPAWN
 
@@ -41,13 +41,22 @@ func transition_to_new_scene():
 					"global_position": area.global_position,
 					"rotation": area.global_rotation,
 					"assigned_key": key_assigned,
-					"reverse_key": rev_key_assigned # Saves the reverse key for wheels
+					"reverse_key": rev_key_assigned
 				})
 			elif "thruster" in current_path.to_lower():
 				var rigid_thruster_path = current_path.replace("cloned_parts", "rigid_blocks").replace("thruster.tscn", "rigid_thruster.tscn")
 				GameData.saved_parts.append({
 					"type": "thruster",
 					"scene_path": rigid_thruster_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation,
+					"assigned_key": key_assigned
+				})
+			elif "watergun" in current_path.to_lower():
+				var rigid_watergun_path = current_path.replace("cloned_parts", "rigid_blocks").replace("watergun.tscn", "rigid_watergun.tscn")
+				GameData.saved_parts.append({
+					"type": "watergun",
+					"scene_path": rigid_watergun_path,
 					"global_position": area.global_position,
 					"rotation": area.global_rotation,
 					"assigned_key": key_assigned

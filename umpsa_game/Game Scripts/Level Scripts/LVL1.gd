@@ -9,6 +9,7 @@ var active_keys = {}
 var thruster_groups = {}
 var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
+var watergun_groups = {}
 
 # Array to store active thruster visual indicators for the current frame
 var active_thrust_indicators = []
@@ -80,6 +81,10 @@ func _ready():
 		
 		var colliding_rcs = []
 		for rc in raycasts:
+			# WaterCast is a gameplay ray, not a part-connection ray. Keep its
+			# fire-detection mask instead of replacing it with the build mask.
+			if rc.name == "water_cast":
+				continue
 			rc.collision_mask = 2
 			rc.add_exception(curr_instance)
 			rc.force_raycast_update()
@@ -138,9 +143,11 @@ func _ready():
 			var p_data = data_to_node[inst]
 			var is_wheel = (p_data.get("type") == "wheel") or ("wheel" in p_data.get("scene_path", "").to_lower())
 			var is_thruster = (p_data.get("type") == "thruster") or ("thruster" in p_data.get("scene_path", "").to_lower())
+			var is_watergun = (p_data.get("type") == "watergun") or ("watergun" in p_data.get("scene_path", "").to_lower())
 			
 			if not is_wheel:
 				var duplicated_particles = null
+				var duplicated_water_cast = null
 				
 				for child in inst.get_children():
 					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D:
@@ -153,9 +160,14 @@ func _ready():
 						dup.global_rotation = global_rot
 						dup.position = master_body.to_local(global_pos)
 						
-						# Capture reference to the duplicated CPU particles node
-						if is_thruster and dup is CPUParticles2D:
+						# Capture reference to duplicated CPU particles
+						if (is_thruster or is_watergun) and dup is CPUParticles2D:
 							duplicated_particles = dup
+							
+						# Capture reference to WaterCast raycast
+						if is_watergun and dup is RayCast2D and dup.name == "water_cast":
+							dup.collision_mask = 1
+							duplicated_water_cast = dup
 				
 				# Track thrusters using the shared UI system
 				if is_thruster:
@@ -171,6 +183,20 @@ func _ready():
 							"local_pos": master_body.to_local(inst.global_position),
 							"local_rot": inst.global_rotation - master_body.global_rotation,
 							"particles": duplicated_particles
+						})
+						
+				# Track waterguns using the shared UI system
+				if is_watergun:
+					var assigned_key = p_data.get("assigned_key", "")
+					if assigned_key != "":
+						if not watergun_groups.has(assigned_key):
+							watergun_groups[assigned_key] = []
+						
+						_create_ui_button(assigned_key)
+						
+						watergun_groups[assigned_key].append({
+							"particles": duplicated_particles,
+							"water_cast": duplicated_water_cast
 						})
 			else:
 				for child in inst.get_children():
@@ -236,7 +262,7 @@ func _ready():
 func _physics_process(_delta: float):
 	active_thrust_indicators.clear()
 	
-	# Loop through all active key states and apply actions for thrusters and wheels
+	# Loop through all active key states and apply actions for thrusters, waterguns, and wheels
 	for key in active_keys.keys():
 		var is_key_pressed = active_keys[key]
 		
@@ -271,14 +297,39 @@ func _physics_process(_delta: float):
 						if is_instance_valid(particles):
 							particles.emitting = false
 
-		# 2. Handle Forward Wheels (Positive Torque)
+		# 2. Handle Waterguns (Particles and WaterCast to delete Fire)
+		if watergun_groups.has(key):
+			for w_data in watergun_groups[key]:
+				var particles: CPUParticles2D = w_data.get("particles")
+				var water_cast: RayCast2D = w_data.get("water_cast")
+				
+				if is_instance_valid(particles):
+					particles.emitting = is_key_pressed
+					
+				if is_instance_valid(water_cast):
+					water_cast.enabled = is_key_pressed
+					if is_key_pressed:
+						water_cast.force_raycast_update()
+					if is_key_pressed and water_cast.is_colliding():
+						var collider = water_cast.get_collider()
+						if collider:
+							# Resolve either a direct Fire hit or a child collider of Fire.
+							var fire_node: Node = null
+							if collider.name == "Fire" or (collider.has_meta("is_fire") and collider.get_meta("is_fire")):
+								fire_node = collider
+							elif collider.get_parent() and collider.get_parent().name == "Fire":
+								fire_node = collider.get_parent()
+							if fire_node:
+								_fade_out_fire(fire_node)
+
+		# 3. Handle Forward Wheels (Positive Torque)
 		if wheel_forward_groups.has(key) and is_key_pressed:
 			for w_data in wheel_forward_groups[key]:
 				var rolling_body: RigidBody2D = w_data["rolling_body"]
 				if is_instance_valid(rolling_body):
 					rolling_body.apply_torque(wheel_power)
 
-		# 3. Handle Reverse Wheels (Negative Torque)
+		# 4. Handle Reverse Wheels (Negative Torque)
 		if wheel_reverse_groups.has(key) and is_key_pressed:
 			for w_data in wheel_reverse_groups[key]:
 				var rolling_body: RigidBody2D = w_data["rolling_body"]
@@ -286,6 +337,42 @@ func _physics_process(_delta: float):
 					rolling_body.apply_torque(-wheel_power)
 	
 	queue_redraw()
+
+func _draw():
+	# Draw enabled watergun rays over the level for runtime debugging.
+	for key in watergun_groups:
+		if not active_keys.get(key, false):
+			continue
+		for w_data in watergun_groups[key]:
+			var water_cast: RayCast2D = w_data.get("water_cast")
+			if not is_instance_valid(water_cast) or not water_cast.enabled:
+				continue
+
+			var ray_start = to_local(water_cast.global_position)
+			var ray_end_global = water_cast.get_collision_point() if water_cast.is_colliding() else water_cast.to_global(water_cast.target_position)
+			var ray_end = to_local(ray_end_global)
+			var ray_color = Color.RED if water_cast.is_colliding() else Color.CYAN
+			draw_line(ray_start, ray_end, ray_color, 3.0, true)
+			draw_circle(ray_end, 5.0, ray_color)
+
+func _fade_out_fire(fire_node: Node) -> void:
+	if not is_instance_valid(fire_node) or fire_node.get_meta("is_fading", false):
+		return
+	fire_node.set_meta("is_fading", true)
+
+	# Stop further ray hits while the visual fades away.
+	for collision_shape in fire_node.find_children("*", "CollisionShape2D", true, false):
+		collision_shape.set_deferred("disabled", true)
+	if fire_node is CollisionObject2D:
+		fire_node.set_deferred("collision_layer", 0)
+		fire_node.set_deferred("collision_mask", 0)
+
+	if fire_node is CanvasItem:
+		var fade_tween := create_tween()
+		fade_tween.tween_property(fire_node, "modulate:a", 0.0, 1.0)
+		fade_tween.tween_callback(fire_node.queue_free)
+	else:
+		fire_node.queue_free()
 
 # Shared UI button creator for all control keys
 func _create_ui_button(key: String):

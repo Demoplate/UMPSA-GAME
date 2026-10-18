@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dou1fqq3c1o02"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_ec2ut"]
+[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="1_lsl2p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="watergun" type="Area2D" unique_id=1491214218]
+script = ExtResource("1_ec2ut")
+assigned_key = "F"
+grid_size = 16.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=878414784]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=252514100]
+rotation = -1.5707964
+scale = Vector2(0.08602735, 0.13734777)
+texture = ExtResource("1_lsl2p")

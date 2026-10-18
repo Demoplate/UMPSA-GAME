@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://cwlgsu47ibqf7" path="res://builder_loader.gd" id="1_s12yh"]
 [ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://Game Scripts/buildingarea.gd" id="2_nbg4y"]
 [ext_resource type="PackedScene" uid="uid://b8g6ajf44ul1f" path="res://Parts/cloned_parts/thruster.tscn" id="3_ahqo3"]
+[ext_resource type="PackedScene" uid="uid://dou1fqq3c1o02" path="res://Parts/cloned_parts/watergun.tscn" id="3_go8bx"]
+[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="3_nbg4y"]
 [ext_resource type="Texture2D" uid="uid://bu280rrm0cgxy" path="res://Textures/PartTextures/ThrusterBodyNoFire.png" id="4_go8bx"]
 [ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://Parts/cloned_parts/block.tscn" id="5_lquvj"]
 [ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="6_7fpdw"]
@@ -26,6 +28,8 @@ colors = PackedColorArray(0.14901961, 0.14901961, 0.14901961, 1, 0.14767182, 0.1
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_g4v7s"]
 gradient = SubResource("Gradient_cegan")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fcnqv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3gngh"]
 
@@ -56,18 +60,32 @@ font = SubResource("SystemFont_57qmd")
 font_size = 37
 
 [node name="Node2D" type="Node2D" unique_id=1757792821]
-position = Vector2(417, 301)
-scale = Vector2(0.35, 0.35)
 script = ExtResource("1_s12yh")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1890735481]
+[node name="Background" type="Sprite2D" parent="." unique_id=1890735481]
 position = Vector2(574.28577, -17.142822)
 scale = Vector2(65.54056, 34.465607)
 texture = SubResource("GradientTexture2D_g4v7s")
 
+[node name="WatergunCloner" type="Area2D" parent="." unique_id=1921591995 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(204, 164)
+scale = Vector2(0.48374736, 0.48374736)
+script = ExtResource("2_nbg4y")
+part_scene = ExtResource("3_go8bx")
+rotate_button = NodePath("../Tools/RotateTool")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WatergunCloner" unique_id=928248276]
+scale = Vector2(9.818, 9.818)
+shape = SubResource("RectangleShape2D_fcnqv")
+
+[node name="Sprite2D" type="Sprite2D" parent="WatergunCloner" unique_id=626091544]
+rotation = -1.5707964
+scale = Vector2(0.3385225, 0.567234)
+texture = ExtResource("3_nbg4y")
+
 [node name="ThrusterCloner" type="Area2D" parent="." unique_id=647928085 node_paths=PackedStringArray("rotate_button")]
-position = Vector2(-982.8571, -702.8572)
-scale = Vector2(0.99999994, 0.99999994)
+position = Vector2(77, 65)
+scale = Vector2(0.48374736, 0.48374736)
 collision_layer = 4
 script = ExtResource("2_nbg4y")
 part_scene = ExtResource("3_ahqo3")
@@ -84,8 +102,8 @@ scale = Vector2(9.817893, 9.213393)
 shape = SubResource("RectangleShape2D_3gngh")
 
 [node name="BlockCloner" type="Area2D" parent="." unique_id=1639796886 node_paths=PackedStringArray("rotate_button")]
-position = Vector2(-565.71423, -714.2857)
-scale = Vector2(-9.786, -9.786)
+position = Vector2(206.00002, 63)
+scale = Vector2(-4.7339525, -4.7339525)
 collision_layer = 4
 script = ExtResource("2_nbg4y")
 part_scene = ExtResource("5_lquvj")
@@ -99,9 +117,9 @@ scale = Vector2(-0.010315237, 0.010206742)
 texture = ExtResource("6_7fpdw")
 
 [node name="WheelCloner" type="Area2D" parent="." unique_id=120399294 node_paths=PackedStringArray("rotate_button")]
-position = Vector2(-777.1428, -708.5715)
+position = Vector2(70.00002, 166)
 rotation = 3.1415927
-scale = Vector2(-2.3540852, -2.3540852)
+scale = Vector2(-1.1387826, -1.1387826)
 script = ExtResource("2_nbg4y")
 part_scene = ExtResource("7_thcwm")
 rotate_button = NodePath("../Tools/RotateTool")

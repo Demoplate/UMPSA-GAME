@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://c513ofl44cksf"]
+
+[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="1_4vaa4"]
+
+[sub_resource type="Gradient" id="Gradient_4vaa4"]
+colors = PackedColorArray(0.35933787, 0.55777806, 0.999991, 1, 0.2782059, 0.4264009, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g4v7s"]
+gradient = SubResource("Gradient_4vaa4")
+width = 25
+height = 25
+
+[sub_resource type="Curve" id="Curve_yf5fn"]
+_data = [Vector2(0.037234046, 0.75280905), 0.0, 0.0, 0, 0, Vector2(1, 0.011235952), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_57qmd"]
+colors = PackedColorArray(0.75976336, 0.9385537, 0.99999994, 1, 1, 1, 1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="rigid_watergun" type="RigidBody2D" unique_id=949482777]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1515383834]
+position = Vector2(0, 24)
+rotation = 1.5800972
+scale = Vector2(0.6310521, 0.680994)
+emitting = false
+amount = 30
+texture = SubResource("GradientTexture2D_g4v7s")
+lifetime = 1.66
+randomness = 0.1
+lifetime_randomness = 0.6
+emission_shape = 1
+emission_sphere_radius = 14.45
+spread = 0.0
+gravity = Vector2(0, 107.57)
+initial_velocity_min = 879.8
+initial_velocity_max = 1000.0
+linear_accel_min = 49.5
+linear_accel_max = 78.26
+scale_amount_curve = SubResource("Curve_yf5fn")
+color_ramp = SubResource("Gradient_57qmd")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=278734619]
+rotation = -1.5707964
+scale = Vector2(0.08171765, 0.13919899)
+texture = ExtResource("1_4vaa4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1751637999]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1300169315]
+position = Vector2(0, 16)
+rotation = 3.1387663
+
+[node name="RayCast2D_Bottom" type="RayCast2D" parent="." unique_id=656114438]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, 60)
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=1801058290]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(-60, 0)
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=1506340705]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(60, 0)
+
+[node name="water_cast" type="RayCast2D" parent="." unique_id=940990760]
+position = Vector2(0, 24)
+scale = Vector2(0.87, 7.268)

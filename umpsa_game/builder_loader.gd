@@ -15,11 +15,14 @@ func _ready() -> void:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_wheel.tscn", "wheel.tscn")
 		elif "thruster" in rigid_path.to_lower():
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_thruster.tscn", "thruster.tscn")
+		elif "watergun" in rigid_path.to_lower():
+			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_watergun.tscn", "watergun.tscn")
 		else:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_block.tscn", "block.tscn")
 
 		var scene := load(interactive_path) as PackedScene
 		if scene == null:
+			print("FAILED to load scene at: ", interactive_path)
 			continue
 
 		var instance := scene.instantiate() as Node2D
