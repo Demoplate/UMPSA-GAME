@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dcby4g852q4ug" path="res://Textures/Icons/ReturnButton.png" id="2_63t0p"]
 [ext_resource type="Script" uid="uid://dtpui7vm1qmxg" path="res://Game Scripts/Tool Scripts/return_button.gd" id="3_1d3y4"]
 [ext_resource type="Texture2D" uid="uid://blayxqmaj6btb" path="res://Textures/tileset.png" id="4_yyerm"]
+[ext_resource type="PackedScene" uid="uid://gubmt04cbrfw" path="res://Interactables/flagpole.tscn" id="5_63t0p"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x7kom"]
 texture = ExtResource("4_yyerm")
@@ -136,3 +137,6 @@ scale = Vector2(0.046807088, 0.046807088)
 icon = ExtResource("2_63t0p")
 flat = true
 script = ExtResource("3_1d3y4")
+
+[node name="Area2D" parent="." unique_id=1894799789 instance=ExtResource("5_63t0p")]
+position = Vector2(1819, 85)

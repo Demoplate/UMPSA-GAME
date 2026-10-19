@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dou1fqq3c1o02"]
 
 [ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_ec2ut"]
-[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="1_lsl2p"]
+[ext_resource type="Texture2D" uid="uid://bvpa87tydke2k" path="res://Textures/PartTextures/waterdispenser.png" id="2_ec2ut"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
@@ -15,6 +15,6 @@ scale = Vector2(2.394, 2.394)
 shape = SubResource("RectangleShape2D_g4v7s")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=252514100]
-rotation = -1.5707964
-scale = Vector2(0.08602735, 0.13734777)
-texture = ExtResource("1_lsl2p")
+rotation = -4.712389
+scale = Vector2(0.024, 0.025)
+texture = ExtResource("2_ec2ut")

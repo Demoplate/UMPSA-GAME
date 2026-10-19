@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://74k1jpvd18q2"]
 
 [ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_hin5h"]
-[ext_resource type="Texture2D" uid="uid://cb0mr0g5k6wd8" path="res://Textures/comandplaceholder.png" id="2_hin5h"]
+[ext_resource type="Texture2D" uid="uid://1xej11xpnx43" path="res://Textures/PartTextures/ElectronicControlUnit.png" id="2_hin5h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pvd7k"]
 
@@ -13,7 +13,7 @@ grid_size = 16.0
 is_selectable = false
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=954303117]
-scale = Vector2(0.23868813, 0.23610747)
+scale = Vector2(0.024, 0.032)
 texture = ExtResource("2_hin5h")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2033475759]

@@ -2,17 +2,16 @@
 
 [ext_resource type="Script" uid="uid://cwlgsu47ibqf7" path="res://Game Scripts/builder_loader.gd" id="1_fxqm0"]
 [ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://Game Scripts/buildingarea.gd" id="2_fxqm0"]
-[ext_resource type="Texture2D" uid="uid://cb0mr0g5k6wd8" path="res://Textures/comandplaceholder.png" id="3_fxqm0"]
 [ext_resource type="PackedScene" uid="uid://74k1jpvd18q2" path="res://Parts/cloned_parts/command.tscn" id="3_oydei"]
 [ext_resource type="PackedScene" uid="uid://dou1fqq3c1o02" path="res://Parts/cloned_parts/watergun.tscn" id="3_ujw2o"]
-[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="4_oydei"]
+[ext_resource type="Texture2D" uid="uid://1xej11xpnx43" path="res://Textures/PartTextures/ElectronicControlUnit.png" id="4_ujw2o"]
 [ext_resource type="PackedScene" uid="uid://b8g6ajf44ul1f" path="res://Parts/cloned_parts/thruster.tscn" id="5_ad0jn"]
+[ext_resource type="Texture2D" uid="uid://bvpa87tydke2k" path="res://Textures/PartTextures/waterdispenser.png" id="6_oydei"]
 [ext_resource type="Texture2D" uid="uid://bu280rrm0cgxy" path="res://Textures/PartTextures/ThrusterBodyNoFire.png" id="6_r6q6e"]
 [ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://Parts/cloned_parts/block.tscn" id="7_lc7u4"]
 [ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="8_8pbjh"]
 [ext_resource type="PackedScene" uid="uid://d2supgtgs14fr" path="res://Parts/cloned_parts/wheel.tscn" id="9_5tl3x"]
 [ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="10_i6krd"]
-[ext_resource type="Texture2D" uid="uid://krfvxnt4eh38" path="res://Textures/PartTextures/PoweredWheel/Wheel.png" id="11_e3lts"]
 [ext_resource type="Script" uid="uid://s3ksefud0kvb" path="res://Game Scripts/Tool Scripts/select_tool.gd" id="12_poxkl"]
 [ext_resource type="Texture2D" uid="uid://dqjrup6sul8vp" path="res://Textures/Icons/wrech.png" id="13_q5y82"]
 [ext_resource type="Script" uid="uid://c72bv5pbimaj" path="res://Game Scripts/Tool Scripts/spawner_tool.gd" id="14_us2g6"]
@@ -77,6 +76,7 @@ scale = Vector2(0.484, 0.484)
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("3_oydei")
 rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CommandCloner" unique_id=1587622073]
 scale = Vector2(9.818, 9.818)
@@ -84,8 +84,8 @@ shape = SubResource("RectangleShape2D_7numd")
 
 [node name="Sprite2D" type="Sprite2D" parent="CommandCloner" unique_id=748466893]
 position = Vector2(2.0661156, 0)
-scale = Vector2(0.9519745, 0.95484245)
-texture = ExtResource("3_fxqm0")
+scale = Vector2(0.100552134, 0.1324714)
+texture = ExtResource("4_ujw2o")
 
 [node name="WatergunCloner" type="Area2D" parent="." unique_id=1921591995 node_paths=PackedStringArray("rotate_button")]
 position = Vector2(204, 164)
@@ -93,15 +93,16 @@ scale = Vector2(0.48374736, 0.48374736)
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("3_ujw2o")
 rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WatergunCloner" unique_id=928248276]
 scale = Vector2(9.818, 9.818)
 shape = SubResource("RectangleShape2D_fcnqv")
 
 [node name="Sprite2D" type="Sprite2D" parent="WatergunCloner" unique_id=626091544]
-rotation = -1.5707964
-scale = Vector2(0.3385225, 0.567234)
-texture = ExtResource("4_oydei")
+rotation = -4.712389
+scale = Vector2(0.0986679, 0.09996812)
+texture = ExtResource("6_oydei")
 
 [node name="ThrusterCloner" type="Area2D" parent="." unique_id=647928085 node_paths=PackedStringArray("rotate_button")]
 position = Vector2(77, 65)
@@ -110,6 +111,7 @@ collision_layer = 4
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("5_ad0jn")
 rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="ThrusterCloner" unique_id=72508307]
 position = Vector2(-15.104004, -10.555725)
@@ -143,16 +145,12 @@ scale = Vector2(-1.1387826, -1.1387826)
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("9_5tl3x")
 rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 2
 
-[node name="Base" type="Sprite2D" parent="WheelCloner" unique_id=408816850]
-position = Vector2(0, -10.923298)
-scale = Vector2(0.03068509, 0.03068509)
+[node name="Sprite2D" type="Sprite2D" parent="WheelCloner" unique_id=408816850]
+position = Vector2(-0.87815, -1.7562675)
+scale = Vector2(0.038438495, 0.037817504)
 texture = ExtResource("10_i6krd")
-
-[node name="Wheel" type="Sprite2D" parent="WheelCloner" unique_id=988898290]
-position = Vector2(0, -10.923298)
-scale = Vector2(0.047090475, 0.047090475)
-texture = ExtResource("11_e3lts")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="WheelCloner" unique_id=1330583409]
 position = Vector2(-7.6293945e-06, -2.4274254)

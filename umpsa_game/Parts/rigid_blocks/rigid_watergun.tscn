@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c513ofl44cksf"]
 
-[ext_resource type="Texture2D" uid="uid://bjls012u2hr7j" path="res://Textures/Icons/watergun.jpeg" id="1_4vaa4"]
+[ext_resource type="Texture2D" uid="uid://bvpa87tydke2k" path="res://Textures/PartTextures/waterdispenser.png" id="1_4vaa4"]
 
 [sub_resource type="Gradient" id="Gradient_4vaa4"]
 colors = PackedColorArray(0.35933787, 0.55777806, 0.999991, 1, 0.2782059, 0.4264009, 1, 1)
@@ -45,8 +45,8 @@ scale_amount_curve = SubResource("Curve_yf5fn")
 color_ramp = SubResource("Gradient_57qmd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=278734619]
-rotation = -1.5707964
-scale = Vector2(0.08171765, 0.13919899)
+rotation = 1.5707964
+scale = Vector2(0.023, 0.023)
 texture = ExtResource("1_4vaa4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1751637999]

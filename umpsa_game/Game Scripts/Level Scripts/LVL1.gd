@@ -168,7 +168,10 @@ func _ready():
 		var has_command = false
 		for inst in island:
 			var p_data = data_to_node[inst]
-			if (p_data.get("type") == "command") or ("command" in p_data.get("scene_path", "").to_lower()):
+			var scene_path = p_data.get("scene_path", "").to_lower()
+			var p_type = p_data.get("type", "").to_lower()
+			
+			if p_type == "command" or "command" in scene_path or "command_block" in scene_path or inst.name.to_lower().contains("command"):
 				has_command = true
 				break
 				
@@ -179,16 +182,20 @@ func _ready():
 		
 		for inst in island:
 			var p_data = data_to_node[inst]
-			var is_wheel = (p_data.get("type") == "wheel") or ("wheel" in p_data.get("scene_path", "").to_lower())
-			var is_thruster = (p_data.get("type") == "thruster") or ("thruster" in p_data.get("scene_path", "").to_lower())
-			var is_watergun = (p_data.get("type") == "watergun") or ("watergun" in p_data.get("scene_path", "").to_lower())
+			var scene_path = p_data.get("scene_path", "").to_lower()
+			var p_type = p_data.get("type", "").to_lower()
+			
+			var is_wheel = (p_type == "wheel") or ("wheel" in scene_path)
+			var is_thruster = (p_type == "thruster") or ("thruster" in scene_path)
+			var is_watergun = (p_type == "watergun") or ("watergun" in scene_path)
 			
 			if not is_wheel:
 				var duplicated_particles = null
 				var duplicated_water_cast = null
 				
 				for child in inst.get_children():
-					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D:
+					# Added Area2D here so flagpole / trigger areas copy over properly
+					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D or child is Area2D:
 						var global_pos = child.global_position
 						var global_rot = child.global_rotation
 						

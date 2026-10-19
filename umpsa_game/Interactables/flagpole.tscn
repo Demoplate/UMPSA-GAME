@@ -4,7 +4,7 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
-[node name="Area2D" type="Area2D" unique_id=1894799789]
+[node name="flagpole" type="Area2D" unique_id=1894799789]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1340773781]
 scale = Vector2(0.18258153, 2.1648562)

@@ -11,12 +11,16 @@ func _ready() -> void:
 		var rigid_path: String = p["scene_path"]
 		var interactive_path: String
 
-		if "wheel" in rigid_path.to_lower():
+		var lower_path = rigid_path.to_lower()
+		if "wheel" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_wheel.tscn", "wheel.tscn")
-		elif "thruster" in rigid_path.to_lower():
+		elif "thruster" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_thruster.tscn", "thruster.tscn")
-		elif "watergun" in rigid_path.to_lower():
+		elif "watergun" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_watergun.tscn", "watergun.tscn")
+		elif "command" in lower_path or "command_block" in lower_path:
+			# Update "command.tscn" or "command_block.tscn" to match your actual interactive command file name!
+			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_command.tscn", "command.tscn")
 		else:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_block.tscn", "block.tscn")
 
