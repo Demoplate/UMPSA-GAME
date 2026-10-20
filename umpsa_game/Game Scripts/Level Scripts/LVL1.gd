@@ -4,6 +4,9 @@ extends Node2D
 @export var thruster_power: float = 2000.0
 @export var wheel_power: float = 20000.0
 
+# Export the next scene path directly in the level loader Inspector
+@export_file("*.tscn") var next_scene_path: String
+
 # Unified dictionaries for key inputs and groups
 var active_keys = {}
 var thruster_groups = {}
@@ -179,6 +182,33 @@ func _ready():
 			var camera = Camera2D.new()
 			master_body.add_child(camera)
 			camera.make_current()
+			
+			# Programmatically attach an Area2D Flagpole Detector directly to the master body!
+			var flag_detector = Area2D.new()
+			flag_detector.name = "ProgrammaticFlagpoleDetector"
+			master_body.add_child(flag_detector)
+			
+			var detector_shape = CollisionShape2D.new()
+			var rect_shape = RectangleShape2D.new()
+			rect_shape.size = Vector2(40, 40) # Adjust size to match your command block
+			detector_shape.shape = rect_shape
+			flag_detector.add_child(detector_shape)
+			
+			# Ensure layer and mask match your flagpole configuration
+			flag_detector.monitorable = true
+			flag_detector.monitoring = true
+			
+			flag_detector.area_entered.connect(func(area):
+				var target_name = area.name.to_lower()
+				var parent_name = area.get_parent().name.to_lower() if area.get_parent() else ""
+				
+				if "flagpole" in target_name or "flagpole" in parent_name or area.is_in_group("flagpole"):
+					print("[Level] Flagpole reached successfully! Switching scene...")
+					if next_scene_path and not next_scene_path.is_empty():
+						get_tree().change_scene_to_file(next_scene_path)
+					else:
+						print("[ERROR] Next scene path is not assigned on the Level Loader node!")
+			)
 		
 		for inst in island:
 			var p_data = data_to_node[inst]
@@ -194,8 +224,7 @@ func _ready():
 				var duplicated_water_cast = null
 				
 				for child in inst.get_children():
-					# Added Area2D here so flagpole / trigger areas copy over properly
-					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D or child is Area2D:
+					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D:
 						var global_pos = child.global_position
 						var global_rot = child.global_rotation
 						

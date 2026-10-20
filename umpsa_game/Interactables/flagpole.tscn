@@ -1,14 +1,22 @@
 [gd_scene format=3 uid="uid://gubmt04cbrfw"]
 
-[ext_resource type="Texture2D" uid="uid://deo8yoaeptupc" path="res://Textures/Icons/placeholder.png" id="1_t2eqo"]
+[ext_resource type="Texture2D" uid="uid://cqhg3fbh8xhvp" path="res://Textures/Flagpole/CheckeredFlag.png" id="1_cirse"]
+[ext_resource type="Texture2D" uid="uid://b0xrihh47yk08" path="res://Textures/Flagpole/FlagpoleOnly.png" id="2_uq0x8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
 [node name="flagpole" type="Area2D" unique_id=1894799789]
+scale = Vector2(0.40022182, 0.40022182)
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=98467688]
+position = Vector2(-104, -320.78857)
+scale = Vector2(0.09531914, 0.12102103)
+texture = ExtResource("1_cirse")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1340773781]
-scale = Vector2(0.18258153, 2.1648562)
-texture = ExtResource("1_t2eqo")
+position = Vector2(0, 8.211455)
+scale = Vector2(0.09531914, 0.12102103)
+texture = ExtResource("2_uq0x8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=851819697]
 scale = Vector2(3.7107277, -48.050854)

@@ -1,11 +1,8 @@
 [gd_scene format=3 uid="uid://ctve5lhvxtgo6"]
 
 [ext_resource type="Texture2D" uid="uid://1xej11xpnx43" path="res://Textures/PartTextures/ElectronicControlUnit.png" id="1_jvt4p"]
-[ext_resource type="Script" uid="uid://bdo1x4x48w64m" path="res://Parts/rigid_blocks/commandscript.gd" id="1_v0usf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v0usf"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 
 [node name="CommandModule" type="RigidBody2D" unique_id=1453128315]
 
@@ -32,11 +29,3 @@ target_position = Vector2(-60, 0)
 [node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=230825571]
 scale = Vector2(0.5, 0.5)
 target_position = Vector2(60, 0)
-
-[node name="Area2D" type="Area2D" parent="." unique_id=87832165]
-script = ExtResource("1_v0usf")
-next_scene_path = "uid://beduqvgn83oig"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1652699024]
-scale = Vector2(3.1599712, 3.1026819)
-shape = SubResource("RectangleShape2D_g4v7s")
