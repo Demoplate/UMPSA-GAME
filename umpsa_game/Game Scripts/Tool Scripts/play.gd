@@ -2,6 +2,7 @@ extends Area2D
 
 @export var target_scene_path: String = "res://Level_Scenes/lvl1.tscn"
 @export var build_area_path: NodePath = NodePath("../BuildingArea")
+@export var warning_label_path: NodePath = NodePath("../CanvasLayer/UIRoot/WarningLabel")
 
 func _input_event(_viewport, event, _shape_idx):
 	if (event is InputEventScreenTouch and event.pressed) or \
@@ -77,6 +78,33 @@ func transition_to_new_scene():
 					"global_position": area.global_position,
 					"rotation": area.global_rotation
 				})
+	
+	# Check if a command block was actually placed
+	var has_command_block = false
+	for part in GameData.saved_parts:
+		if part["type"] == "command":
+			has_command_block = true
+			break
 			
+	var warning_label = get_node_or_null(warning_label_path)
+	
+	if not has_command_block:
+		print("[BUILD] Cannot start: No command block placed!")
+		if warning_label:
+			warning_label.text = "You must place a Command Block to play!"
+			warning_label.modulate.a = 1.0 # Ensure it's fully opaque
+			warning_label.visible = true
+			
+			# Create a smooth fade-out effect after 2 seconds
+			var fade_tween = create_tween()
+			fade_tween.tween_interval(2.0) # Stay visible for 2 seconds
+			fade_tween.tween_property(warning_label, "modulate:a", 0.0, 1.0) # Fade alpha to 0 over 1 second
+			fade_tween.tween_callback(func(): warning_label.visible = false) # Hide completely when done
+		return
+		
+	# Hide warning label if check passes and switch scene
+	if warning_label:
+		warning_label.visible = false
+		
 	print("Saved ", GameData.saved_parts.size(), " parts! Switching scenes...")
 	get_tree().change_scene_to_file(target_scene_path)

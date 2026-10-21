@@ -62,6 +62,16 @@ font_names = PackedStringArray("VCR OSD Mono")
 font = SubResource("SystemFont_57qmd")
 font_size = 37
 
+[sub_resource type="SystemFont" id="SystemFont_yf5fn"]
+font_names = PackedStringArray("VCR OSD Mono")
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font = SubResource("SystemFont_yf5fn")
+outline_size = 5
+outline_color = Color(1, 0, 0, 1)
+shadow_size = 776
+shadow_color = Color(1, 0, 0, 0)
+
 [node name="Node2D" type="Node2D" unique_id=1757792821]
 script = ExtResource("1_fxqm0")
 
@@ -93,7 +103,7 @@ scale = Vector2(0.48374736, 0.48374736)
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("3_ujw2o")
 rotate_button = NodePath("../Tools/RotateTool")
-max_parts = 2
+max_parts = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WatergunCloner" unique_id=928248276]
 scale = Vector2(9.818, 9.818)
@@ -111,7 +121,7 @@ collision_layer = 4
 script = ExtResource("2_fxqm0")
 part_scene = ExtResource("5_ad0jn")
 rotate_button = NodePath("../Tools/RotateTool")
-max_parts = 3
+max_parts = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="ThrusterCloner" unique_id=72508307]
 position = Vector2(-15.104004, -10.555725)
@@ -215,19 +225,21 @@ position = Vector2(895.00006, 241)
 scale = Vector2(0.56051785, 0.2988904)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/BuildingArea" unique_id=505646001]
-position = Vector2(-312.85712, 82.857056)
+position = Vector2(-328.26797, 103.71699)
 scale = Vector2(35.46462, 308.01855)
 shape = SubResource("RectangleShape2D_yf5fn")
 
 [node name="Sprite2D" type="Sprite2D" parent="Tools/BuildingArea" unique_id=2066735478]
-position = Vector2(-322.8571, 74.285706)
-scale = Vector2(-23.78286, 26.313301)
+oversampling_with_scale = 2
+position = Vector2(-342.5405, 110.40839)
+scale = Vector2(-23.78286, 24.835442)
 texture = SubResource("GradientTexture2D_cegan")
 
 [node name="PlayButton" type="Area2D" parent="Tools" unique_id=559970560]
 position = Vector2(1085, 579)
 scale = Vector2(0.19525662, 0.19525662)
 script = ExtResource("20_fxqm0")
+warning_label_path = NodePath("../../Warning/Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/PlayButton" unique_id=2105066597]
 position = Vector2(-5, 0)
@@ -346,3 +358,21 @@ offset_top = 163.71307
 offset_right = 750.96655
 offset_bottom = 194.71307
 max_length = 1
+
+[node name="Warning" type="Control" parent="." unique_id=2045776672]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1084.9998
+offset_top = 578.99994
+offset_right = 1124.9998
+offset_bottom = 618.99994
+
+[node name="Label" type="Label" parent="Warning" unique_id=1425482012]
+visible = false
+layout_mode = 0
+offset_left = -528.99976
+offset_top = -568.99994
+offset_right = -274.99976
+offset_bottom = -545.99994
+text = "Please add a command block!"
+label_settings = SubResource("LabelSettings_g4v7s")

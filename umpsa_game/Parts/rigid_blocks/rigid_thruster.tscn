@@ -4,7 +4,7 @@
 
 [sub_resource type="Gradient" id="Gradient_kyux6"]
 interpolation_mode = 2
-colors = PackedColorArray(1, 0.64705884, 0, 1, 1, 1, 0, 1)
+colors = PackedColorArray(0.7777509, 0.9331402, 0.99958235, 1, 0.97758085, 0.9438324, 0.99999994, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_7numd"]
 gradient = SubResource("Gradient_kyux6")
