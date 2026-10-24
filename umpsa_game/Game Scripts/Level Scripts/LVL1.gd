@@ -3,6 +3,7 @@ extends Node2D
 @export var grid_size: float = 16.0
 @export var thruster_power: float = 2000.0
 @export var wheel_power: float = 20000.0
+@export var piston_power: float = 20000.0
 
 # Export the next scene path directly in the level loader Inspector
 @export_file("*.tscn") var next_scene_path: String
@@ -13,6 +14,8 @@ var thruster_groups = {}
 var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
 var watergun_groups = {}
+var piston_extend_groups = {}
+var piston_retract_groups = {}
 
 var active_thrust_indicators = []
 var canvas_layer: CanvasLayer
@@ -127,7 +130,7 @@ func _ready():
 			if rc.is_colliding():
 				colliding_rcs.append(rc)
 		
-		if "wheel" in scene_path:
+		if "wheel" in scene_path or "piston" in scene_path:
 			var has_bottom = false
 			var has_others = false
 			for rc in colliding_rcs:
@@ -190,11 +193,10 @@ func _ready():
 			
 			var detector_shape = CollisionShape2D.new()
 			var rect_shape = RectangleShape2D.new()
-			rect_shape.size = Vector2(40, 40) # Adjust size to match your command block
+			rect_shape.size = Vector2(40, 40)
 			detector_shape.shape = rect_shape
 			flag_detector.add_child(detector_shape)
 			
-			# Ensure layer and mask match your flagpole configuration
 			flag_detector.monitorable = true
 			flag_detector.monitoring = true
 			
@@ -205,6 +207,7 @@ func _ready():
 				if "flagpole" in target_name or "flagpole" in parent_name or area.is_in_group("flagpole"):
 					print("[Level] Flagpole reached successfully! Switching scene...")
 					if next_scene_path and not next_scene_path.is_empty():
+						GameData.saved_parts.clear()
 						get_tree().change_scene_to_file(next_scene_path)
 					else:
 						print("[ERROR] Next scene path is not assigned on the Level Loader node!")
@@ -216,10 +219,11 @@ func _ready():
 			var p_type = p_data.get("type", "").to_lower()
 			
 			var is_wheel = (p_type == "wheel") or ("wheel" in scene_path)
+			var is_piston = (p_type == "piston") or ("piston" in scene_path)
 			var is_thruster = (p_type == "thruster") or ("thruster" in scene_path)
 			var is_watergun = (p_type == "watergun") or ("watergun" in scene_path)
 			
-			if not is_wheel:
+			if not is_wheel and not is_piston:
 				var duplicated_particles = null
 				var duplicated_water_cast = null
 				
@@ -264,6 +268,60 @@ func _ready():
 							"particles": duplicated_particles,
 							"water_cast": duplicated_water_cast
 						})
+			elif is_piston:
+				# Duplicate base body children to master chassis
+				for child in inst.get_children():
+					if child is CollisionShape2D or child is Sprite2D:
+						var global_pos = child.global_position
+						var global_rot = child.global_rotation
+						var dup = child.duplicate()
+						master_body.add_child(dup)
+						dup.global_position = global_pos
+						dup.global_rotation = global_rot
+						dup.position = master_body.to_local(global_pos)
+				
+				# Handle Piston Head (RigidBody2D) and GrooveJoint2D
+				var head_node = inst.get_node_or_null("Head")
+				var groove_joint = inst.get_node_or_null("GrooveJoint")
+				
+				if head_node:
+					var head_body = head_node.duplicate()
+					get_tree().current_scene.add_child(head_body)
+					head_body.global_position = head_node.global_position
+					head_body.rotation = head_node.global_rotation
+					
+					var head_mat = PhysicsMaterial.new()
+					head_mat.friction = 0.4
+					head_body.physics_material_override = head_mat
+					
+					if groove_joint:
+						var new_joint = groove_joint.duplicate()
+						get_tree().current_scene.add_child(new_joint)
+						new_joint.global_position = groove_joint.global_position
+						new_joint.rotation = groove_joint.global_rotation
+						new_joint.node_a = master_body.get_path()
+						new_joint.node_b = head_body.get_path()
+						new_joint.disable_collision = true
+						
+						var assigned_key = p_data.get("assigned_key", "")
+						if assigned_key != "":
+							if not piston_extend_groups.has(assigned_key):
+								piston_extend_groups[assigned_key] = []
+							_create_ui_button(assigned_key)
+							piston_extend_groups[assigned_key].append({
+								"groove_joint": new_joint,
+								"head_body": head_body
+							})
+							
+						var reverse_key = p_data.get("reverse_key", "")
+						if reverse_key != "":
+							if not piston_retract_groups.has(reverse_key):
+								piston_retract_groups[reverse_key] = []
+							_create_ui_button(reverse_key)
+							piston_retract_groups[reverse_key].append({
+								"groove_joint": new_joint,
+								"head_body": head_body
+							})
 			else:
 				for child in inst.get_children():
 					if child is RayCast2D or child.name == "WheelRolling" or child is PinJoint2D:
@@ -320,7 +378,7 @@ func _ready():
 	for inst in part_nodes:
 		inst.queue_free()
 
-func _physics_process(_delta: float):
+func _physics_process(delta: float):
 	active_thrust_indicators.clear()
 	
 	for key in active_keys.keys():
@@ -336,9 +394,7 @@ func _physics_process(_delta: float):
 						var local_pos = t_data["local_pos"]
 						var local_rot = t_data["local_rot"]
 						var rotated_local_pos = local_pos.rotated(body.global_rotation)
-						var current_global_pos = body.global_position + rotated_local_pos
-						var current_global_rot = body.global_rotation + local_rot
-						var direction = Vector2.UP.rotated(current_global_rot)
+						var direction = Vector2.UP.rotated(body.global_rotation + local_rot)
 						var force = direction * thruster_power
 						
 						body.apply_force(force, rotated_local_pos)
@@ -383,6 +439,24 @@ func _physics_process(_delta: float):
 				var rolling_body: RigidBody2D = w_data["rolling_body"]
 				if is_instance_valid(rolling_body):
 					rolling_body.apply_torque(-wheel_power)
+
+		if piston_extend_groups.has(key) and is_key_pressed:
+			for p_data in piston_extend_groups[key]:
+				var groove: GrooveJoint2D = p_data["groove_joint"]
+				var head: RigidBody2D = p_data["head_body"]
+				if is_instance_valid(groove) and is_instance_valid(head):
+					groove.initial_offset = move_toward(groove.initial_offset, 40.0, 50.0 * delta)
+					var push_dir = Vector2.UP.rotated(groove.global_rotation)
+					head.apply_central_force(push_dir * piston_power)
+
+		if piston_retract_groups.has(key) and is_key_pressed:
+			for p_data in piston_retract_groups[key]:
+				var groove: GrooveJoint2D = p_data["groove_joint"]
+				var head: RigidBody2D = p_data["head_body"]
+				if is_instance_valid(groove) and is_instance_valid(head):
+					groove.initial_offset = move_toward(groove.initial_offset, 0.0, 50.0 * delta)
+					var pull_dir = Vector2.DOWN.rotated(groove.global_rotation)
+					head.apply_central_force(pull_dir * piston_power)
 	
 	queue_redraw()
 

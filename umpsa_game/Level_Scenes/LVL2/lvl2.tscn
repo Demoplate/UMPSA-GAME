@@ -1,20 +1,20 @@
-[gd_scene format=3 uid="uid://duhv38vos12fq"]
+[gd_scene format=3 uid="uid://cnn3vk0sr3dm"]
 
-[ext_resource type="Script" uid="uid://cqwkoaku0mdy4" path="res://Game Scripts/Level Scripts/LVL1.gd" id="1_1d3y4"]
-[ext_resource type="Texture2D" uid="uid://dcby4g852q4ug" path="res://Textures/Icons/ReturnButton.png" id="2_63t0p"]
-[ext_resource type="PackedScene" uid="uid://d1856v3wsgwlr" path="res://Level_Scenes/tilemaps.tscn" id="2_v7bss"]
-[ext_resource type="Script" uid="uid://dtpui7vm1qmxg" path="res://Game Scripts/Tool Scripts/return_button.gd" id="3_1d3y4"]
-[ext_resource type="PackedScene" uid="uid://gubmt04cbrfw" path="res://Interactables/flagpole.tscn" id="5_63t0p"]
-[ext_resource type="PackedScene" uid="uid://mtgnjga5r5bx" path="res://uglysky.tscn" id="6_v7bss"]
+[ext_resource type="Script" uid="uid://cqwkoaku0mdy4" path="res://Game Scripts/Level Scripts/LVL1.gd" id="1_8603c"]
+[ext_resource type="PackedScene" uid="uid://d1856v3wsgwlr" path="res://Level_Scenes/tilemaps.tscn" id="2_jcfu6"]
+[ext_resource type="Texture2D" uid="uid://dcby4g852q4ug" path="res://Textures/Icons/ReturnButton.png" id="3_q2g87"]
+[ext_resource type="Script" uid="uid://dtpui7vm1qmxg" path="res://Game Scripts/Tool Scripts/return_button.gd" id="4_glmfj"]
+[ext_resource type="PackedScene" uid="uid://gubmt04cbrfw" path="res://Interactables/flagpole.tscn" id="5_bytis"]
+[ext_resource type="PackedScene" uid="uid://mtgnjga5r5bx" path="res://uglysky.tscn" id="6_8pyxw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(29, 611)
 
 [node name="Node2D" type="Node2D" unique_id=350980743]
-script = ExtResource("1_1d3y4")
+script = ExtResource("1_8603c")
 next_scene_path = "uid://beduqvgn83oig"
 
-[node name="Tilemaps" parent="." unique_id=1075706804 instance=ExtResource("2_v7bss")]
+[node name="Tilemaps" parent="." unique_id=1075706804 instance=ExtResource("2_jcfu6")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1690940548]
 
@@ -31,14 +31,14 @@ offset_top = 16.999998
 offset_right = 2016.0
 offset_bottom = 2009.0
 scale = Vector2(0.046807088, 0.046807088)
-icon = ExtResource("2_63t0p")
+icon = ExtResource("3_q2g87")
 flat = true
-script = ExtResource("3_1d3y4")
+script = ExtResource("4_glmfj")
 
-[node name="flagpole" parent="." unique_id=1894799789 instance=ExtResource("5_63t0p")]
+[node name="flagpole" parent="." unique_id=1894799789 instance=ExtResource("5_bytis")]
 position = Vector2(2131, 376)
 
-[node name="uglysky" parent="." unique_id=1318420628 instance=ExtResource("6_v7bss")]
+[node name="uglysky" parent="." unique_id=1318420628 instance=ExtResource("6_8pyxw")]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=71091962]
 

@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://by02c0ryutm15"]
+
+[ext_resource type="Texture2D" uid="uid://dr1xff7tgjw65" path="res://Textures/Piston/pistontopperpng.png" id="1_ubwft"]
+[ext_resource type="Texture2D" uid="uid://iptla24wwe10" path="res://Textures/Piston/pistonchassispng.png" id="2_jv1j2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0rgc3"]
+size = Vector2(20, 12.506266)
+
+[node name="Piston" type="RigidBody2D" unique_id=23413677]
+
+[node name="GrooveJoint2D" type="GrooveJoint2D" parent="." unique_id=1491158517]
+node_a = NodePath("..")
+node_b = NodePath("../Head")
+length = 650.0
+initial_offset = 1.0
+
+[node name="Head" type="RigidBody2D" parent="." unique_id=25171361]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head" unique_id=933655958]
+position = Vector2(0, 15)
+scale = Vector2(2.380547, 0.8443554)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="Head" unique_id=143726703]
+position = Vector2(-5.3290705e-14, 15)
+rotation = 1.5707964
+scale = Vector2(0.16577032, 0.12366722)
+texture = ExtResource("1_ubwft")
+
+[node name="RayCast2D_Bottom" type="RayCast2D" parent="Head" unique_id=1613138379]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, 60)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=682954528]
+position = Vector2(0, -8.97)
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_0rgc3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1186799116]
+position = Vector2(0, -9)
+rotation = 1.5707964
+scale = Vector2(0.10071102, 0.11947999)
+texture = ExtResource("2_jv1j2")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=165327079]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, -60)
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=1529775916]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(-60, 0)
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=602899468]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(60, 0)

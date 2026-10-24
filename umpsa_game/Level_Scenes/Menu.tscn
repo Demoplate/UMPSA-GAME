@@ -1,3 +1,40 @@
 [gd_scene format=3 uid="uid://bnyad5dm5aq10"]
 
-[node name="Node2D" type="Node2D" unique_id=840044061]
+[ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="1_yjgbq"]
+[ext_resource type="Script" uid="uid://cfteag3kyrgl" path="res://Game Scripts/scene_changer.gd" id="2_r384w"]
+
+[node name="Menu" type="Control" unique_id=1981263237]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="play" type="Button" parent="." unique_id=189731589]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 234.0
+offset_right = 240.0
+offset_bottom = 322.0
+theme_override_fonts/font = ExtResource("1_yjgbq")
+theme_override_font_sizes/font_size = 91
+text = "PLAY"
+script = ExtResource("2_r384w")
+next_scene_path = "uid://bbhbkad18h10n"
+
+[node name="settings" type="Button" parent="." unique_id=2092108473]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 355.0
+offset_right = 240.0
+offset_bottom = 443.0
+theme_override_fonts/font = ExtResource("1_yjgbq")
+theme_override_font_sizes/font_size = 91
+text = "SETTINGS"
+
+[node name="credits" type="Button" parent="." unique_id=294562658]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 472.0
+offset_right = 240.0
+offset_bottom = 560.0
+theme_override_fonts/font = ExtResource("1_yjgbq")
+theme_override_font_sizes/font_size = 91
+text = "CREDITS"

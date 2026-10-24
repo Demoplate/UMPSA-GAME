@@ -3,7 +3,7 @@ extends Area2D
 @export var is_thruster: bool = false
 @export var assigned_key: String = ""
 @export var reverse_key: String = "" # Added to support wheel reverse controls
-@export var grid_size: float = 32.0
+@export var grid_size: float = 16.0
 @export var is_selectable: bool = true
 @export var max_search_cells: int = 10
 

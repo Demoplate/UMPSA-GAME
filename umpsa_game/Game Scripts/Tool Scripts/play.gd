@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var target_scene_path: String = "res://Level_Scenes/lvl1.tscn"
+@export_file("*.tscn") var target_scene_path: String = "res://Level_Scenes/lvl1.tscn"
 @export var build_area_path: NodePath = NodePath("../BuildingArea")
 @export var warning_label_path: NodePath = NodePath("../CanvasLayer/UIRoot/WarningLabel")
 

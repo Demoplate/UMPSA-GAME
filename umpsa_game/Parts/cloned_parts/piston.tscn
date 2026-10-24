@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b2k5un75nkqb1"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_73ad1"]
+[ext_resource type="Texture2D" uid="uid://de2eqhow1pmeo" path="res://Textures/placeholderpistonimages.png" id="1_adu8f"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_73ad1"]
+
+[node name="piston" type="Area2D" unique_id=843252950]
+script = ExtResource("1_73ad1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1566412980]
+rotation = 1.5707964
+scale = Vector2(0.11888268, 0.116641626)
+texture = ExtResource("1_adu8f")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=534381793]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_73ad1")
