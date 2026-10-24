@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://74k1jpvd18q2" path="res://Parts/cloned_parts/command.tscn" id="3_apt01"]
 [ext_resource type="Texture2D" uid="uid://1xej11xpnx43" path="res://Textures/PartTextures/ElectronicControlUnit.png" id="4_mvpna"]
 [ext_resource type="PackedScene" uid="uid://b2k5un75nkqb1" path="res://Parts/cloned_parts/piston.tscn" id="5_ad0jn"]
-[ext_resource type="Texture2D" uid="uid://de2eqhow1pmeo" path="res://Textures/placeholderpistonimages.png" id="5_oydei"]
 [ext_resource type="PackedScene" uid="uid://dou1fqq3c1o02" path="res://Parts/cloned_parts/watergun.tscn" id="5_xlyyh"]
+[ext_resource type="Texture2D" uid="uid://b7ca4jrhngro7" path="res://Textures/Piston/PistonContract.png" id="6_ad0jn"]
 [ext_resource type="Texture2D" uid="uid://bvpa87tydke2k" path="res://Textures/PartTextures/waterdispenser.png" id="6_wspoc"]
 [ext_resource type="PackedScene" uid="uid://b8g6ajf44ul1f" path="res://Parts/cloned_parts/thruster.tscn" id="7_v8nca"]
 [ext_resource type="Texture2D" uid="uid://bu280rrm0cgxy" path="res://Textures/PartTextures/ThrusterBodyNoFire.png" id="8_btxjo"]
@@ -108,9 +108,9 @@ shape = SubResource("RectangleShape2D_7numd")
 
 [node name="Sprite2D" type="Sprite2D" parent="PistonCloner" unique_id=131807142]
 position = Vector2(2.0661156, 0)
-rotation = 1.5707964
-scale = Vector2(0.48775384, 0.4927808)
-texture = ExtResource("5_oydei")
+rotation = -3.1415927
+scale = Vector2(0.096344754, 0.097337715)
+texture = ExtResource("6_ad0jn")
 
 [node name="WatergunCloner" type="Area2D" parent="." unique_id=1921591995 node_paths=PackedStringArray("rotate_button")]
 position = Vector2(204, 164)
@@ -292,14 +292,14 @@ offset_bottom = -115.00001
 scale = Vector2(0.9009507, 1.0210657)
 script = ExtResource("23_81e65")
 
-[node name="Wheel_Piston" type="Control" parent="Properties" unique_id=1028014662]
+[node name="Wheel" type="Control" parent="Properties" unique_id=1028014662]
 anchors_preset = 0
 offset_left = 571.0233
 offset_top = 301.78436
 offset_right = 611.0233
 offset_bottom = 341.78436
 
-[node name="Forward" type="Label" parent="Properties/Wheel_Piston" unique_id=870127814]
+[node name="Forward" type="Label" parent="Properties/Wheel" unique_id=870127814]
 layout_mode = 0
 offset_left = 2.9586627
 offset_top = -178.50642
@@ -309,7 +309,7 @@ text = "Assign
 forward key:"
 label_settings = SubResource("LabelSettings_yf5fn")
 
-[node name="Backward" type="Label" parent="Properties/Wheel_Piston" unique_id=88652943]
+[node name="Backward" type="Label" parent="Properties/Wheel" unique_id=88652943]
 layout_mode = 0
 offset_left = 3.9448938
 offset_top = -65.090744
@@ -319,7 +319,7 @@ text = "Assign
 reverse key:"
 label_settings = SubResource("LabelSettings_yf5fn")
 
-[node name="Button2" type="Button" parent="Properties/Wheel_Piston" unique_id=2100661217]
+[node name="Button2" type="Button" parent="Properties/Wheel" unique_id=2100661217]
 layout_mode = 0
 offset_left = 4.931117
 offset_top = 49.311165
@@ -327,7 +327,7 @@ offset_right = 37.96609
 offset_bottom = 80.311165
 text = "->"
 
-[node name="Forwards" type="LineEdit" parent="Properties/Wheel_Piston" unique_id=1701230825]
+[node name="Forwards" type="LineEdit" parent="Properties/Wheel" unique_id=1701230825]
 layout_mode = 0
 offset_left = 3.9448934
 offset_top = -95.66367
@@ -335,7 +335,58 @@ offset_right = 72.44489
 offset_bottom = -64.66367
 max_length = 1
 
-[node name="Reverse" type="LineEdit" parent="Properties/Wheel_Piston" unique_id=1969909667]
+[node name="Reverse" type="LineEdit" parent="Properties/Wheel" unique_id=1969909667]
+layout_mode = 0
+offset_left = 6.9035616
+offset_top = 11.834671
+offset_right = 75.403564
+offset_bottom = 42.83467
+max_length = 1
+
+[node name="Piston" type="Control" parent="Properties" unique_id=228583439]
+anchors_preset = 0
+offset_left = 571.0233
+offset_top = 301.78436
+offset_right = 611.0233
+offset_bottom = 341.78436
+
+[node name="Extend2" type="Label" parent="Properties/Piston" unique_id=1086073034]
+layout_mode = 0
+offset_left = 2.9586627
+offset_top = -178.50642
+offset_right = 241.95866
+offset_bottom = -145.50642
+text = "Assign
+extend key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Retract2" type="Label" parent="Properties/Piston" unique_id=13589278]
+layout_mode = 0
+offset_left = 3.9448938
+offset_top = -65.090744
+offset_right = 263.9449
+offset_bottom = 3.909256
+text = "Assign 
+retract key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button2" type="Button" parent="Properties/Piston" unique_id=1091029612]
+layout_mode = 0
+offset_left = 4.931117
+offset_top = 49.311165
+offset_right = 37.96609
+offset_bottom = 80.311165
+text = "->"
+
+[node name="Extend" type="LineEdit" parent="Properties/Piston" unique_id=998533785]
+layout_mode = 0
+offset_left = 3.9448934
+offset_top = -95.66367
+offset_right = 72.44489
+offset_bottom = -64.66367
+max_length = 1
+
+[node name="Retract" type="LineEdit" parent="Properties/Piston" unique_id=1196811289]
 layout_mode = 0
 offset_left = 6.9035616
 offset_top = 11.834671

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://iptla24wwe10"
-path="res://.godot/imported/pistonchassispng.png-db0eb7008292c91694a9869d9f0a186c.ctex"
+uid="uid://ctboevw4rf2hu"
+path="res://.godot/imported/Body.png-f0a024861b742e9a2e7d419a0c07ec0d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Piston/pistonchassispng.png"
-dest_files=["res://.godot/imported/pistonchassispng.png-db0eb7008292c91694a9869d9f0a186c.ctex"]
+source_file="res://Textures/Piston/Body.png"
+dest_files=["res://.godot/imported/Body.png-f0a024861b742e9a2e7d419a0c07ec0d.ctex"]
 
 [params]
 

@@ -44,6 +44,16 @@ func transition_to_new_scene():
 					"assigned_key": key_assigned,
 					"reverse_key": rev_key_assigned
 				})
+			elif "piston" in current_path.to_lower():
+				var rigid_piston_path = current_path.replace("cloned_parts", "rigid_blocks").replace("piston.tscn", "rigid_piston.tscn")
+				GameData.saved_parts.append({
+					"type": "piston",
+					"scene_path": rigid_piston_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation,
+					"assigned_key": key_assigned,
+					"reverse_key": rev_key_assigned
+				})
 			elif "thruster" in current_path.to_lower():
 				var rigid_thruster_path = current_path.replace("cloned_parts", "rigid_blocks").replace("thruster.tscn", "rigid_thruster.tscn")
 				GameData.saved_parts.append({

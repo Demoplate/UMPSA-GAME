@@ -13,6 +13,11 @@ size = Vector2(29, 611)
 [node name="Node2D" type="Node2D" unique_id=350980743]
 script = ExtResource("1_wenmv")
 next_scene_path = "uid://cnn3vk0sr3dm"
+piston_max_extension = 150.0
+piston_stiffness = 520.0
+piston_flip = true
+piston_rod_width = 5.0
+piston_rod_color = Color(0.18803713, 0.18787664, 0.21619627, 1)
 
 [node name="Tilemaps" parent="." unique_id=1075706804 instance=ExtResource("2_6xpwe")]
 

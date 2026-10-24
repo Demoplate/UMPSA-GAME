@@ -3,325 +3,277 @@ extends Node2D
 @export var grid_size: float = 16.0
 @export var thruster_power: float = 2000.0
 @export var wheel_power: float = 20000.0
-@export var piston_power: float = 20000.0
-
-# Export the next scene path directly in the level loader Inspector
 @export_file("*.tscn") var next_scene_path: String
 
-# Unified dictionaries for key inputs and groups
+@export_group("Piston")
+@export var piston_power: float = 20000.0
+@export_range(1.0, 500.0, 1.0, "or_greater") var piston_max_extension: float = 40.0
+@export_range(1.0, 500.0, 1.0, "or_greater") var piston_speed: float = 60.0
+@export_range(1.0, 1000.0, 1.0, "or_greater") var piston_stiffness: float = 200.0
+@export_range(0.0, 200.0, 0.5, "or_greater") var piston_damping: float = 25.0
+@export_range(2.0, 100.0, 1.0, "or_greater") var piston_guide_spacing: float = 10.0
+@export_range(0.0, 5000.0, 10.0, "or_greater") var piston_rotation_stiffness: float = 400.0
+@export_range(0.0, 500.0, 1.0, "or_greater") var piston_rotation_damping: float = 40.0
+@export var piston_flip: bool = false
+@export_range(0.0, 50.0, 0.5, "or_greater") var piston_rod_width: float = 6.0
+@export var piston_rod_color: Color = Color(0.6, 0.6, 0.65)
+@export_group("")
+
 var active_keys = {}
+var key_map = {}
+var ui_buttons = {}
 var thruster_groups = {}
 var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
 var watergun_groups = {}
 var piston_extend_groups = {}
 var piston_retract_groups = {}
+var pistons = []
 
-var active_thrust_indicators = []
-var canvas_layer: CanvasLayer
-var ui_root: Control = null
-
-# State tracker for UI layout editing
+var ui_layer: CanvasLayer
+var ui_root: Control
+var toggle_edit_btn: Button
 var is_ui_unlocked: bool = false
-var toggle_edit_btn: Button = null
+var button_count: int = 0
 
 func _ready():
-	if GameData.saved_parts.is_empty():
-		print("[BUILD] Warning: GameData.saved_parts is empty!")
-		return
-		
-	# Setup UI Canvas Layer and full-rect wrapper control for correct layout scaling
-	canvas_layer = get_node_or_null("CanvasLayer")
-	if not canvas_layer:
-		canvas_layer = CanvasLayer.new()
-		canvas_layer.name = "CanvasLayer"
-		add_child(canvas_layer)
-		
-	ui_root = canvas_layer.get_node_or_null("UIRoot")
-	if not ui_root:
-		ui_root = Control.new()
-		ui_root.name = "UIRoot"
-		ui_root.set_anchors_preset(Control.PRESET_FULL_RECT)
-		ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		canvas_layer.add_child(ui_root)
-		
-		# GridContainer for organized vehicle controls at the bottom right
-		var grid = GridContainer.new()
-		grid.name = "ButtonContainer"
-		grid.columns = 2
-		grid.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		grid.offset_left = -240
-		grid.offset_top = -300
-		grid.offset_right = -20
-		grid.offset_bottom = -20
-		grid.add_theme_constant_override("h_separation", 10)
-		grid.add_theme_constant_override("v_separation", 10)
-		ui_root.add_child(grid)
-		
-		# Toggle edit button pinned strictly to the TOP RIGHT
-		toggle_edit_btn = Button.new()
-		toggle_edit_btn.name = "ToggleEditButton"
-		toggle_edit_btn.text = "Unlock UI"
-		toggle_edit_btn.custom_minimum_size = Vector2(110, 45)
-		toggle_edit_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-		toggle_edit_btn.offset_left = -140
-		toggle_edit_btn.offset_top = 20
-		toggle_edit_btn.offset_right = -20
-		toggle_edit_btn.offset_bottom = 65
-		ui_root.add_child(toggle_edit_btn)
-		
-		toggle_edit_btn.pressed.connect(_on_toggle_edit_pressed)
-	else:
-		toggle_edit_btn = ui_root.get_node_or_null("ToggleEditButton")
-		if toggle_edit_btn and not toggle_edit_btn.pressed.is_connected(_on_toggle_edit_pressed):
-			toggle_edit_btn.pressed.connect(_on_toggle_edit_pressed)
+	_build_ui()
 
-	var all_parts = GameData.saved_parts
+	if GameData.saved_parts.is_empty():
+		return
+
 	var part_nodes = []
 	var data_to_node = {}
-	var node_to_scan = {}
-	
-	# 1. Instantiate all saved parts temporarily
-	for p in all_parts:
+
+	for p in GameData.saved_parts:
 		var scene = load(p["scene_path"])
 		if scene:
 			var instance = scene.instantiate()
 			get_tree().current_scene.add_child(instance)
 			instance.global_position = p["global_position"]
 			instance.rotation = p["rotation"]
-			
 			part_nodes.append(instance)
 			data_to_node[instance] = p
-			node_to_scan[instance] = instance
 
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 
-	# 2. Group parts into islands
+	var head_to_piston = {}
+	var piston_to_head = {}
+	for inst in part_nodes:
+		if _is_piston(data_to_node[inst]):
+			var head = inst.get_node_or_null("Head")
+			if head:
+				head_to_piston[head] = inst
+				piston_to_head[inst] = head
+
+	var all_nodes = part_nodes.duplicate()
+	all_nodes.append_array(head_to_piston.keys())
+
 	var islands = []
-	var part_to_island = {}
-	
-	for node in part_nodes:
+	var node_to_island = {}
+
+	for node in all_nodes:
 		var island = [node]
 		islands.append(island)
-		part_to_island[node] = island
+		node_to_island[node] = island
 
 	for curr_instance in part_nodes:
-		var scan_node = node_to_scan[curr_instance]
 		var p_data = data_to_node[curr_instance]
 		var scene_path = p_data.get("scene_path", "").to_lower()
-		
-		var raycasts = []
-		if scan_node is Node:
-			for child in scan_node.find_children("*", "RayCast2D", true, false):
-				raycasts.append(child)
-		
+		var own_head = piston_to_head.get(curr_instance)
+
+		var ray_entries = []
+		for rc in curr_instance.find_children("*", "RayCast2D", true, false):
+			var ray_owner = curr_instance
+			if own_head and own_head.is_ancestor_of(rc):
+				ray_owner = own_head
+			ray_entries.append([rc, ray_owner])
+
 		if "thruster" in scene_path:
-			raycasts = raycasts.filter(func(rc): return rc.name == "Raycast2D_Top")
-		
-		var colliding_rcs = []
-		for rc in raycasts:
+			ray_entries = ray_entries.filter(func(e): return e[0].name == "Raycast2D_Top")
+
+		var colliding = []
+		for e in ray_entries:
+			var rc = e[0]
 			if rc.name == "water_cast":
 				continue
 			rc.collision_mask = 2
 			rc.add_exception(curr_instance)
+			if own_head:
+				rc.add_exception(own_head)
 			rc.force_raycast_update()
-			
 			if rc.is_colliding():
-				colliding_rcs.append(rc)
-		
-		if "wheel" in scene_path or "piston" in scene_path:
+				colliding.append(e)
+
+		if "wheel" in scene_path:
 			var has_bottom = false
 			var has_others = false
-			for rc in colliding_rcs:
-				if rc.name == "Raycast2D_Bottom":
+			for e in colliding:
+				if e[0].name == "Raycast2D_Bottom":
 					has_bottom = true
 				else:
 					has_others = true
-			
 			if has_bottom and not has_others:
-				colliding_rcs.clear()
-		
-		for rc in colliding_rcs:
-			var collider = rc.get_collider()
-			var hit_instance = _find_part_instance_from_collider(collider, part_nodes)
-			
-			if hit_instance and hit_instance != curr_instance:
-				var island_a = part_to_island[curr_instance]
-				var island_b = part_to_island[hit_instance]
-				
-				if island_a != island_b:
+				colliding.clear()
+
+		for e in colliding:
+			var hit = _find_node_from_collider(e[0].get_collider(), all_nodes)
+			var ray_owner = e[1]
+			if hit and hit != ray_owner:
+				var island_a = node_to_island[ray_owner]
+				var island_b = node_to_island[hit]
+				if island_a != island_b and not _would_lock_piston(island_a, island_b, head_to_piston):
 					for node in island_b:
 						island_a.append(node)
-						part_to_island[node] = island_a
+						node_to_island[node] = island_a
 					islands.erase(island_b)
 
-	# 3. Build unified RigidBody2D chassis islands
+	var node_to_body = {}
+
 	for island in islands:
-		var center_pos = Vector2.ZERO
-		for inst in island:
-			center_pos += inst.global_position
-		center_pos /= island.size()
-		
-		var master_body = RigidBody2D.new()
-		get_tree().current_scene.add_child(master_body)
-		master_body.global_position = center_pos
-		
+		var first_head = null
+		for node in island:
+			if head_to_piston.has(node):
+				first_head = node
+				break
+
+		var master_body
+		if first_head:
+			master_body = first_head.duplicate()
+			master_body.can_sleep = false
+			get_tree().current_scene.add_child(master_body)
+			master_body.global_transform = first_head.global_transform
+		else:
+			var center_pos = Vector2.ZERO
+			for inst in island:
+				center_pos += inst.global_position
+			center_pos /= island.size()
+			master_body = RigidBody2D.new()
+			master_body.can_sleep = false
+			get_tree().current_scene.add_child(master_body)
+			master_body.global_position = center_pos
+
 		var chassis_mat = PhysicsMaterial.new()
 		chassis_mat.friction = 0.4
 		master_body.physics_material_override = chassis_mat
-		
+
 		var has_command = false
 		for inst in island:
+			node_to_body[inst] = master_body
+			if head_to_piston.has(inst):
+				continue
 			var p_data = data_to_node[inst]
 			var scene_path = p_data.get("scene_path", "").to_lower()
 			var p_type = p_data.get("type", "").to_lower()
-			
-			if p_type == "command" or "command" in scene_path or "command_block" in scene_path or inst.name.to_lower().contains("command"):
+			if p_type == "command" or "command" in scene_path or inst.name.to_lower().contains("command"):
 				has_command = true
-				break
-				
+
 		if has_command:
 			var camera = Camera2D.new()
 			master_body.add_child(camera)
 			camera.make_current()
-			
-			# Programmatically attach an Area2D Flagpole Detector directly to the master body!
+
 			var flag_detector = Area2D.new()
 			flag_detector.name = "ProgrammaticFlagpoleDetector"
 			master_body.add_child(flag_detector)
-			
+
 			var detector_shape = CollisionShape2D.new()
 			var rect_shape = RectangleShape2D.new()
 			rect_shape.size = Vector2(40, 40)
 			detector_shape.shape = rect_shape
 			flag_detector.add_child(detector_shape)
-			
+
 			flag_detector.monitorable = true
 			flag_detector.monitoring = true
-			
+
 			flag_detector.area_entered.connect(func(area):
 				var target_name = area.name.to_lower()
 				var parent_name = area.get_parent().name.to_lower() if area.get_parent() else ""
-				
 				if "flagpole" in target_name or "flagpole" in parent_name or area.is_in_group("flagpole"):
-					print("[Level] Flagpole reached successfully! Switching scene...")
 					if next_scene_path and not next_scene_path.is_empty():
 						GameData.saved_parts.clear()
 						get_tree().change_scene_to_file(next_scene_path)
 					else:
 						print("[ERROR] Next scene path is not assigned on the Level Loader node!")
 			)
-		
+
 		for inst in island:
+			if head_to_piston.has(inst):
+				if inst != first_head:
+					for child in inst.get_children():
+						if child is CollisionShape2D or child is Sprite2D:
+							var global_pos = child.global_position
+							var global_rot = child.global_rotation
+							var dup = child.duplicate()
+							master_body.add_child(dup)
+							dup.global_position = global_pos
+							dup.global_rotation = global_rot
+				continue
+
 			var p_data = data_to_node[inst]
 			var scene_path = p_data.get("scene_path", "").to_lower()
 			var p_type = p_data.get("type", "").to_lower()
-			
+
 			var is_wheel = (p_type == "wheel") or ("wheel" in scene_path)
 			var is_piston = (p_type == "piston") or ("piston" in scene_path)
 			var is_thruster = (p_type == "thruster") or ("thruster" in scene_path)
 			var is_watergun = (p_type == "watergun") or ("watergun" in scene_path)
-			
+
+			var assigned_key = _get_key(p_data, "assigned_key")
+			var reverse_key = _get_key(p_data, "reverse_key")
+
 			if not is_wheel and not is_piston:
 				var duplicated_particles = null
 				var duplicated_water_cast = null
-				
+
 				for child in inst.get_children():
 					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D:
 						var global_pos = child.global_position
 						var global_rot = child.global_rotation
-						
 						var dup = child.duplicate()
 						master_body.add_child(dup)
 						dup.global_position = global_pos
 						dup.global_rotation = global_rot
-						dup.position = master_body.to_local(global_pos)
-						
+
 						if (is_thruster or is_watergun) and dup is CPUParticles2D:
 							duplicated_particles = dup
-							
+
 						if is_watergun and dup is RayCast2D and dup.name == "water_cast":
 							dup.collision_mask = 1
 							duplicated_water_cast = dup
-				
-				if is_thruster:
-					var assigned_key = p_data.get("assigned_key", "")
-					if assigned_key != "":
-						if not thruster_groups.has(assigned_key):
-							thruster_groups[assigned_key] = []
-						_create_ui_button(assigned_key)
-						thruster_groups[assigned_key].append({
-							"body": master_body,
-							"local_pos": master_body.to_local(inst.global_position),
-							"local_rot": inst.global_rotation - master_body.global_rotation,
-							"particles": duplicated_particles
-						})
-						
-				if is_watergun:
-					var assigned_key = p_data.get("assigned_key", "")
-					if assigned_key != "":
-						if not watergun_groups.has(assigned_key):
-							watergun_groups[assigned_key] = []
-						_create_ui_button(assigned_key)
-						watergun_groups[assigned_key].append({
-							"particles": duplicated_particles,
-							"water_cast": duplicated_water_cast
-						})
+
+				if is_thruster and assigned_key != "":
+					if not thruster_groups.has(assigned_key):
+						thruster_groups[assigned_key] = []
+					_create_ui_button(assigned_key)
+					thruster_groups[assigned_key].append({
+						"body": master_body,
+						"local_pos": master_body.to_local(inst.global_position),
+						"local_rot": inst.global_rotation - master_body.global_rotation,
+						"particles": duplicated_particles
+					})
+
+				if is_watergun and assigned_key != "":
+					if not watergun_groups.has(assigned_key):
+						watergun_groups[assigned_key] = []
+					_create_ui_button(assigned_key)
+					watergun_groups[assigned_key].append({
+						"particles": duplicated_particles,
+						"water_cast": duplicated_water_cast
+					})
+
 			elif is_piston:
-				# Duplicate base body children to master chassis
 				for child in inst.get_children():
-					if child is CollisionShape2D or child is Sprite2D:
-						var global_pos = child.global_position
-						var global_rot = child.global_rotation
-						var dup = child.duplicate()
-						master_body.add_child(dup)
-						dup.global_position = global_pos
-						dup.global_rotation = global_rot
-						dup.position = master_body.to_local(global_pos)
-				
-				# Handle Piston Head (RigidBody2D) and GrooveJoint2D
-				var head_node = inst.get_node_or_null("Head")
-				var groove_joint = inst.get_node_or_null("GrooveJoint")
-				
-				if head_node:
-					var head_body = head_node.duplicate()
-					get_tree().current_scene.add_child(head_body)
-					head_body.global_position = head_node.global_position
-					head_body.rotation = head_node.global_rotation
-					
-					var head_mat = PhysicsMaterial.new()
-					head_mat.friction = 0.4
-					head_body.physics_material_override = head_mat
-					
-					if groove_joint:
-						var new_joint = groove_joint.duplicate()
-						get_tree().current_scene.add_child(new_joint)
-						new_joint.global_position = groove_joint.global_position
-						new_joint.rotation = groove_joint.global_rotation
-						new_joint.node_a = master_body.get_path()
-						new_joint.node_b = head_body.get_path()
-						new_joint.disable_collision = true
-						
-						var assigned_key = p_data.get("assigned_key", "")
-						if assigned_key != "":
-							if not piston_extend_groups.has(assigned_key):
-								piston_extend_groups[assigned_key] = []
-							_create_ui_button(assigned_key)
-							piston_extend_groups[assigned_key].append({
-								"groove_joint": new_joint,
-								"head_body": head_body
-							})
-							
-						var reverse_key = p_data.get("reverse_key", "")
-						if reverse_key != "":
-							if not piston_retract_groups.has(reverse_key):
-								piston_retract_groups[reverse_key] = []
-							_create_ui_button(reverse_key)
-							piston_retract_groups[reverse_key].append({
-								"groove_joint": new_joint,
-								"head_body": head_body
-							})
+					if child.name != "Head" and child.name != "GrooveJoint":
+						if child is CollisionShape2D or child is Sprite2D:
+							var global_pos = child.global_position
+							var global_rot = child.global_rotation
+							var dup = child.duplicate()
+							master_body.add_child(dup)
+							dup.global_position = global_pos
+							dup.global_rotation = global_rot
+
 			else:
 				for child in inst.get_children():
 					if child is RayCast2D or child.name == "WheelRolling" or child is PinJoint2D:
@@ -329,136 +281,293 @@ func _ready():
 					if child is CollisionShape2D or child is Sprite2D or child is Node2D:
 						var global_pos = child.global_position
 						var global_rot = child.global_rotation
-						
 						var dup = child.duplicate()
 						master_body.add_child(dup)
 						dup.global_position = global_pos
 						dup.global_rotation = global_rot
-						dup.position = master_body.to_local(global_pos)
-				
+
 				var wheel_rolling = inst.get_node_or_null("WheelRolling")
 				var pin_joint = inst.get_node_or_null("PinJoint2D")
-				
+
 				if wheel_rolling:
 					var rolling_body = wheel_rolling.duplicate()
+					rolling_body.can_sleep = false
 					get_tree().current_scene.add_child(rolling_body)
-					rolling_body.global_position = wheel_rolling.global_position
-					rolling_body.rotation = wheel_rolling.global_rotation
-					
+					rolling_body.global_transform = wheel_rolling.global_transform
+
 					var wheel_mat = PhysicsMaterial.new()
 					wheel_mat.friction = 0.8
 					rolling_body.physics_material_override = wheel_mat
-					
+
 					if pin_joint:
 						var new_pin = pin_joint.duplicate()
+						new_pin.disable_collision = true
 						get_tree().current_scene.add_child(new_pin)
 						new_pin.global_position = pin_joint.global_position
 						new_pin.node_a = master_body.get_path()
 						new_pin.node_b = rolling_body.get_path()
-						new_pin.disable_collision = true
-					
-					var assigned_key = p_data.get("assigned_key", "")
+
 					if assigned_key != "":
 						if not wheel_forward_groups.has(assigned_key):
 							wheel_forward_groups[assigned_key] = []
 						_create_ui_button(assigned_key)
-						wheel_forward_groups[assigned_key].append({
-							"rolling_body": rolling_body
-						})
+						wheel_forward_groups[assigned_key].append({"rolling_body": rolling_body})
 
-					var reverse_key = p_data.get("reverse_key", "")
 					if reverse_key != "":
 						if not wheel_reverse_groups.has(reverse_key):
 							wheel_reverse_groups[reverse_key] = []
 						_create_ui_button(reverse_key)
-						wheel_reverse_groups[reverse_key].append({
-							"rolling_body": rolling_body
-						})
+						wheel_reverse_groups[reverse_key].append({"rolling_body": rolling_body})
+
+	for piston_inst in piston_to_head.keys():
+		var head_node = piston_to_head[piston_inst]
+		var chassis_body = node_to_body[piston_inst]
+		var head_body = node_to_body[head_node]
+		if chassis_body == head_body:
+			continue
+
+		var p_data = data_to_node[piston_inst]
+		var assigned_key = _get_key(p_data, "assigned_key")
+		var reverse_key = _get_key(p_data, "reverse_key")
+
+		var axis = Vector2.UP.rotated(piston_inst.global_rotation)
+		if piston_flip:
+			axis = -axis
+
+		var side = axis.orthogonal() * piston_guide_spacing
+		var joint_rot = axis.angle() - PI / 2.0
+		var anchor_world = head_node.global_position
+
+		for offset in [Vector2.ZERO, side]:
+			var joint = GrooveJoint2D.new()
+			joint.length = piston_max_extension
+			joint.initial_offset = 0.0
+			joint.disable_collision = true
+			get_tree().current_scene.add_child(joint)
+			joint.global_position = anchor_world + offset
+			joint.global_rotation = joint_rot
+			joint.node_a = chassis_body.get_path()
+			joint.node_b = head_body.get_path()
+
+		var rod = Line2D.new()
+		rod.width = piston_rod_width
+		rod.default_color = piston_rod_color
+		rod.begin_cap_mode = Line2D.LINE_CAP_ROUND
+		rod.end_cap_mode = Line2D.LINE_CAP_ROUND
+		rod.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
+		get_tree().current_scene.add_child(rod)
+		get_tree().current_scene.move_child(rod, mini(chassis_body.get_index(), head_body.get_index()))
+
+		var piston_data = {
+			"head": head_body,
+			"chassis": chassis_body,
+			"rod": rod,
+			"local_anchor": chassis_body.to_local(anchor_world),
+			"head_anchor": head_body.to_local(anchor_world),
+			"local_axis": chassis_body.global_transform.affine_inverse().basis_xform(axis).normalized(),
+			"rot_offset": head_body.global_rotation - chassis_body.global_rotation,
+			"target": 0.0
+		}
+		pistons.append(piston_data)
+
+		if assigned_key != "":
+			if not piston_extend_groups.has(assigned_key):
+				piston_extend_groups[assigned_key] = []
+			_create_ui_button(assigned_key)
+			piston_extend_groups[assigned_key].append(piston_data)
+
+		if reverse_key != "":
+			if not piston_retract_groups.has(reverse_key):
+				piston_retract_groups[reverse_key] = []
+			_create_ui_button(reverse_key)
+			piston_retract_groups[reverse_key].append(piston_data)
 
 	for inst in part_nodes:
 		inst.queue_free()
 
+func _is_piston(p_data) -> bool:
+	var scene_path = p_data.get("scene_path", "").to_lower()
+	var p_type = p_data.get("type", "").to_lower()
+	return p_type == "piston" or "piston" in scene_path
+
+func _would_lock_piston(island_a: Array, island_b: Array, head_to_piston: Dictionary) -> bool:
+	for node in island_a:
+		if head_to_piston.has(node) and head_to_piston[node] in island_b:
+			return true
+	for node in island_b:
+		if head_to_piston.has(node) and head_to_piston[node] in island_a:
+			return true
+	return false
+
+func _get_key(p_data, field: String) -> String:
+	var v = p_data.get(field, "")
+	if v == null:
+		return ""
+	if typeof(v) == TYPE_INT:
+		return OS.get_keycode_string(v) if v != 0 else ""
+	return str(v)
+
+func _build_ui():
+	ui_layer = CanvasLayer.new()
+	ui_layer.name = "VehicleUILayer"
+	ui_layer.layer = 128
+	add_child(ui_layer)
+
+	ui_root = Control.new()
+	ui_root.name = "VehicleUIRoot"
+	ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui_layer.add_child(ui_root)
+	ui_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	toggle_edit_btn = Button.new()
+	toggle_edit_btn.name = "ToggleEditButton"
+	toggle_edit_btn.text = "Unlock UI"
+	toggle_edit_btn.focus_mode = Control.FOCUS_NONE
+	toggle_edit_btn.custom_minimum_size = Vector2(110, 45)
+	ui_root.add_child(toggle_edit_btn)
+	toggle_edit_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	toggle_edit_btn.offset_left = -140
+	toggle_edit_btn.offset_top = 20
+	toggle_edit_btn.offset_right = -20
+	toggle_edit_btn.offset_bottom = 65
+	toggle_edit_btn.pressed.connect(_on_toggle_edit_pressed)
+
+func _create_ui_button(key: String):
+	if key == "" or active_keys.has(key):
+		return
+
+	active_keys[key] = false
+	key_map[key.to_upper()] = key
+
+	var btn = DraggableButton.new()
+	btn.loader = self
+	btn.text = key
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.custom_minimum_size = Vector2(100, 50)
+	btn.size = Vector2(100, 50)
+	ui_root.add_child(btn)
+	ui_buttons[key] = btn
+
+	var vp = get_viewport().get_visible_rect().size
+	var col = button_count % 2
+	var row = int(button_count / 2)
+	btn.position = Vector2(vp.x - 120 - col * 110, vp.y - 70 - row * 60)
+	button_count += 1
+
+	btn.button_down.connect(func():
+		if not is_ui_unlocked:
+			active_keys[key] = true
+	)
+	btn.button_up.connect(func():
+		if not is_ui_unlocked:
+			active_keys[key] = false
+	)
+
+func _unhandled_input(event: InputEvent):
+	if is_ui_unlocked:
+		return
+	if event is InputEventKey and not event.echo:
+		var key_name = OS.get_keycode_string(event.keycode).to_upper()
+		if key_map.has(key_name):
+			var key = key_map[key_name]
+			active_keys[key] = event.pressed
+			if ui_buttons.has(key):
+				ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if event.pressed else Color.WHITE
+
 func _physics_process(delta: float):
-	active_thrust_indicators.clear()
-	
 	for key in active_keys.keys():
 		var is_key_pressed = active_keys[key]
-		
+
 		if thruster_groups.has(key):
 			for t_data in thruster_groups[key]:
 				var body: RigidBody2D = t_data["body"]
 				var particles: CPUParticles2D = t_data.get("particles")
-				
 				if is_instance_valid(body):
 					if is_key_pressed:
-						var local_pos = t_data["local_pos"]
-						var local_rot = t_data["local_rot"]
-						var rotated_local_pos = local_pos.rotated(body.global_rotation)
-						var direction = Vector2.UP.rotated(body.global_rotation + local_rot)
-						var force = direction * thruster_power
-						
-						body.apply_force(force, rotated_local_pos)
-						
-						if is_instance_valid(particles):
-							particles.emitting = true
-					else:
-						if is_instance_valid(particles):
-							particles.emitting = false
+						var rotated_local_pos = t_data["local_pos"].rotated(body.global_rotation)
+						var direction = Vector2.UP.rotated(body.global_rotation + t_data["local_rot"])
+						body.apply_force(direction * thruster_power, rotated_local_pos)
+					if is_instance_valid(particles):
+						particles.emitting = is_key_pressed
 
 		if watergun_groups.has(key):
 			for w_data in watergun_groups[key]:
 				var particles: CPUParticles2D = w_data.get("particles")
 				var water_cast: RayCast2D = w_data.get("water_cast")
-				
+
 				if is_instance_valid(particles):
 					particles.emitting = is_key_pressed
-					
+
 				if is_instance_valid(water_cast):
 					water_cast.enabled = is_key_pressed
 					if is_key_pressed:
 						water_cast.force_raycast_update()
-					if is_key_pressed and water_cast.is_colliding():
-						var collider = water_cast.get_collider()
-						if collider:
-							var fire_node: Node = null
-							if collider.name == "Fire" or (collider.has_meta("is_fire") and collider.get_meta("is_fire")):
-								fire_node = collider
-							elif collider.get_parent() and collider.get_parent().name == "Fire":
-								fire_node = collider.get_parent()
-							if fire_node:
-								_fade_out_fire(fire_node)
+						if water_cast.is_colliding():
+							var collider = water_cast.get_collider()
+							if collider:
+								var fire_node: Node = null
+								if collider.name == "Fire" or (collider.has_meta("is_fire") and collider.get_meta("is_fire")):
+									fire_node = collider
+								elif collider.get_parent() and collider.get_parent().name == "Fire":
+									fire_node = collider.get_parent()
+								if fire_node:
+									_fade_out_fire(fire_node)
 
-		if wheel_forward_groups.has(key) and is_key_pressed:
-			for w_data in wheel_forward_groups[key]:
-				var rolling_body: RigidBody2D = w_data["rolling_body"]
-				if is_instance_valid(rolling_body):
-					rolling_body.apply_torque(wheel_power)
+		if is_key_pressed:
+			if wheel_forward_groups.has(key):
+				for w_data in wheel_forward_groups[key]:
+					if is_instance_valid(w_data["rolling_body"]):
+						w_data["rolling_body"].apply_torque(wheel_power)
 
-		if wheel_reverse_groups.has(key) and is_key_pressed:
-			for w_data in wheel_reverse_groups[key]:
-				var rolling_body: RigidBody2D = w_data["rolling_body"]
-				if is_instance_valid(rolling_body):
-					rolling_body.apply_torque(-wheel_power)
+			if wheel_reverse_groups.has(key):
+				for w_data in wheel_reverse_groups[key]:
+					if is_instance_valid(w_data["rolling_body"]):
+						w_data["rolling_body"].apply_torque(-wheel_power)
 
-		if piston_extend_groups.has(key) and is_key_pressed:
-			for p_data in piston_extend_groups[key]:
-				var groove: GrooveJoint2D = p_data["groove_joint"]
-				var head: RigidBody2D = p_data["head_body"]
-				if is_instance_valid(groove) and is_instance_valid(head):
-					groove.initial_offset = move_toward(groove.initial_offset, 40.0, 50.0 * delta)
-					var push_dir = Vector2.UP.rotated(groove.global_rotation)
-					head.apply_central_force(push_dir * piston_power)
+			if piston_extend_groups.has(key):
+				for p_data in piston_extend_groups[key]:
+					p_data["target"] = minf(p_data["target"] + piston_speed * delta, piston_max_extension)
 
-		if piston_retract_groups.has(key) and is_key_pressed:
-			for p_data in piston_retract_groups[key]:
-				var groove: GrooveJoint2D = p_data["groove_joint"]
-				var head: RigidBody2D = p_data["head_body"]
-				if is_instance_valid(groove) and is_instance_valid(head):
-					groove.initial_offset = move_toward(groove.initial_offset, 0.0, 50.0 * delta)
-					var pull_dir = Vector2.DOWN.rotated(groove.global_rotation)
-					head.apply_central_force(pull_dir * piston_power)
-	
+			if piston_retract_groups.has(key):
+				for p_data in piston_retract_groups[key]:
+					p_data["target"] = maxf(p_data["target"] - piston_speed * delta, 0.0)
+
+	for p_data in pistons:
+		_drive_piston(p_data)
+
 	queue_redraw()
+
+func _drive_piston(p_data: Dictionary):
+	var head: RigidBody2D = p_data["head"]
+	var chassis: RigidBody2D = p_data["chassis"]
+	if not is_instance_valid(head) or not is_instance_valid(chassis):
+		return
+
+	var axis = chassis.global_transform.basis_xform(p_data["local_axis"]).normalized()
+	var origin = chassis.to_global(p_data["local_anchor"])
+	var head_point = head.to_global(p_data["head_anchor"])
+	var extension = (head_point - origin).dot(axis)
+	var rel_vel = (head.linear_velocity - chassis.linear_velocity).dot(axis)
+	var accel = piston_stiffness * (p_data["target"] - extension) - piston_damping * rel_vel
+	var force = clampf(head.mass * accel, -piston_power, piston_power)
+	var push = axis * force
+
+	head.apply_central_force(push)
+	chassis.apply_force(-push, head_point - chassis.global_position)
+
+	if piston_rotation_stiffness > 0.0:
+		var rot_err = wrapf(head.global_rotation - chassis.global_rotation - p_data["rot_offset"], -PI, PI)
+		var rel_ang_vel = head.angular_velocity - chassis.angular_velocity
+		var inertia = head.inertia if head.inertia > 0.0 else head.mass * 1000.0
+		var torque = inertia * (-piston_rotation_stiffness * rot_err - piston_rotation_damping * rel_ang_vel)
+		head.apply_torque(torque)
+		chassis.apply_torque(-torque)
+
+	var rod: Line2D = p_data["rod"]
+	if is_instance_valid(rod):
+		rod.width = piston_rod_width
+		rod.default_color = piston_rod_color
+		rod.points = PackedVector2Array([rod.to_local(origin), rod.to_local(head_point)])
 
 func _draw():
 	for key in watergun_groups:
@@ -494,76 +603,41 @@ func _fade_out_fire(fire_node: Node) -> void:
 	else:
 		fire_node.queue_free()
 
-func _create_ui_button(key: String):
-	if key == "" or active_keys.has(key):
-		return
-		
-	active_keys[key] = false
-	
-	var container = ui_root.get_node_or_null("ButtonContainer")
-	if not container:
-		return
-		
-	var btn = DraggableButton.new()
-	btn.text = key
-	btn.custom_minimum_size = Vector2(100, 50)
-	container.add_child(btn)
-	
-	btn.button_down.connect(func():
-		if not is_ui_unlocked:
-			active_keys[key] = true
-	)
-	
-	btn.button_up.connect(func():
-		if not is_ui_unlocked:
-			active_keys[key] = false
-	)
-
 func _on_toggle_edit_pressed():
 	is_ui_unlocked = not is_ui_unlocked
+	toggle_edit_btn.text = "Lock UI" if is_ui_unlocked else "Unlock UI"
 	if is_ui_unlocked:
-		toggle_edit_btn.text = "Lock UI"
-		print("[UI] UI layout unlocked. Drag buttons to move them!")
-	else:
-		toggle_edit_btn.text = "Unlock UI"
-		print("[UI] UI layout locked.")
+		for key in active_keys.keys():
+			active_keys[key] = false
+			if ui_buttons.has(key):
+				ui_buttons[key].modulate = Color.WHITE
 
-func _find_part_instance_from_collider(collider: Object, part_nodes: Array) -> Node:
+func _find_node_from_collider(collider: Object, nodes: Array) -> Node:
 	var curr = collider
 	while curr and curr is Node:
-		if curr in part_nodes:
+		if curr in nodes:
 			return curr
 		curr = curr.get_parent()
 	return null
 
 class DraggableButton extends Button:
+	var loader: Node = null
 	var is_dragging: bool = false
 	var drag_offset: Vector2 = Vector2.ZERO
 
 	func _gui_input(event: InputEvent) -> void:
-		var main_node = get_tree().current_scene
-		if main_node and "is_ui_unlocked" in main_node and main_node.is_ui_unlocked:
-			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-				if event.pressed:
-					is_dragging = true
-					drag_offset = get_global_mouse_position() - global_position
-					accept_event()
-				else:
-					is_dragging = false
-			elif event is InputEventMouseMotion and is_dragging:
-				if get_parent() is GridContainer or get_parent() is VBoxContainer:
-					var current_pos = global_position
-					var parent_container = get_parent()
-					parent_container.remove_child(self)
-					
-					# Re-parent directly to UIRoot for free-floating movement
-					var ui_root_node = main_node.get_node_or_null("CanvasLayer/UIRoot")
-					if ui_root_node:
-						ui_root_node.add_child(self)
-					else:
-						main_node.add_child(self)
-						
-					global_position = current_pos
-				
-				global_position = get_global_mouse_position() - drag_offset
-				accept_event()
+		if loader == null or not loader.is_ui_unlocked:
+			return
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			is_dragging = event.pressed
+			if event.pressed:
+				drag_offset = get_global_mouse_position() - global_position
+			accept_event()
+		elif event is InputEventMouseMotion and is_dragging:
+			var target = get_global_mouse_position() - drag_offset
+			var vp = get_viewport_rect().size
+			global_position = Vector2(
+				clampf(target.x, 0.0, vp.x - size.x),
+				clampf(target.y, 0.0, vp.y - size.y)
+			)
+			accept_event()

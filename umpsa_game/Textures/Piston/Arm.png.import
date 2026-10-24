@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr1xff7tgjw65"
-path="res://.godot/imported/pistontopperpng.png-c0abd1605cb6ed407d4fdb6c1aee860c.ctex"
+uid="uid://bnc1djukyexib"
+path="res://.godot/imported/Arm.png-6ab3ba4316059efb79bcd3ef5f5309e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Piston/pistontopperpng.png"
-dest_files=["res://.godot/imported/pistontopperpng.png-c0abd1605cb6ed407d4fdb6c1aee860c.ctex"]
+source_file="res://Textures/Piston/Arm.png"
+dest_files=["res://.godot/imported/Arm.png-6ab3ba4316059efb79bcd3ef5f5309e2.ctex"]
 
 [params]
 
