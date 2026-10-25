@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://d2supgtgs14fr" path="res://Parts/cloned_parts/wheel.tscn" id="11_1un58"]
 [ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="12_nfi4l"]
 [ext_resource type="Script" uid="uid://s3ksefud0kvb" path="res://Game Scripts/Tool Scripts/select_tool.gd" id="13_1khan"]
+[ext_resource type="PackedScene" uid="uid://byoarpyeeomdp" path="res://Parts/cloned_parts/laser.tscn" id="13_lc7u4"]
+[ext_resource type="Texture2D" uid="uid://lhox1o3331kd" path="res://Textures/PartTextures/LaserBlock.png" id="13_r6q6e"]
 [ext_resource type="Texture2D" uid="uid://dqjrup6sul8vp" path="res://Textures/Icons/wrech.png" id="14_b7qmh"]
 [ext_resource type="Script" uid="uid://c72bv5pbimaj" path="res://Game Scripts/Tool Scripts/spawner_tool.gd" id="15_llyvn"]
 [ext_resource type="Texture2D" uid="uid://1idwa30ya7ig" path="res://Textures/Icons/Hammer.png" id="16_wn3rn"]
@@ -100,7 +102,6 @@ scale = Vector2(0.484, 0.484)
 script = ExtResource("2_y5jce")
 part_scene = ExtResource("5_ad0jn")
 rotate_button = NodePath("../Tools/RotateTool")
-max_parts = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PistonCloner" unique_id=1086199511]
 scale = Vector2(9.818, 9.818)
@@ -162,6 +163,21 @@ shape = SubResource("RectangleShape2D_g4v7s")
 [node name="Sprite2D" type="Sprite2D" parent="BlockCloner" unique_id=2062581300]
 scale = Vector2(-0.010315237, 0.010206742)
 texture = ExtResource("10_yqlgb")
+
+[node name="LaserCloner" type="Area2D" parent="." unique_id=696534250 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(70.000015, 394.99997)
+scale = Vector2(-4.7339525, -4.7339525)
+collision_layer = 4
+script = ExtResource("2_y5jce")
+part_scene = ExtResource("13_lc7u4")
+rotate_button = NodePath("../Tools/RotateTool")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LaserCloner" unique_id=1155180975]
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="LaserCloner" unique_id=2144621415]
+scale = Vector2(-0.010315237, 0.010206742)
+texture = ExtResource("13_r6q6e")
 
 [node name="WheelCloner" type="Area2D" parent="." unique_id=120399294 node_paths=PackedStringArray("rotate_button")]
 position = Vector2(70.00002, 166)
@@ -419,6 +435,38 @@ offset_bottom = 236.0
 text = "->"
 
 [node name="LineEdit" type="LineEdit" parent="Properties/Thruster" unique_id=243991480]
+layout_mode = 0
+offset_left = 682.46655
+offset_top = 163.71307
+offset_right = 750.96655
+offset_bottom = 194.71307
+max_length = 1
+
+[node name="Laser" type="Control" parent="Properties" unique_id=1856723780]
+anchors_preset = 0
+offset_left = -106.512115
+offset_top = 0.98622894
+offset_right = -66.512115
+offset_bottom = 40.98623
+
+[node name="Label" type="Label" parent="Properties/Laser" unique_id=774646749]
+layout_mode = 0
+offset_left = 681.0
+offset_top = 120.99999
+offset_right = 920.0
+offset_bottom = 154.0
+text = "Assign key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button" type="Button" parent="Properties/Laser" unique_id=1856769960]
+layout_mode = 0
+offset_left = 684.99994
+offset_top = 205.0
+offset_right = 718.0349
+offset_bottom = 236.0
+text = "->"
+
+[node name="LineEdit" type="LineEdit" parent="Properties/Laser" unique_id=1473642883]
 layout_mode = 0
 offset_left = 682.46655
 offset_top = 163.71307

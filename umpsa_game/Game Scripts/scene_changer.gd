@@ -4,11 +4,11 @@ extends Button
 @export_file("*.tscn") var next_scene_path: String
 
 func _ready() -> void:
-	# Connect the button's pressed signal to our function automatically
-	if not pressed.is_connected(_on_pressed):
-		pressed.connect(_on_pressed)
+	# Connect to button_down for instant mobile touch response
+	if not button_down.is_connected(_on_button_down):
+		button_down.connect(_on_button_down)
 
-func _on_pressed() -> void:
+func _on_button_down() -> void:
 	if next_scene_path and not next_scene_path.is_empty():
 		get_tree().change_scene_to_file(next_scene_path)
 	else:

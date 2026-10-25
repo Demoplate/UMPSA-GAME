@@ -14,10 +14,13 @@ size = Vector2(29, 611)
 script = ExtResource("1_wenmv")
 next_scene_path = "uid://cnn3vk0sr3dm"
 piston_max_extension = 150.0
-piston_stiffness = 520.0
 piston_flip = true
 piston_rod_width = 5.0
 piston_rod_color = Color(0.18803713, 0.18787664, 0.21619627, 1)
+laser_width = 23.0
+laser_dot_size = 14.0
+laser_color = Color(0.7058929, 0.77298725, 0.9773126, 1)
+laser_z_index = 0
 
 [node name="Tilemaps" parent="." unique_id=1075706804 instance=ExtResource("2_6xpwe")]
 

@@ -7,6 +7,8 @@
 
 [node name="piston" type="Area2D" unique_id=843252950]
 script = ExtResource("1_73ad1")
+assigned_key = "A"
+reverse_key = "D"
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1566412980]
 rotation = 3.1415927

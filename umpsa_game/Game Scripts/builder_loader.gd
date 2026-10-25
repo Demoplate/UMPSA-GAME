@@ -20,6 +20,8 @@ func _ready() -> void:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_thruster.tscn", "thruster.tscn")
 		elif "watergun" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_watergun.tscn", "watergun.tscn")
+		elif "laser" in lower_path:
+			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_laser.tscn", "laser.tscn")
 		elif "command" in lower_path or "command_block" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_command.tscn", "command.tscn")
 		else:

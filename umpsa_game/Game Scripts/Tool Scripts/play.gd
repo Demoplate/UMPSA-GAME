@@ -72,6 +72,15 @@ func transition_to_new_scene():
 					"rotation": area.global_rotation,
 					"assigned_key": key_assigned
 				})
+			elif "laser" in current_path.to_lower():
+				var rigid_laser_path = current_path.replace("cloned_parts", "rigid_blocks").replace("laser.tscn", "rigid_laser.tscn")
+				GameData.saved_parts.append({
+					"type": "laser",
+					"scene_path": rigid_laser_path,
+					"global_position": area.global_position,
+					"rotation": area.global_rotation,
+					"assigned_key": key_assigned
+				})
 			elif "command" in current_path.to_lower():
 				var rigid_command_path = current_path.replace("cloned_parts", "rigid_blocks").replace("command.tscn", "rigid_command.tscn")
 				GameData.saved_parts.append({

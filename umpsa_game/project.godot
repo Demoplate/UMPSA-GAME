@@ -22,6 +22,7 @@ GameData="*uid://88mohl87n6yr"
 [display]
 
 window/size/mode=2
+window/size/initial_position_type=0
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
@@ -41,6 +42,7 @@ rotate_clockwise={
 [physics]
 
 3d/physics_engine="Jolt Physics"
+2d/solver/solver_iterations=32
 
 [rendering]
 

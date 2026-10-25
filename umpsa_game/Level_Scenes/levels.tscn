@@ -22,7 +22,7 @@ theme_override_fonts/font = ExtResource("1_fxt5w")
 theme_override_font_sizes/font_size = 66
 text = "LEVEL 1"
 script = ExtResource("2_mlju4")
-next_scene_path = "uid://bg1y50qq6a8o1"
+next_scene_path = "uid://d2mfkcssiur6n"
 
 [node name="level2" type="Button" parent="." unique_id=811257152]
 layout_mode = 0

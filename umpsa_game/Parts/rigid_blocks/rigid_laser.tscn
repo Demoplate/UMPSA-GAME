@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://btjxesbbe4pqw"]
+
+[ext_resource type="Texture2D" uid="uid://lhox1o3331kd" path="res://Textures/PartTextures/LaserBlock.png" id="1_h6jro"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pidqt"]
+
+[node name="laser" type="RigidBody2D" unique_id=1165014288]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=492431138]
+scale = Vector2(0.025, 0.025)
+texture = ExtResource("1_h6jro")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=935284344]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_pidqt")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=796394991]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, -60)
+
+[node name="RayCast2D_Bottom" type="RayCast2D" parent="." unique_id=1438546551]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, 60)
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=302114021]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(-60, 0)
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=1245723430]
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(60, 0)

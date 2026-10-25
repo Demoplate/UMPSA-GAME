@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://byoarpyeeomdp"]
+
+[ext_resource type="Texture2D" uid="uid://lhox1o3331kd" path="res://Textures/PartTextures/LaserBlock.png" id="1_4i5j4"]
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_r0ow1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r0ow1"]
+
+[node name="Area2D" type="Area2D" unique_id=1174749837]
+script = ExtResource("1_r0ow1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=12031595]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("1_4i5j4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1958798211]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_r0ow1")

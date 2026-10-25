@@ -6,17 +6,22 @@ extends Node2D
 @export_file("*.tscn") var next_scene_path: String
 
 @export_group("Piston")
-@export var piston_power: float = 20000.0
 @export_range(1.0, 500.0, 1.0, "or_greater") var piston_max_extension: float = 40.0
 @export_range(1.0, 500.0, 1.0, "or_greater") var piston_speed: float = 60.0
-@export_range(1.0, 1000.0, 1.0, "or_greater") var piston_stiffness: float = 200.0
-@export_range(0.0, 200.0, 0.5, "or_greater") var piston_damping: float = 25.0
-@export_range(2.0, 100.0, 1.0, "or_greater") var piston_guide_spacing: float = 10.0
-@export_range(0.0, 5000.0, 10.0, "or_greater") var piston_rotation_stiffness: float = 400.0
-@export_range(0.0, 500.0, 1.0, "or_greater") var piston_rotation_damping: float = 40.0
 @export var piston_flip: bool = false
+@export_range(0.0, 1.0, 0.05) var piston_wheel_rigidity: float = 0.5
 @export_range(0.0, 50.0, 0.5, "or_greater") var piston_rod_width: float = 6.0
 @export var piston_rod_color: Color = Color(0.6, 0.6, 0.65)
+@export_group("")
+
+@export_group("Laser")
+@export_range(10.0, 5000.0, 10.0, "or_greater") var laser_range: float = 600.0
+@export_range(0.5, 30.0, 0.5, "or_greater") var laser_width: float = 3.0
+@export_range(0.0, 30.0, 0.5, "or_greater") var laser_dot_size: float = 4.0
+@export var laser_color: Color = Color(1.0, 0.15, 0.15)
+@export var laser_destroy_meta: String = "dest"
+@export_flags_2d_physics var laser_collision_mask: int = 1
+@export_range(-4096, 4096, 1) var laser_z_index: int = 10
 @export_group("")
 
 var active_keys = {}
@@ -26,10 +31,14 @@ var thruster_groups = {}
 var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
 var watergun_groups = {}
+var laser_groups = {}
 var piston_extend_groups = {}
 var piston_retract_groups = {}
 var pistons = []
+var frozen_to_chassis = {}
+var head_wheels = []
 
+var laser_drawer: Node2D
 var ui_layer: CanvasLayer
 var ui_root: Control
 var toggle_edit_btn: Button
@@ -38,6 +47,12 @@ var button_count: int = 0
 
 func _ready():
 	_build_ui()
+
+	laser_drawer = LaserDrawer.new()
+	laser_drawer.loader = self
+	laser_drawer.z_index = laser_z_index
+	laser_drawer.z_as_relative = false
+	add_child(laser_drawer)
 
 	if GameData.saved_parts.is_empty():
 		return
@@ -130,6 +145,7 @@ func _ready():
 					islands.erase(island_b)
 
 	var node_to_body = {}
+	var wheel_pins = []
 
 	for island in islands:
 		var first_head = null
@@ -219,6 +235,7 @@ func _ready():
 			var is_piston = (p_type == "piston") or ("piston" in scene_path)
 			var is_thruster = (p_type == "thruster") or ("thruster" in scene_path)
 			var is_watergun = (p_type == "watergun") or ("watergun" in scene_path)
+			var is_laser = (p_type == "laser") or ("laser" in scene_path)
 
 			var assigned_key = _get_key(p_data, "assigned_key")
 			var reverse_key = _get_key(p_data, "reverse_key")
@@ -226,6 +243,7 @@ func _ready():
 			if not is_wheel and not is_piston:
 				var duplicated_particles = null
 				var duplicated_water_cast = null
+				var duplicated_laser_ray = null
 
 				for child in inst.get_children():
 					if child is CollisionShape2D or child is Sprite2D or child is RayCast2D or child is CPUParticles2D:
@@ -242,6 +260,13 @@ func _ready():
 						if is_watergun and dup is RayCast2D and dup.name == "water_cast":
 							dup.collision_mask = 1
 							duplicated_water_cast = dup
+
+						if is_laser and dup is RayCast2D and dup.name == "laser_cast":
+							dup.collision_mask = laser_collision_mask
+							dup.enabled = false
+							if dup.target_position != Vector2.ZERO:
+								dup.target_position = dup.target_position.normalized() * laser_range
+							duplicated_laser_ray = dup
 
 				if is_thruster and assigned_key != "":
 					if not thruster_groups.has(assigned_key):
@@ -262,6 +287,20 @@ func _ready():
 						"particles": duplicated_particles,
 						"water_cast": duplicated_water_cast
 					})
+
+				if is_laser and assigned_key != "":
+					if duplicated_laser_ray == null:
+						duplicated_laser_ray = RayCast2D.new()
+						duplicated_laser_ray.collision_mask = laser_collision_mask
+						duplicated_laser_ray.enabled = false
+						duplicated_laser_ray.target_position = Vector2(0, -laser_range)
+						master_body.add_child(duplicated_laser_ray)
+						duplicated_laser_ray.global_position = inst.global_position
+						duplicated_laser_ray.global_rotation = inst.global_rotation
+					if not laser_groups.has(assigned_key):
+						laser_groups[assigned_key] = []
+					_create_ui_button(assigned_key)
+					laser_groups[assigned_key].append({"ray": duplicated_laser_ray})
 
 			elif is_piston:
 				for child in inst.get_children():
@@ -306,6 +345,12 @@ func _ready():
 						new_pin.global_position = pin_joint.global_position
 						new_pin.node_a = master_body.get_path()
 						new_pin.node_b = rolling_body.get_path()
+						wheel_pins.append({
+							"pin": new_pin,
+							"wheel": rolling_body,
+							"master": master_body,
+							"pivot": pin_joint.global_position
+						})
 
 					if assigned_key != "":
 						if not wheel_forward_groups.has(assigned_key):
@@ -334,20 +379,14 @@ func _ready():
 		if piston_flip:
 			axis = -axis
 
-		var side = axis.orthogonal() * piston_guide_spacing
-		var joint_rot = axis.angle() - PI / 2.0
+		if frozen_to_chassis.has(head_body) or _root_body(chassis_body) == head_body:
+			continue
+
 		var anchor_world = head_node.global_position
 
-		for offset in [Vector2.ZERO, side]:
-			var joint = GrooveJoint2D.new()
-			joint.length = piston_max_extension
-			joint.initial_offset = 0.0
-			joint.disable_collision = true
-			get_tree().current_scene.add_child(joint)
-			joint.global_position = anchor_world + offset
-			joint.global_rotation = joint_rot
-			joint.node_a = chassis_body.get_path()
-			joint.node_b = head_body.get_path()
+		head_body.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
+		head_body.freeze = true
+		frozen_to_chassis[head_body] = chassis_body
 
 		var rod = Line2D.new()
 		rod.width = piston_rod_width
@@ -382,6 +421,59 @@ func _ready():
 			_create_ui_button(reverse_key)
 			piston_retract_groups[reverse_key].append(piston_data)
 
+	for p_data in pistons:
+		var head_body = p_data["head"]
+		var root_body = _root_body(p_data["chassis"])
+		root_body.mass += head_body.mass
+		var head_shapes = []
+		for child in head_body.get_children():
+			if child is CollisionShape2D or child is CollisionPolygon2D:
+				var dup = child.duplicate()
+				root_body.add_child(dup)
+				dup.transform = root_body.global_transform.affine_inverse() * head_body.global_transform * child.transform
+				child.set_deferred("disabled", true)
+				head_shapes.append({"node": dup, "local": child.transform})
+		p_data["shapes"] = head_shapes
+		p_data["root"] = root_body
+
+	var piston_by_head = {}
+	for p_data in pistons:
+		piston_by_head[p_data["head"]] = p_data
+
+	for w in wheel_pins:
+		var master = w["master"]
+		if not frozen_to_chassis.has(master):
+			continue
+		var wheel_root = _root_body(master)
+		w["pin"].queue_free()
+		w["wheel"].add_collision_exception_with(wheel_root)
+		w["wheel"].add_collision_exception_with(master)
+		head_wheels.append({
+			"wheel": w["wheel"],
+			"head": master,
+			"root": wheel_root,
+			"axle_local": master.to_local(w["pivot"]),
+			"wheel_local": w["wheel"].to_local(w["pivot"]),
+			"piston": piston_by_head[master]
+		})
+
+	var vehicle_bodies = []
+	for b in node_to_body.values():
+		if not vehicle_bodies.has(b):
+			vehicle_bodies.append(b)
+	for group in wheel_forward_groups.values():
+		for d in group:
+			if not vehicle_bodies.has(d["rolling_body"]):
+				vehicle_bodies.append(d["rolling_body"])
+	for group in wheel_reverse_groups.values():
+		for d in group:
+			if not vehicle_bodies.has(d["rolling_body"]):
+				vehicle_bodies.append(d["rolling_body"])
+	for group in laser_groups.values():
+		for l_data in group:
+			for b in vehicle_bodies:
+				l_data["ray"].add_exception(b)
+
 	for inst in part_nodes:
 		inst.queue_free()
 
@@ -389,6 +481,14 @@ func _is_piston(p_data) -> bool:
 	var scene_path = p_data.get("scene_path", "").to_lower()
 	var p_type = p_data.get("type", "").to_lower()
 	return p_type == "piston" or "piston" in scene_path
+
+func _root_body(body: RigidBody2D) -> RigidBody2D:
+	var current = body
+	var guard = 0
+	while frozen_to_chassis.has(current) and guard < 32:
+		current = frozen_to_chassis[current]
+		guard += 1
+	return current
 
 func _would_lock_piston(island_a: Array, island_b: Array, head_to_piston: Dictionary) -> bool:
 	for node in island_a:
@@ -486,7 +586,9 @@ func _physics_process(delta: float):
 					if is_key_pressed:
 						var rotated_local_pos = t_data["local_pos"].rotated(body.global_rotation)
 						var direction = Vector2.UP.rotated(body.global_rotation + t_data["local_rot"])
-						body.apply_force(direction * thruster_power, rotated_local_pos)
+						var root = _root_body(body)
+						var world_pos = body.global_position + rotated_local_pos
+						root.apply_force(direction * thruster_power, world_pos - root.global_position)
 					if is_instance_valid(particles):
 						particles.emitting = is_key_pressed
 
@@ -513,6 +615,18 @@ func _physics_process(delta: float):
 								if fire_node:
 									_fade_out_fire(fire_node)
 
+		if laser_groups.has(key):
+			for l_data in laser_groups[key]:
+				var ray: RayCast2D = l_data.get("ray")
+				if is_instance_valid(ray):
+					ray.enabled = is_key_pressed
+					if is_key_pressed:
+						ray.force_raycast_update()
+						if ray.is_colliding():
+							var target = ray.get_collider()
+							if target is RigidBody2D and target.get_meta(laser_destroy_meta, false) == true:
+								target.queue_free()
+
 		if is_key_pressed:
 			if wheel_forward_groups.has(key):
 				for w_data in wheel_forward_groups[key]:
@@ -533,41 +647,88 @@ func _physics_process(delta: float):
 					p_data["target"] = maxf(p_data["target"] - piston_speed * delta, 0.0)
 
 	for p_data in pistons:
-		_drive_piston(p_data)
+		_drive_piston(p_data, delta)
+
+	for h in head_wheels:
+		_constrain_head_wheel(h, delta)
+
+	if is_instance_valid(laser_drawer):
+		laser_drawer.z_index = laser_z_index
+		laser_drawer.queue_redraw()
 
 	queue_redraw()
 
-func _drive_piston(p_data: Dictionary):
+func _drive_piston(p_data: Dictionary, delta: float):
 	var head: RigidBody2D = p_data["head"]
 	var chassis: RigidBody2D = p_data["chassis"]
 	if not is_instance_valid(head) or not is_instance_valid(chassis):
 		return
 
 	var axis = chassis.global_transform.basis_xform(p_data["local_axis"]).normalized()
+	var prev_target = p_data.get("prev_target", p_data["target"])
+	p_data["ext_speed"] = (p_data["target"] - prev_target) / delta
+	p_data["prev_target"] = p_data["target"]
+	p_data["axis"] = axis
 	var origin = chassis.to_global(p_data["local_anchor"])
-	var head_point = head.to_global(p_data["head_anchor"])
-	var extension = (head_point - origin).dot(axis)
-	var rel_vel = (head.linear_velocity - chassis.linear_velocity).dot(axis)
-	var accel = piston_stiffness * (p_data["target"] - extension) - piston_damping * rel_vel
-	var force = clampf(head.mass * accel, -piston_power, piston_power)
-	var push = axis * force
+	var rot = chassis.global_rotation + p_data["rot_offset"]
+	var head_point = origin + axis * p_data["target"]
+	var head_origin = head_point - Transform2D(rot, Vector2.ZERO) * p_data["head_anchor"]
+	var head_xf = Transform2D(rot, head_origin)
+	head.global_transform = head_xf
 
-	head.apply_central_force(push)
-	chassis.apply_force(-push, head_point - chassis.global_position)
-
-	if piston_rotation_stiffness > 0.0:
-		var rot_err = wrapf(head.global_rotation - chassis.global_rotation - p_data["rot_offset"], -PI, PI)
-		var rel_ang_vel = head.angular_velocity - chassis.angular_velocity
-		var inertia = head.inertia if head.inertia > 0.0 else head.mass * 1000.0
-		var torque = inertia * (-piston_rotation_stiffness * rot_err - piston_rotation_damping * rel_ang_vel)
-		head.apply_torque(torque)
-		chassis.apply_torque(-torque)
+	var root: RigidBody2D = p_data["root"]
+	var root_inv = root.global_transform.affine_inverse()
+	for s in p_data["shapes"]:
+		if is_instance_valid(s["node"]):
+			s["node"].transform = root_inv * head_xf * s["local"]
 
 	var rod: Line2D = p_data["rod"]
 	if is_instance_valid(rod):
 		rod.width = piston_rod_width
 		rod.default_color = piston_rod_color
 		rod.points = PackedVector2Array([rod.to_local(origin), rod.to_local(head_point)])
+
+func _constrain_head_wheel(h: Dictionary, delta: float):
+	var wheel: RigidBody2D = h["wheel"]
+	var head: RigidBody2D = h["head"]
+	var root: RigidBody2D = h["root"]
+	if not is_instance_valid(wheel) or not is_instance_valid(head) or not is_instance_valid(root):
+		return
+
+	var sw = PhysicsServer2D.body_get_direct_state(wheel.get_rid())
+	var sc = PhysicsServer2D.body_get_direct_state(root.get_rid())
+	if sw == null or sc == null:
+		return
+
+	var anchor = head.to_global(h["axle_local"])
+	var wheel_point = wheel.to_global(h["wheel_local"])
+	var pos_c = anchor - root.global_position
+	var pos_w = wheel_point - wheel.global_position
+	var r_c = pos_c - sc.center_of_mass
+	var r_w = pos_w - sw.center_of_mass
+
+	var piston: Dictionary = h["piston"]
+	var v_anchor = sc.linear_velocity + Vector2(-r_c.y, r_c.x) * sc.angular_velocity
+	v_anchor += piston.get("axis", Vector2.ZERO) * piston.get("ext_speed", 0.0)
+	var v_wheel = sw.linear_velocity + Vector2(-r_w.y, r_w.x) * sw.angular_velocity
+
+	var err = wheel_point - anchor
+	var rhs = -((v_wheel - v_anchor) + piston_wheel_rigidity * err / delta)
+
+	var m_w = sw.inverse_mass
+	var m_c = sc.inverse_mass
+	var i_w = sw.inverse_inertia
+	var i_c = sc.inverse_inertia
+	var k11 = m_w + m_c + i_w * r_w.y * r_w.y + i_c * r_c.y * r_c.y
+	var k22 = m_w + m_c + i_w * r_w.x * r_w.x + i_c * r_c.x * r_c.x
+	var k12 = -i_w * r_w.x * r_w.y - i_c * r_c.x * r_c.y
+	var det = k11 * k22 - k12 * k12
+	if absf(det) < 0.000001:
+		return
+
+	var impulse = Vector2((k22 * rhs.x - k12 * rhs.y) / det, (k11 * rhs.y - k12 * rhs.x) / det)
+	wheel.apply_impulse(impulse, pos_w)
+	root.apply_impulse(-impulse, pos_c)
 
 func _draw():
 	for key in watergun_groups:
@@ -641,3 +802,23 @@ class DraggableButton extends Button:
 				clampf(target.y, 0.0, vp.y - size.y)
 			)
 			accept_event()
+
+class LaserDrawer extends Node2D:
+	var loader: Node = null
+
+	func _draw() -> void:
+		if loader == null:
+			return
+		for key in loader.laser_groups:
+			if not loader.active_keys.get(key, false):
+				continue
+			for l_data in loader.laser_groups[key]:
+				var ray: RayCast2D = l_data.get("ray")
+				if not is_instance_valid(ray) or not ray.enabled:
+					continue
+
+				var beam_start = to_local(ray.global_position)
+				var beam_end_global = ray.get_collision_point() if ray.is_colliding() else ray.to_global(ray.target_position)
+				var beam_end = to_local(beam_end_global)
+				draw_line(beam_start, beam_end, loader.laser_color, loader.laser_width, true)
+				draw_circle(beam_end, loader.laser_dot_size, loader.laser_color)
