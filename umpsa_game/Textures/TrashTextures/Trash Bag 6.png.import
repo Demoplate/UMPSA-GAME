@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bod5xg7mc7llj"
-path="res://.godot/imported/day.png-3fe6a2cce3b70a34252c1dd4d5dfb61b.ctex"
+uid="uid://ob8sm12gv7ou"
+path="res://.godot/imported/Trash Bag 6.png-0fb81eff82314f95a5a09f66c8195d31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/day.png"
-dest_files=["res://.godot/imported/day.png-3fe6a2cce3b70a34252c1dd4d5dfb61b.ctex"]
+source_file="res://Textures/TrashTextures/Trash Bag 6.png"
+dest_files=["res://.godot/imported/Trash Bag 6.png-0fb81eff82314f95a5a09f66c8195d31.ctex"]
 
 [params]
 

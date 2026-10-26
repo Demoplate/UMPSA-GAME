@@ -21,10 +21,11 @@ GameData="*uid://88mohl87n6yr"
 
 [display]
 
-window/size/mode=2
-window/size/initial_position_type=0
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="ignore"
+window/handheld/orientation=4
 
 [input]
 

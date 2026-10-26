@@ -12,7 +12,7 @@ size = Vector2(29, 611)
 
 [node name="Node2D" type="Node2D" unique_id=350980743]
 script = ExtResource("1_wenmv")
-next_scene_path = "uid://cnn3vk0sr3dm"
+next_scene_path = "uid://beduqvgn83oig"
 piston_max_extension = 150.0
 piston_flip = true
 piston_rod_width = 5.0

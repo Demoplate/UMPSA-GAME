@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://de2eqhow1pmeo"
-path="res://.godot/imported/placeholderpistonimages.png-59b06af23aba3e391ac745d828ef970b.ctex"
+uid="uid://dsyuy2vdff0v1"
+path="res://.godot/imported/Trash Bag 2.png-8d569ee661d3b175ef50cbc3bba0a992.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/placeholderpistonimages.png"
-dest_files=["res://.godot/imported/placeholderpistonimages.png-59b06af23aba3e391ac745d828ef970b.ctex"]
+source_file="res://Textures/TrashTextures/Trash Bag 2.png"
+dest_files=["res://.godot/imported/Trash Bag 2.png-8d569ee661d3b175ef50cbc3bba0a992.ctex"]
 
 [params]
 

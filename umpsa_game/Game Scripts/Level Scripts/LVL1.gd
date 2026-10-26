@@ -66,7 +66,7 @@ func _ready():
 			var instance = scene.instantiate()
 			get_tree().current_scene.add_child(instance)
 			instance.global_position = p["global_position"]
-			instance.rotation = p["rotation"]
+			instance.global_rotation = p["rotation"]
 			part_nodes.append(instance)
 			data_to_node[instance] = p
 
@@ -83,7 +83,8 @@ func _ready():
 				piston_to_head[inst] = head
 
 	var all_nodes = part_nodes.duplicate()
-	all_nodes.append_array(head_to_piston.keys())
+	for head in head_to_piston.keys():
+		all_nodes.append(head)
 
 	var islands = []
 	var node_to_island = {}
@@ -104,6 +105,11 @@ func _ready():
 			if own_head and own_head.is_ancestor_of(rc):
 				ray_owner = own_head
 			ray_entries.append([rc, ray_owner])
+
+		for head in head_to_piston.keys():
+			if head.is_ancestor_of(curr_instance) or curr_instance == head:
+				for rc in curr_instance.find_children("*", "RayCast2D", true, false):
+					ray_entries.append([rc, head])
 
 		if "thruster" in scene_path:
 			ray_entries = ray_entries.filter(func(e): return e[0].name == "Raycast2D_Top")
@@ -136,9 +142,9 @@ func _ready():
 			var hit = _find_node_from_collider(e[0].get_collider(), all_nodes)
 			var ray_owner = e[1]
 			if hit and hit != ray_owner:
-				var island_a = node_to_island[ray_owner]
-				var island_b = node_to_island[hit]
-				if island_a != island_b and not _would_lock_piston(island_a, island_b, head_to_piston):
+				var island_a = node_to_island.get(ray_owner)
+				var island_b = node_to_island.get(hit)
+				if island_a and island_b and island_a != island_b and not _would_lock_piston(island_a, island_b, head_to_piston):
 					for node in island_b:
 						island_a.append(node)
 						node_to_island[node] = island_a
@@ -180,6 +186,8 @@ func _ready():
 			if head_to_piston.has(inst):
 				continue
 			var p_data = data_to_node[inst]
+			if p_data == null:
+				continue
 			var scene_path = p_data.get("scene_path", "").to_lower()
 			var p_type = p_data.get("type", "").to_lower()
 			if p_type == "command" or "command" in scene_path or inst.name.to_lower().contains("command"):
@@ -228,6 +236,8 @@ func _ready():
 				continue
 
 			var p_data = data_to_node[inst]
+			if p_data == null:
+				continue
 			var scene_path = p_data.get("scene_path", "").to_lower()
 			var p_type = p_data.get("type", "").to_lower()
 
@@ -624,7 +634,7 @@ func _physics_process(delta: float):
 						ray.force_raycast_update()
 						if ray.is_colliding():
 							var target = ray.get_collider()
-							if target is RigidBody2D and target.get_meta(laser_destroy_meta, false) == true:
+							if target is RigidBody2D and target.has_meta(laser_destroy_meta) and target.get_meta(laser_destroy_meta) == true:
 								target.queue_free()
 
 		if is_key_pressed:
@@ -781,6 +791,25 @@ func _find_node_from_collider(collider: Object, nodes: Array) -> Node:
 		curr = curr.get_parent()
 	return null
 
+class LaserDrawer extends Node2D:
+	var loader: Node2D = null
+
+	func _draw():
+		if loader == null:
+			return
+		for key in loader.laser_groups:
+			if not loader.active_keys.get(key, false):
+				continue
+			for l_data in loader.laser_groups[key]:
+				var ray: RayCast2D = l_data.get("ray")
+				if not is_instance_valid(ray) or not ray.enabled:
+					continue
+				var start_pos = ray.global_position
+				var end_pos = ray.get_collision_point() if ray.is_colliding() else ray.to_global(ray.target_position)
+				draw_line(start_pos, end_pos, loader.laser_color, loader.laser_width, true)
+				if ray.is_colliding() and loader.laser_dot_size > 0.0:
+					draw_circle(end_pos, loader.laser_dot_size, loader.laser_color)
+
 class DraggableButton extends Button:
 	var loader: Node = null
 	var is_dragging: bool = false
@@ -802,23 +831,3 @@ class DraggableButton extends Button:
 				clampf(target.y, 0.0, vp.y - size.y)
 			)
 			accept_event()
-
-class LaserDrawer extends Node2D:
-	var loader: Node = null
-
-	func _draw() -> void:
-		if loader == null:
-			return
-		for key in loader.laser_groups:
-			if not loader.active_keys.get(key, false):
-				continue
-			for l_data in loader.laser_groups[key]:
-				var ray: RayCast2D = l_data.get("ray")
-				if not is_instance_valid(ray) or not ray.enabled:
-					continue
-
-				var beam_start = to_local(ray.global_position)
-				var beam_end_global = ray.get_collision_point() if ray.is_colliding() else ray.to_global(ray.target_position)
-				var beam_end = to_local(beam_end_global)
-				draw_line(beam_start, beam_end, loader.laser_color, loader.laser_width, true)
-				draw_circle(beam_end, loader.laser_dot_size, loader.laser_color)

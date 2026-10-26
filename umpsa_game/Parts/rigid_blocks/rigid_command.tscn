@@ -5,6 +5,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v0usf"]
 
 [node name="CommandModule" type="RigidBody2D" unique_id=1453128315]
+collision_layer = 3
+collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1325686745]
 scale = Vector2(0.024, 0.032)

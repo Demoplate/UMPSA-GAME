@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b5nafklck4m30"]
+
+[ext_resource type="Texture2D" uid="uid://pkk50j2f8fke" path="res://Textures/TrashTextures/Trash Bag 1.png" id="1_7vq10"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="Trash1" type="RigidBody2D" unique_id=1694945962]
+metadata/dest = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1708962674]
+texture_filter = 1
+scale = Vector2(2.767379, 2.767379)
+texture = ExtResource("1_7vq10")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=891050054]
+position = Vector2(-2, 10)
+scale = Vector2(3.1678495, 2.9420989)
+shape = SubResource("RectangleShape2D_g4v7s")

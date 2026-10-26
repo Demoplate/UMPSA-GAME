@@ -26,6 +26,7 @@ offset_top = -97.0
 offset_right = 340.0
 offset_bottom = -39.0
 scale = Vector2(0.9737964, 1.0664837)
+theme_override_fonts/font = ExtResource("1_6dsce")
 theme_override_font_sizes/font_size = 1
 text = "Finished Level!"
 label_settings = SubResource("LabelSettings_g4v7s")

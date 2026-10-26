@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0mr0g5k6wd8"
-path="res://.godot/imported/comandplaceholder.png-bcd3d607f34f5ec8228f8d718403c90f.ctex"
+uid="uid://bnm7vnah8inxg"
+path="res://.godot/imported/Trash Bag 8.png-5de2e75e52aa9f145cd101c401de7e5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/comandplaceholder.png"
-dest_files=["res://.godot/imported/comandplaceholder.png-bcd3d607f34f5ec8228f8d718403c90f.ctex"]
+source_file="res://Textures/TrashTextures/Trash Bag 8.png"
+dest_files=["res://.godot/imported/Trash Bag 8.png-5de2e75e52aa9f145cd101c401de7e5e.ctex"]
 
 [params]
 

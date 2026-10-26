@@ -1,40 +1,99 @@
 [gd_scene format=3 uid="uid://bnyad5dm5aq10"]
 
+[ext_resource type="Texture2D" uid="uid://msfgrrxeovh1" path="res://Media/Images/Main menu.png" id="1_2x18w"]
 [ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="1_yjgbq"]
 [ext_resource type="Script" uid="uid://cfteag3kyrgl" path="res://Game Scripts/scene_changer.gd" id="2_r384w"]
+[ext_resource type="Texture2D" uid="uid://bs4niv4r62h5k" path="res://Media/Images/Arrow45°.png" id="4_3ex7h"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font = ExtResource("1_yjgbq")
+font_size = 196
+font_color = Color(1, 1, 0.9411765, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+shadow_color = Color(0.9800573, 0.86414963, 0.9052854, 0)
+
+[sub_resource type="Theme" id="Theme_2x18w"]
 
 [node name="Menu" type="Control" unique_id=1981263237]
 layout_mode = 3
 anchors_preset = 0
 
-[node name="play" type="Button" parent="." unique_id=189731589]
-layout_mode = 0
-offset_left = 19.0
-offset_top = 234.0
-offset_right = 240.0
-offset_bottom = 322.0
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1103871494]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -13.0
+offset_right = 160.0
+offset_bottom = 135.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.957855, 5.0861125)
+texture = ExtResource("1_2x18w")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2033998509]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 297.0
+offset_top = 91.0
+offset_right = 986.0
+offset_bottom = 540.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=79038555]
+layout_mode = 2
+text = "PURTAL"
+label_settings = SubResource("LabelSettings_g4v7s")
+
+[node name="play" type="Button" parent="VBoxContainer" unique_id=189731589]
+layout_mode = 2
+theme = SubResource("Theme_2x18w")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_yjgbq")
 theme_override_font_sizes/font_size = 91
 text = "PLAY"
 script = ExtResource("2_r384w")
 next_scene_path = "uid://bbhbkad18h10n"
 
-[node name="settings" type="Button" parent="." unique_id=2092108473]
-layout_mode = 0
-offset_left = 19.0
-offset_top = 355.0
-offset_right = 240.0
-offset_bottom = 443.0
+[node name="Arrow45°" type="Sprite2D" parent="VBoxContainer/play" unique_id=1863238113]
+texture_filter = 1
+position = Vector2(757, 46)
+scale = Vector2(0.0653955, 0.0653955)
+texture = ExtResource("4_3ex7h")
+
+[node name="settings" type="Button" parent="VBoxContainer" unique_id=2092108473]
+layout_mode = 2
+theme = SubResource("Theme_2x18w")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_yjgbq")
 theme_override_font_sizes/font_size = 91
 text = "SETTINGS"
 
-[node name="credits" type="Button" parent="." unique_id=294562658]
-layout_mode = 0
-offset_left = 19.0
-offset_top = 472.0
-offset_right = 240.0
-offset_bottom = 560.0
+[node name="Arrow45°2" type="Sprite2D" parent="VBoxContainer/settings" unique_id=1263063119]
+texture_filter = 1
+position = Vector2(756, 42)
+scale = Vector2(0.0653955, 0.0653955)
+texture = ExtResource("4_3ex7h")
+
+[node name="credits" type="Button" parent="VBoxContainer" unique_id=294562658]
+layout_mode = 2
+theme = SubResource("Theme_2x18w")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_yjgbq")
 theme_override_font_sizes/font_size = 91
 text = "CREDITS"
+
+[node name="Arrow45°3" type="Sprite2D" parent="VBoxContainer/credits" unique_id=753499654]
+texture_filter = 1
+position = Vector2(761, 46)
+scale = Vector2(0.0653955, 0.0653955)
+texture = ExtResource("4_3ex7h")

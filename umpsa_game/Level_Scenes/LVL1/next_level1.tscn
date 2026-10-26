@@ -43,7 +43,7 @@ theme_override_fonts/font = ExtResource("1_tybvi")
 theme_override_font_sizes/font_size = 57
 text = "Next Level"
 script = ExtResource("2_l5hv6")
-next_scene_path = "uid://bjkg85p1yr52n"
+next_scene_path = "uid://ttnrxsxk3h2m"
 
 [node name="Menu" type="Button" parent="." unique_id=1757613445]
 layout_mode = 0
