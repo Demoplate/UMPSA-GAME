@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://4ukkswiataky"]
+
+[ext_resource type="AudioStream" uid="uid://cko7tx3fvngpt" path="res://Media/Music/A Lonely Cherry Tree 🌸 [D5L36JDKxR0].mp3" id="1_h8ohw"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" unique_id=1320101400]
+stream = ExtResource("1_h8ohw")
+autoplay = true
+parameters/looping = true

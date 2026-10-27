@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://2ptwbui8eofj"]
+
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/Saw/Base.png" id="1_kqnn7"]
+[ext_resource type="Texture2D" uid="uid://p6fn17bxrdi4" path="res://Textures/PartTextures/Saw/16X16Setting.png" id="2_y2ykq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yf5fn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(98, 13.008812)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+
+[node name="SawBase" type="RigidBody2D" unique_id=555286744]
+collision_layer = 3
+collision_mask = 3
+mass = 0.05
+physics_material_override = SubResource("PhysicsMaterial_yf5fn")
+
+[node name="PinJoint2D" type="PinJoint2D" parent="." unique_id=578926081]
+position = Vector2(0, 8)
+scale = Vector2(0.5, 0.5)
+node_a = NodePath("..")
+node_b = NodePath("../SawRolling")
+bias = 0.3
+
+[node name="WheelBase2" type="Sprite2D" parent="." unique_id=40987188]
+scale = Vector2(0.025, 0.025)
+texture = ExtResource("1_kqnn7")
+
+[node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1233688616]
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(0, -60)
+collision_mask = 3
+
+[node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=23720948]
+position = Vector2(0, -21)
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(-70, 0)
+collision_mask = 3
+
+[node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=1386807530]
+position = Vector2(0, -21)
+scale = Vector2(0.5, 0.5)
+target_position = Vector2(70, 0)
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=20325248]
+position = Vector2(0, -21)
+scale = Vector2(0.499, 0.499)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="SawRolling" type="RigidBody2D" parent="." unique_id=1501883923]
+position = Vector2(0, 10)
+collision_layer = 3
+collision_mask = 3
+mass = 0.05
+
+[node name="Saw" type="Sprite2D" parent="SawRolling" unique_id=408816850]
+position = Vector2(0, -2)
+scale = Vector2(0.018975863, 0.018975863)
+texture = ExtResource("2_y2ykq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SawRolling" unique_id=704263885]
+position = Vector2(0, -2)
+scale = Vector2(2, 2)
+shape = SubResource("CircleShape2D_g4v7s")

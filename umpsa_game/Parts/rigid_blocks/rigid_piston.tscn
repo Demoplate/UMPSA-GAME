@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://by02c0ryutm15"]
 
-[ext_resource type="Texture2D" uid="uid://bnc1djukyexib" path="res://Textures/Piston/Arm.png" id="1_ubwft"]
-[ext_resource type="Texture2D" uid="uid://ctboevw4rf2hu" path="res://Textures/Piston/Body.png" id="2_jv1j2"]
+[ext_resource type="Texture2D" uid="uid://bnc1djukyexib" path="res://Textures/PartTextures/Piston/Arm.png" id="1_ubwft"]
+[ext_resource type="Texture2D" uid="uid://ctboevw4rf2hu" path="res://Textures/PartTextures/Piston/Body.png" id="2_jv1j2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(20, 7.6313286)

@@ -3,6 +3,7 @@ extends Node2D
 @export var grid_size: float = 16.0
 @export var thruster_power: float = 2000.0
 @export var wheel_power: float = 20000.0
+@export var saw_power: float = 20000.0
 @export_file("*.tscn") var next_scene_path: String
 
 @export_group("Piston")
@@ -25,11 +26,13 @@ extends Node2D
 @export_group("")
 
 var active_keys = {}
+var toggle_keys = {}
 var key_map = {}
 var ui_buttons = {}
 var thruster_groups = {}
 var wheel_forward_groups = {}
 var wheel_reverse_groups = {}
+var saw_groups = {}
 var watergun_groups = {}
 var laser_groups = {}
 var piston_extend_groups = {}
@@ -127,7 +130,7 @@ func _ready():
 			if rc.is_colliding():
 				colliding.append(e)
 
-		if "wheel" in scene_path:
+		if "wheel" in scene_path or "saw" in scene_path:
 			var has_bottom = false
 			var has_others = false
 			for e in colliding:
@@ -242,6 +245,7 @@ func _ready():
 			var p_type = p_data.get("type", "").to_lower()
 
 			var is_wheel = (p_type == "wheel") or ("wheel" in scene_path)
+			var is_saw = (p_type == "saw") or ("saw" in scene_path)
 			var is_piston = (p_type == "piston") or ("piston" in scene_path)
 			var is_thruster = (p_type == "thruster") or ("thruster" in scene_path)
 			var is_watergun = (p_type == "watergun") or ("watergun" in scene_path)
@@ -250,7 +254,7 @@ func _ready():
 			var assigned_key = _get_key(p_data, "assigned_key")
 			var reverse_key = _get_key(p_data, "reverse_key")
 
-			if not is_wheel and not is_piston:
+			if not is_wheel and not is_saw and not is_piston:
 				var duplicated_particles = null
 				var duplicated_water_cast = null
 				var duplicated_laser_ray = null
@@ -325,7 +329,7 @@ func _ready():
 
 			else:
 				for child in inst.get_children():
-					if child is RayCast2D or child.name == "WheelRolling" or child is PinJoint2D:
+					if child is RayCast2D or child.name == "WheelRolling" or child.name == "SawRolling" or child is PinJoint2D:
 						continue
 					if child is CollisionShape2D or child is Sprite2D or child is Node2D:
 						var global_pos = child.global_position
@@ -335,18 +339,22 @@ func _ready():
 						dup.global_position = global_pos
 						dup.global_rotation = global_rot
 
-				var wheel_rolling = inst.get_node_or_null("WheelRolling")
+				var rolling_node = inst.get_node_or_null("WheelRolling")
+				if not rolling_node:
+					rolling_node = inst.get_node_or_null("SawRolling")
 				var pin_joint = inst.get_node_or_null("PinJoint2D")
 
-				if wheel_rolling:
-					var rolling_body = wheel_rolling.duplicate()
+				if rolling_node:
+					var rolling_body = rolling_node.duplicate()
 					rolling_body.can_sleep = false
+					rolling_body.contact_monitor = true
+					rolling_body.max_contacts_reported = 8
 					get_tree().current_scene.add_child(rolling_body)
-					rolling_body.global_transform = wheel_rolling.global_transform
+					rolling_body.global_transform = rolling_node.global_transform
 
-					var wheel_mat = PhysicsMaterial.new()
-					wheel_mat.friction = 0.8
-					rolling_body.physics_material_override = wheel_mat
+					var roll_mat = PhysicsMaterial.new()
+					roll_mat.friction = 0.8
+					rolling_body.physics_material_override = roll_mat
 
 					if pin_joint:
 						var new_pin = pin_joint.duplicate()
@@ -362,17 +370,25 @@ func _ready():
 							"pivot": pin_joint.global_position
 						})
 
-					if assigned_key != "":
-						if not wheel_forward_groups.has(assigned_key):
-							wheel_forward_groups[assigned_key] = []
-						_create_ui_button(assigned_key)
-						wheel_forward_groups[assigned_key].append({"rolling_body": rolling_body})
+					if is_saw:
+						if assigned_key != "":
+							if not saw_groups.has(assigned_key):
+								saw_groups[assigned_key] = []
+								toggle_keys[assigned_key] = false
+							_create_ui_button(assigned_key)
+							saw_groups[assigned_key].append({"rolling_body": rolling_body})
+					else:
+						if assigned_key != "":
+							if not wheel_forward_groups.has(assigned_key):
+								wheel_forward_groups[assigned_key] = []
+							_create_ui_button(assigned_key)
+							wheel_forward_groups[assigned_key].append({"rolling_body": rolling_body})
 
-					if reverse_key != "":
-						if not wheel_reverse_groups.has(reverse_key):
-							wheel_reverse_groups[reverse_key] = []
-						_create_ui_button(reverse_key)
-						wheel_reverse_groups[reverse_key].append({"rolling_body": rolling_body})
+						if reverse_key != "":
+							if not wheel_reverse_groups.has(reverse_key):
+								wheel_reverse_groups[reverse_key] = []
+							_create_ui_button(reverse_key)
+							wheel_reverse_groups[reverse_key].append({"rolling_body": rolling_body})
 
 	for piston_inst in piston_to_head.keys():
 		var head_node = piston_to_head[piston_inst]
@@ -479,6 +495,10 @@ func _ready():
 		for d in group:
 			if not vehicle_bodies.has(d["rolling_body"]):
 				vehicle_bodies.append(d["rolling_body"])
+	for group in saw_groups.values():
+		for d in group:
+			if not vehicle_bodies.has(d["rolling_body"]):
+				vehicle_bodies.append(d["rolling_body"])
 	for group in laser_groups.values():
 		for l_data in group:
 			for b in vehicle_bodies:
@@ -566,11 +586,16 @@ func _create_ui_button(key: String):
 
 	btn.button_down.connect(func():
 		if not is_ui_unlocked:
-			active_keys[key] = true
+			if saw_groups.has(key):
+				toggle_keys[key] = not toggle_keys[key]
+				ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if toggle_keys[key] else Color.WHITE
+			else:
+				active_keys[key] = true
 	)
 	btn.button_up.connect(func():
 		if not is_ui_unlocked:
-			active_keys[key] = false
+			if not saw_groups.has(key):
+				active_keys[key] = false
 	)
 
 func _unhandled_input(event: InputEvent):
@@ -580,11 +605,29 @@ func _unhandled_input(event: InputEvent):
 		var key_name = OS.get_keycode_string(event.keycode).to_upper()
 		if key_map.has(key_name):
 			var key = key_map[key_name]
-			active_keys[key] = event.pressed
-			if ui_buttons.has(key):
-				ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if event.pressed else Color.WHITE
+			if saw_groups.has(key):
+				if event.pressed:
+					toggle_keys[key] = not toggle_keys[key]
+					if ui_buttons.has(key):
+						ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if toggle_keys[key] else Color.WHITE
+			else:
+				active_keys[key] = event.pressed
+				if ui_buttons.has(key):
+					ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if event.pressed else Color.WHITE
 
 func _physics_process(delta: float):
+	# Apply toggle state for saws continuously and check collisions for destruction
+	for key in saw_groups.keys():
+		if toggle_keys.get(key, false):
+			for d in saw_groups[key]:
+				var saw_body = d["rolling_body"]
+				if is_instance_valid(saw_body):
+					saw_body.apply_torque(saw_power)
+					
+					if saw_body.has_method("get_colliding_bodies"):
+						for collider in saw_body.get_colliding_bodies():
+							_check_and_destroy_target(collider)
+
 	for key in active_keys.keys():
 		var is_key_pressed = active_keys[key]
 
@@ -634,8 +677,8 @@ func _physics_process(delta: float):
 						ray.force_raycast_update()
 						if ray.is_colliding():
 							var target = ray.get_collider()
-							if target is RigidBody2D and target.has_meta(laser_destroy_meta) and target.get_meta(laser_destroy_meta) == true:
-								target.queue_free()
+							if target and target.has_meta(laser_destroy_meta) and target.get_meta(laser_destroy_meta) == true:
+								_fade_out_target(target)
 
 		if is_key_pressed:
 			if wheel_forward_groups.has(key):
@@ -668,6 +711,39 @@ func _physics_process(delta: float):
 
 	queue_redraw()
 
+func _check_and_destroy_target(target: Object) -> void:
+	if target and target is Node and target.has_meta(laser_destroy_meta) and target.get_meta(laser_destroy_meta) == true:
+		_fade_out_target(target)
+
+func _fade_out_target(target: Node) -> void:
+	if not is_instance_valid(target) or target.has_meta("is_fading") and target.get_meta("is_fading") == true:
+		return
+	target.set_meta("is_fading", true)
+
+	if target is CanvasItem:
+		var fade_tween := create_tween()
+		fade_tween.tween_property(target, "modulate:a", 0.0, 3.0)
+		fade_tween.tween_callback(func():
+			_disable_target_collisions(target)
+			target.queue_free()
+		)
+	else:
+		var timer = get_tree().create_timer(3.0)
+		timer.timeout.connect(func():
+			_disable_target_collisions(target)
+			target.queue_free()
+		)
+func _disable_target_collisions(target: Node) -> void:
+	if not is_instance_valid(target):
+		return
+	for collision_shape in target.find_children("*", "CollisionShape2D", true, false):
+		collision_shape.set_deferred("disabled", true)
+	for collision_shape in target.find_children("*", "CollisionPolygon2D", true, false):
+		collision_shape.set_deferred("disabled", true)
+		
+	if target is CollisionObject2D:
+		target.set_deferred("collision_layer", 0)
+		target.set_deferred("collision_mask", 0)
 func _drive_piston(p_data: Dictionary, delta: float):
 	var head: RigidBody2D = p_data["head"]
 	var chassis: RigidBody2D = p_data["chassis"]

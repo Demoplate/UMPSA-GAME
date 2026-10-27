@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b2k5un75nkqb1"]
 
 [ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_73ad1"]
-[ext_resource type="Texture2D" uid="uid://b7ca4jrhngro7" path="res://Textures/Piston/PistonContract.png" id="2_73ad1"]
+[ext_resource type="Texture2D" uid="uid://b7ca4jrhngro7" path="res://Textures/PartTextures/Piston/PistonContract.png" id="2_73ad1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_73ad1"]
 

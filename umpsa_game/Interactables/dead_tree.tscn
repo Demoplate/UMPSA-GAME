@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cnpyil6wespfo"]
+
+[ext_resource type="Texture2D" uid="uid://c48uf5e80nfc5" path="res://Textures/dead_tree.png" id="1_oa1uc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yf5fn"]
+
+[node name="DeadTree" type="StaticBody2D" unique_id=260571598]
+metadata/dest = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=505843940]
+texture_filter = 1
+scale = Vector2(0.365942, 0.365942)
+texture = ExtResource("1_oa1uc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=240997739]
+scale = Vector2(7.337693, -6.3068213)
+shape = SubResource("CapsuleShape2D_yf5fn")

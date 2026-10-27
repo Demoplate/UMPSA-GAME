@@ -18,6 +18,7 @@ config/icon="res://Textures/Icons/icon.svg"
 [autoload]
 
 GameData="*uid://88mohl87n6yr"
+Mainmenumusic="*uid://4ukkswiataky"
 
 [display]
 

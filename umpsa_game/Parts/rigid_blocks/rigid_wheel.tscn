@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://drp8cubifxh5h"]
 
 [ext_resource type="Texture2D" uid="uid://krfvxnt4eh38" path="res://Textures/PartTextures/PoweredWheel/Wheel.png" id="1_b5u4r"]
-[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/PoweredWheel/Base.png" id="2_1mlli"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/Saw/Base.png" id="2_1mlli"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_yf5fn"]
 

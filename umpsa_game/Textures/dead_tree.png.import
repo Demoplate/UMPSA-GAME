@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnc1djukyexib"
-path="res://.godot/imported/Arm.png-6ab3ba4316059efb79bcd3ef5f5309e2.ctex"
+uid="uid://c48uf5e80nfc5"
+path="res://.godot/imported/dead_tree.png-ef9c56f5806e456fedec3d5883e72a30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Piston/Arm.png"
-dest_files=["res://.godot/imported/Arm.png-6ab3ba4316059efb79bcd3ef5f5309e2.ctex"]
+source_file="res://Textures/dead_tree.png"
+dest_files=["res://.godot/imported/dead_tree.png-ef9c56f5806e456fedec3d5883e72a30.ctex"]
 
 [params]
 

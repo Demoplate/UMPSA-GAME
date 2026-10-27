@@ -14,6 +14,8 @@ func _ready() -> void:
 		var lower_path = rigid_path.to_lower()
 		if "wheel" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_wheel.tscn", "wheel.tscn")
+		elif "saw" in lower_path:
+			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_saw.tscn", "saw.tscn")
 		elif "piston" in lower_path:
 			interactive_path = rigid_path.replace("rigid_blocks", "cloned_parts").replace("rigid_piston.tscn", "piston.tscn")
 		elif "thruster" in lower_path:

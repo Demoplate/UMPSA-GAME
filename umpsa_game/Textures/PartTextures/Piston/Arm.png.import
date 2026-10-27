@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7ca4jrhngro7"
-path="res://.godot/imported/PistonContract.png-8c41d74984c3447747ab19e22c64fccd.ctex"
+uid="uid://bnc1djukyexib"
+path="res://.godot/imported/Arm.png-3bef0ffb9b41f433a5b5b07c0b71c6ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Piston/PistonContract.png"
-dest_files=["res://.godot/imported/PistonContract.png-8c41d74984c3447747ab19e22c64fccd.ctex"]
+source_file="res://Textures/PartTextures/Piston/Arm.png"
+dest_files=["res://.godot/imported/Arm.png-3bef0ffb9b41f433a5b5b07c0b71c6ef.ctex"]
 
 [params]
 

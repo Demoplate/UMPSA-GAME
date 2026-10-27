@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctboevw4rf2hu"
-path="res://.godot/imported/Body.png-f0a024861b742e9a2e7d419a0c07ec0d.ctex"
+uid="uid://dc61n07cvkjds"
+path="res://.godot/imported/Base.png-49a3eaf9d2f330d2a7c5616c6f9b971b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Textures/Piston/Body.png"
-dest_files=["res://.godot/imported/Body.png-f0a024861b742e9a2e7d419a0c07ec0d.ctex"]
+source_file="res://Textures/PartTextures/Saw/Base.png"
+dest_files=["res://.godot/imported/Base.png-49a3eaf9d2f330d2a7c5616c6f9b971b.ctex"]
 
 [params]
 

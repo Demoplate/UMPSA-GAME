@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://3cjlfs4qht5c"]
+
+[ext_resource type="Script" uid="uid://blptu5dep4bsk" path="res://Game Scripts/block.gd" id="1_y04bo"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/Saw/Base.png" id="2_4ic3n"]
+[ext_resource type="Texture2D" uid="uid://p6fn17bxrdi4" path="res://Textures/PartTextures/Saw/16X16Setting.png" id="3_72ehl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vivmo"]
+
+[node name="saw" type="Area2D" unique_id=120399294]
+script = ExtResource("1_y04bo")
+assigned_key = "R"
+
+[node name="Base" type="Sprite2D" parent="." unique_id=408816850]
+scale = Vector2(0.024, 0.024)
+texture = ExtResource("2_4ic3n")
+
+[node name="Saw" type="Sprite2D" parent="." unique_id=1112163946]
+texture_filter = 1
+position = Vector2(0, 7)
+scale = Vector2(0.016209705, 0.016209705)
+texture = ExtResource("3_72ehl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=704263885]
+scale = Vector2(2.394, 2.394)
+shape = SubResource("RectangleShape2D_vivmo")
