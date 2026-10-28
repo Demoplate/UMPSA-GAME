@@ -64,6 +64,7 @@ theme_override_fonts/font = ExtResource("1_fxt5w")
 theme_override_font_sizes/font_size = 125
 text = "LEVEL 3
 "
+script = ExtResource("2_mlju4")
 
 [node name="level6" type="Button" parent="VBoxContainer" unique_id=299907542]
 layout_mode = 2

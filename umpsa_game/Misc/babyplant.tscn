@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dd7kku5igxpll"]
+
+[ext_resource type="Texture2D" uid="uid://vmvw7o5r3eb4" path="res://Textures/pixel-art-young-sprout-in-soil-simple-nature-garden-design-art-png.png" id="1_r6uop"]
+
+[node name="Node2D" type="Node2D" unique_id=1212896047]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1720156857]
+z_index = -1
+texture_filter = 1
+scale = Vector2(0.06673403, 0.06673403)
+texture = ExtResource("1_r6uop")

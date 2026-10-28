@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bhmws0ftamqts"]
+
+[ext_resource type="Texture2D" uid="uid://dbtq8hdc0d4we" path="res://Characters/chillestguyoat.png" id="1_qof1w"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yf5fn"]
+
+[node name="Saiffuddin" type="StaticBody2D" unique_id=1614748687]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=29097658]
+scale = Vector2(0.022729903, 0.022729903)
+texture = ExtResource("1_qof1w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1752831400]
+scale = Vector2(1.8002962, 2.8290331)
+shape = SubResource("CapsuleShape2D_yf5fn")

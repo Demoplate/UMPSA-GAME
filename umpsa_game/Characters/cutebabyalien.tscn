@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://diycs0d5mlaxy"]
+
+[ext_resource type="Texture2D" uid="uid://gyhmiebbut82" path="res://Characters/Alienbabyboy.png" id="1_akvi8"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g4v7s"]
+
+[node name="Cutebabyalien" type="StaticBody2D" unique_id=2078079683]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=693181619]
+scale = Vector2(0.031406704, 0.031406704)
+texture = ExtResource("1_akvi8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1710430623]
+scale = Vector2(2.191737, 2.192261)
+shape = SubResource("CapsuleShape2D_g4v7s")
