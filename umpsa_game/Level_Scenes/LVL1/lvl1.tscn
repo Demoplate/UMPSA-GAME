@@ -139,7 +139,7 @@ size = Vector2(29, 611)
 [node name="Node2D" type="Node2D" unique_id=350980743]
 script = ExtResource("1_wenmv")
 wheel_power = 50000.0
-next_scene_path = "uid://beduqvgn83oig"
+next_scene_path = "uid://cpqoxbtwaklgo"
 piston_max_extension = 150.0
 piston_flip = true
 piston_rod_width = 5.0
@@ -209,7 +209,7 @@ script = ExtResource("4_vykuw")
 build_scene_path = "res://Level_Scenes/LVL1/builder_scene1.tscn"
 
 [node name="flagpole" parent="." unique_id=1894799789 instance=ExtResource("5_aoeno")]
-position = Vector2(2375, 321)
+position = Vector2(2087, 321)
 
 [node name="uglysky" parent="." unique_id=1318420628 instance=ExtResource("6_0mm1e")]
 

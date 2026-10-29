@@ -4,7 +4,7 @@ extends Control
 @onready var piston_group: Control = $Piston
 @onready var thruster_group: Control = $Thruster
 @onready var laser_group: Control = $Laser
-@onready var saw_group: Control = $Saw
+@onready var saw_group = $Saw
 
 @onready var line_edit_forwards: LineEdit = $Wheel/Forwards
 @onready var line_edit_reverse: LineEdit = $Wheel/Reverse

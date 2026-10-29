@@ -47,7 +47,7 @@ theme_override_fonts/font = ExtResource("1_fxt5w")
 theme_override_font_sizes/font_size = 125
 text = "LEVEL 1"
 script = ExtResource("2_mlju4")
-next_scene_path = "uid://blwwk8l5lm2yd"
+next_scene_path = "uid://bljhwsjdh8nqv"
 
 [node name="level2" type="Button" parent="VBoxContainer" unique_id=811257152]
 layout_mode = 2
@@ -56,7 +56,7 @@ theme_override_font_sizes/font_size = 125
 text = "LEVEL 2
 "
 script = ExtResource("2_mlju4")
-next_scene_path = "uid://ttnrxsxk3h2m"
+next_scene_path = "uid://1tp1f8k7jul3"
 
 [node name="level3" type="Button" parent="VBoxContainer" unique_id=1608206061]
 layout_mode = 2
@@ -65,6 +65,7 @@ theme_override_font_sizes/font_size = 125
 text = "LEVEL 3
 "
 script = ExtResource("2_mlju4")
+next_scene_path = "uid://ysvwah7ae145"
 
 [node name="level6" type="Button" parent="VBoxContainer" unique_id=299907542]
 layout_mode = 2

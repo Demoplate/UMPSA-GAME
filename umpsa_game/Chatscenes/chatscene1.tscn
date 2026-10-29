@@ -5,6 +5,13 @@
 [ext_resource type="PackedScene" uid="uid://mtgnjga5r5bx" path="res://uglysky.tscn" id="3_bm1rs"]
 [ext_resource type="PackedScene" uid="uid://diycs0d5mlaxy" path="res://Characters/cutebabyalien.tscn" id="4_i3hhi"]
 [ext_resource type="PackedScene" uid="uid://bhmws0ftamqts" path="res://Characters/saiffuddin.tscn" id="5_bm1rs"]
+[ext_resource type="Texture2D" uid="uid://gyhmiebbut82" path="res://Characters/Alienbabyboy.png" id="6_2waif"]
+[ext_resource type="Script" uid="uid://dbcxch2663wjr" path="res://Chatscenes/Chatcontroller.gd" id="6_h4lvc"]
+[ext_resource type="AudioStream" uid="uid://7kv8jydr2fre" path="res://SFX/Characters/alien.wav" id="7_4q07b"]
+[ext_resource type="Texture2D" uid="uid://dbtq8hdc0d4we" path="res://Characters/chillestguyoat.png" id="7_h4lvc"]
+[ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="8_wyd0v"]
+[ext_resource type="AudioStream" uid="uid://d3suhj2fl3fjb" path="res://SFX/Characters/human.wav" id="8_x4du8"]
+[ext_resource type="Texture2D" uid="uid://covgegqtnx710" path="res://Media/Images/spaceship.png" id="12_x4du8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xgxvx"]
 texture = ExtResource("1_yryf6")
@@ -131,6 +138,14 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/1 = SubResource("TileSetAtlasSource_2waif")
 
+[sub_resource type="Gradient" id="Gradient_x4du8"]
+colors = PackedColorArray(0.39308554, 0.39308554, 0.39308533, 1, 0.48570347, 0.48570353, 0.48570347, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g4v7s"]
+gradient = SubResource("Gradient_x4du8")
+width = 33
+height = 33
+
 [node name="Node2D" type="Node2D" unique_id=212715720]
 
 [node name="Tilemaps" type="Node2D" parent="." unique_id=157823496]
@@ -185,3 +200,87 @@ position = Vector2(504, 519)
 rotation = 0.015208772
 scale = Vector2(0.5683368, 0.61710536)
 zoom = Vector2(2.06, 2.06)
+
+[node name="ChatBox" type="Control" parent="." unique_id=1738726403]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_h4lvc")
+dialogue_speakers = Array[int]([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+dialogue_lines = Array[String](["By the binary moons of Orik... atmospheric pressure is optimal, but my lateral thrusters are completely scorched!", "Whoa! Okay, definitely not a weather balloon.", "Oh, great. A local carbon-based lifeform. Listen, carbon-biped, I don't suppose you have a spare quantum-flux capacitor lying around? Or at least a wrench that works in sub-zero plasma?", "A what? Look, buddy, you just crash-landed in my backyard. The whole town heard the boom. You're lucky the local authorities aren't out here right now.", "Great. Just great. Stranded on a mud-ball third planet from a mediocre star. I'll be stuck here for cycles.", "Hey, don't knock Earth. It’s got... well, ULTRAKILL, for one. But seriously, what are you even doing out here?", "I was charting deep-space trade routes when your planet's massive cloud of atmospheric pollution threw off my sensors. Honestly, your world is a complete mess. Smog choking the skies, oceans full of plastic... it's a hazard zone!", "Tell me about it. We’ve been trying to fix things for decades, but progress is slow.", "Wait. You want your planet fixed, and I want off this rock.", "Are you suggesting what I think you’re suggesting?", "My ship’s onboard computer has advanced terraforming tech and cleanup machines that could scrub  oceans in a fraction of a standard year. But I can't power it without my warp-drive core fully intact.", "And my part in this?", "You help me scavenge the local alloys, electronics, and technical components I need to rebuild my warp drive. In exchange, I use my ship's systems to help heal your ecosystem. A mutually beneficial alliance. What do you say, Earthling?", "It’s a deal. But on one condition: you have to let me ride in the spaceship once it's fixed.", "If it means getting home, it's a deal. Now... where do we find these electronics?", "Follow me. We're going to my uncle’s garage. It's basically a goldmine of junk."])
+alien_blip_sound = ExtResource("7_4q07b")
+human_blip_sound = ExtResource("8_x4du8")
+
+[node name="Cutealien" type="Sprite2D" parent="ChatBox" unique_id=1642894263]
+position = Vector2(282, 459)
+scale = Vector2(0.08913322, 0.08913322)
+texture = ExtResource("6_2waif")
+
+[node name="Human" type="Sprite2D" parent="ChatBox" unique_id=1466718810]
+position = Vector2(750, 454.00003)
+scale = Vector2(0.04894277, 0.04894277)
+texture = ExtResource("7_h4lvc")
+
+[node name="Panel" type="Panel" parent="ChatBox" unique_id=624916801]
+texture_filter = 1
+layout_mode = 0
+offset_left = 206.0
+offset_top = 529.0
+offset_right = 246.0
+offset_bottom = 569.0
+scale = Vector2(15.103946, 3.945208)
+tooltip_text = "
+"
+
+[node name="Text" type="Label" parent="ChatBox" unique_id=1983303655]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 532.0
+offset_right = 793.0
+offset_bottom = 647.0
+theme_override_fonts/font = ExtResource("8_wyd0v")
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 3
+
+[node name="NEXT" type="Button" parent="ChatBox" unique_id=1410605471]
+layout_mode = 0
+offset_left = 571.0
+offset_top = 655.0
+offset_right = 657.0
+offset_bottom = 680.0
+theme_override_fonts/font = ExtResource("8_wyd0v")
+theme_override_font_sizes/font_size = 19
+text = "NEXT >"
+
+[node name="SKIP" type="Button" parent="ChatBox" unique_id=1532329165]
+layout_mode = 0
+offset_left = 667.0
+offset_top = 655.0
+offset_right = 776.0
+offset_bottom = 680.0
+theme_override_fonts/font = ExtResource("8_wyd0v")
+theme_override_font_sizes/font_size = 19
+text = "SKIP ALL>"
+
+[node name="BlipSound" type="AudioStreamPlayer" parent="ChatBox" unique_id=407937043]
+volume_db = -4.06
+
+[node name="Spaceship" type="Sprite2D" parent="ChatBox" unique_id=1518365723]
+z_index = -1
+texture_filter = 1
+position = Vector2(458.0001, 514)
+rotation = 1.861275
+scale = Vector2(1.8914251, 1.8914251)
+texture = ExtResource("12_x4du8")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=166930867]
+z_index = -1
+position = Vector2(353, 510)
+amount = 18
+texture = SubResource("GradientTexture2D_g4v7s")
+lifetime = 1.1300000000000001
+randomness = 0.37
+emission_shape = 1
+emission_sphere_radius = 25.25
+gravity = Vector2(0, -150)

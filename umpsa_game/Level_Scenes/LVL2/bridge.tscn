@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dju5a73e84ern"]
+
+[sub_resource type="Gradient" id="Gradient_f5wbh"]
+colors = PackedColorArray(0.60529095, 0.23365843, 0.04070829, 1, 0.6039216, 0.23529412, 0.039215688, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g4v7s"]
+gradient = SubResource("Gradient_f5wbh")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(638, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(81.43306, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
+size = Vector2(81.56116, 20)
+
+[node name="Bridge" type="StaticBody2D" unique_id=1898553730]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1029219428]
+position = Vector2(1210, 542.00006)
+scale = Vector2(8.576816, 0.2501747)
+texture = SubResource("GradientTexture2D_g4v7s")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=185200168]
+position = Vector2(861, 557)
+rotation = -0.47297487
+scale = Vector2(1.1740289, -0.21858168)
+texture = SubResource("GradientTexture2D_g4v7s")
+
+[node name="Sprite2D3" type="Sprite2D" parent="." unique_id=505867450]
+position = Vector2(1560, 559.99994)
+rotation = 0.5259507
+scale = Vector2(1.1740289, -0.21858168)
+texture = SubResource("GradientTexture2D_g4v7s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=21070911]
+position = Vector2(1211, 542)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=424547586]
+position = Vector2(862.52924, 561.6669)
+rotation = -0.5174265
+scale = Vector2(0.9932396, 1.0469688)
+shape = SubResource("RectangleShape2D_57qmd")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="." unique_id=1681084745]
+position = Vector2(1557.8279, 563.7441)
+rotation = 0.5751788
+shape = SubResource("RectangleShape2D_d0u6y")

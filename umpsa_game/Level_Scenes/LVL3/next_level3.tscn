@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://bbe3ty7uf5muj"]
+
+[ext_resource type="Texture2D" uid="uid://msfgrrxeovh1" path="res://Media/Images/Main menu.png" id="1_3ihl7"]
+[ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="2_08qt5"]
+[ext_resource type="Script" uid="uid://cfteag3kyrgl" path="res://Game Scripts/scene_changer.gd" id="3_jjkkv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font = ExtResource("2_08qt5")
+font_size = 65
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Next_level" type="Control" unique_id=2113157327]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 484.0
+offset_top = 256.0
+offset_right = 524.0
+offset_bottom = 296.0
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=67440735]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -629.0
+offset_top = -313.0
+offset_right = -309.0
+offset_bottom = -165.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.3593006, 4.4720736)
+texture = ExtResource("1_3ihl7")
+
+[node name="Label" type="Label" parent="." unique_id=2016053910]
+layout_mode = 0
+offset_left = -174.0
+offset_top = -80.0
+offset_right = 537.0
+offset_bottom = -22.0
+theme_override_fonts/font = ExtResource("2_08qt5")
+theme_override_font_sizes/font_size = 1
+text = "Finished Level!"
+label_settings = SubResource("LabelSettings_g4v7s")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=84288149]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -194.0
+offset_top = 91.0
+offset_right = 517.0
+offset_bottom = 385.0
+grow_horizontal = 2
+
+[node name="Next" type="Button" parent="VBoxContainer" unique_id=2115376732]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_08qt5")
+theme_override_font_sizes/font_size = 120
+text = "Next Level"
+script = ExtResource("3_jjkkv")
+next_scene_path = "uid://bnyad5dm5aq10"
+
+[node name="Menu" type="Button" parent="VBoxContainer" unique_id=1757613445]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_08qt5")
+theme_override_font_sizes/font_size = 120
+text = "Menu"
+script = ExtResource("3_jjkkv")
+next_scene_path = "uid://bnyad5dm5aq10"
