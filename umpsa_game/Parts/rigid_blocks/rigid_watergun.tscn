@@ -45,6 +45,7 @@ scale_amount_curve = SubResource("Curve_yf5fn")
 color_ramp = SubResource("Gradient_57qmd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=278734619]
+texture_filter = 1
 rotation = 1.5707964
 scale = Vector2(0.023, 0.023)
 texture = ExtResource("1_4vaa4")

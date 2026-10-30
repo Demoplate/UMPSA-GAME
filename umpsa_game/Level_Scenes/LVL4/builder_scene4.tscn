@@ -1,0 +1,555 @@
+[gd_scene format=3 uid="uid://d27oja86q4jiq"]
+
+[ext_resource type="Script" uid="uid://cwlgsu47ibqf7" path="res://Game Scripts/builder_loader.gd" id="1_4mrhp"]
+[ext_resource type="Script" uid="uid://bgf041kslnfx6" path="res://Game Scripts/buildingarea.gd" id="2_kb1y2"]
+[ext_resource type="PackedScene" uid="uid://74k1jpvd18q2" path="res://Parts/cloned_parts/command.tscn" id="3_k8vkr"]
+[ext_resource type="Texture2D" uid="uid://1xej11xpnx43" path="res://Textures/PartTextures/ElectronicControlUnit.png" id="4_u068y"]
+[ext_resource type="PackedScene" uid="uid://b2k5un75nkqb1" path="res://Parts/cloned_parts/piston.tscn" id="5_a30je"]
+[ext_resource type="Texture2D" uid="uid://b7ca4jrhngro7" path="res://Textures/PartTextures/Piston/PistonContract.png" id="6_s33nl"]
+[ext_resource type="PackedScene" uid="uid://dou1fqq3c1o02" path="res://Parts/cloned_parts/watergun.tscn" id="7_c74xd"]
+[ext_resource type="Texture2D" uid="uid://bvpa87tydke2k" path="res://Textures/PartTextures/waterdispenser.png" id="8_dxvb5"]
+[ext_resource type="PackedScene" uid="uid://b8g6ajf44ul1f" path="res://Parts/cloned_parts/thruster.tscn" id="9_dtlxu"]
+[ext_resource type="Texture2D" uid="uid://bu280rrm0cgxy" path="res://Textures/PartTextures/ThrusterBodyNoFire.png" id="10_6fwp0"]
+[ext_resource type="PackedScene" uid="uid://cr52j1kepsbnr" path="res://Parts/cloned_parts/block.tscn" id="11_s7l44"]
+[ext_resource type="Texture2D" uid="uid://375q7q3tls6t" path="res://Textures/PartTextures/IronBlock.png" id="12_4t0ej"]
+[ext_resource type="PackedScene" uid="uid://byoarpyeeomdp" path="res://Parts/cloned_parts/laser.tscn" id="13_4knmm"]
+[ext_resource type="Texture2D" uid="uid://lhox1o3331kd" path="res://Textures/PartTextures/LaserBlock.png" id="14_aqtuo"]
+[ext_resource type="PackedScene" uid="uid://d2supgtgs14fr" path="res://Parts/cloned_parts/wheel.tscn" id="15_kkrdg"]
+[ext_resource type="Texture2D" uid="uid://dc61n07cvkjds" path="res://Textures/PartTextures/Saw/Base.png" id="16_q255a"]
+[ext_resource type="PackedScene" uid="uid://3cjlfs4qht5c" path="res://Parts/cloned_parts/saw.tscn" id="17_m5cuo"]
+[ext_resource type="Texture2D" uid="uid://p6fn17bxrdi4" path="res://Textures/PartTextures/Saw/16X16Setting.png" id="18_mbkt4"]
+[ext_resource type="Script" uid="uid://s3ksefud0kvb" path="res://Game Scripts/Tool Scripts/select_tool.gd" id="19_iws4q"]
+[ext_resource type="Texture2D" uid="uid://dqjrup6sul8vp" path="res://Textures/Icons/wrech.png" id="20_yd7qp"]
+[ext_resource type="Script" uid="uid://c72bv5pbimaj" path="res://Game Scripts/Tool Scripts/spawner_tool.gd" id="21_fgwyu"]
+[ext_resource type="Texture2D" uid="uid://1idwa30ya7ig" path="res://Textures/Icons/Hammer.png" id="22_4oysv"]
+[ext_resource type="Script" uid="uid://xu3f43skh4c" path="res://Game Scripts/Tool Scripts/delete_tool.gd" id="23_3e37l"]
+[ext_resource type="Texture2D" uid="uid://c3sx2draw4oo7" path="res://Textures/Icons/CloseLid.png" id="24_mn0ge"]
+[ext_resource type="Texture2D" uid="uid://dbvtoa6725d61" path="res://Textures/Icons/OpenLid.png" id="25_04di6"]
+[ext_resource type="Script" uid="uid://b24i0oi0vp5oq" path="res://Game Scripts/Tool Scripts/play.gd" id="26_mbils"]
+[ext_resource type="Texture2D" uid="uid://1pkac67hplm6" path="res://Textures/Icons/startOrPlayButtton.png" id="27_hchuw"]
+[ext_resource type="Texture2D" uid="uid://bgsoytb0p2lqd" path="res://Textures/Icons/RotateButton.png" id="28_cjnei"]
+[ext_resource type="Script" uid="uid://7pgl0yf4va3l" path="res://Game Scripts/Tool Scripts/properties.gd" id="29_r25l5"]
+[ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="30_6q2hw"]
+
+[sub_resource type="Gradient" id="Gradient_cegan"]
+colors = PackedColorArray(0.14901961, 0.14901961, 0.14901961, 1, 0.14767182, 0.14767179, 0.14767179, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_g4v7s"]
+gradient = SubResource("Gradient_cegan")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7numd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fcnqv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3gngh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aj3s1"]
+size = Vector2(439.28577, 446.42865)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yf5fn"]
+size = Vector2(37.94526, 4.563732)
+
+[sub_resource type="Gradient" id="Gradient_getpj"]
+colors = PackedColorArray(0.47058824, 0.47058824, 0.47058824, 1, 0.47007585, 0.47007585, 0.47007585, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cegan"]
+gradient = SubResource("Gradient_getpj")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57qmd"]
+size = Vector2(10, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d0u6y"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yf5fn"]
+font = ExtResource("30_6q2hw")
+font_size = 37
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font = ExtResource("30_6q2hw")
+outline_size = 5
+outline_color = Color(1, 0, 0, 1)
+shadow_size = 776
+shadow_color = Color(1, 0, 0, 0)
+
+[node name="Node2D" type="Node2D" unique_id=1757792821]
+script = ExtResource("1_4mrhp")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1890735481]
+position = Vector2(592, 7)
+scale = Vector2(65.54056, 34.465607)
+texture = SubResource("GradientTexture2D_g4v7s")
+
+[node name="CommandCloner" type="Area2D" parent="." unique_id=1457362869 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(68.99999, 277.99997)
+scale = Vector2(0.484, 0.484)
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("3_k8vkr")
+rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CommandCloner" unique_id=1587622073]
+scale = Vector2(9.818, 9.818)
+shape = SubResource("RectangleShape2D_7numd")
+
+[node name="Sprite2D" type="Sprite2D" parent="CommandCloner" unique_id=748466893]
+position = Vector2(2.0661156, 0)
+scale = Vector2(0.100552134, 0.1324714)
+texture = ExtResource("4_u068y")
+
+[node name="PistonCloner" type="Area2D" parent="." unique_id=946330816 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(205, 278)
+scale = Vector2(0.484, 0.484)
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("5_a30je")
+rotate_button = NodePath("../Tools/RotateTool")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PistonCloner" unique_id=1086199511]
+scale = Vector2(9.818, 9.818)
+shape = SubResource("RectangleShape2D_7numd")
+
+[node name="Sprite2D" type="Sprite2D" parent="PistonCloner" unique_id=131807142]
+position = Vector2(2.0661156, 0)
+rotation = -3.1415927
+scale = Vector2(0.096344754, 0.097337715)
+texture = ExtResource("6_s33nl")
+
+[node name="WatergunCloner" type="Area2D" parent="." unique_id=1921591995 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(204, 164)
+scale = Vector2(0.48374736, 0.48374736)
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("7_c74xd")
+rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WatergunCloner" unique_id=928248276]
+scale = Vector2(9.818, 9.818)
+shape = SubResource("RectangleShape2D_fcnqv")
+
+[node name="Sprite2D" type="Sprite2D" parent="WatergunCloner" unique_id=626091544]
+rotation = -4.712389
+scale = Vector2(0.0986679, 0.09996812)
+texture = ExtResource("8_dxvb5")
+
+[node name="ThrusterCloner" type="Area2D" parent="." unique_id=647928085 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(77, 65)
+scale = Vector2(0.48374736, 0.48374736)
+collision_layer = 4
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("9_dtlxu")
+rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="ThrusterCloner" unique_id=72508307]
+position = Vector2(-15.104004, -10.555725)
+scale = Vector2(0.089991815, 0.092468165)
+texture = ExtResource("10_6fwp0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ThrusterCloner" unique_id=703042500]
+position = Vector2(-15.104126, -10.555664)
+scale = Vector2(9.817893, 9.213393)
+shape = SubResource("RectangleShape2D_3gngh")
+
+[node name="BlockCloner" type="Area2D" parent="." unique_id=1639796886 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(206.00002, 63)
+scale = Vector2(-4.7339525, -4.7339525)
+collision_layer = 4
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("11_s7l44")
+rotate_button = NodePath("../Tools/RotateTool")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlockCloner" unique_id=583443685]
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="BlockCloner" unique_id=2062581300]
+scale = Vector2(-0.010315237, 0.010206742)
+texture = ExtResource("12_4t0ej")
+
+[node name="LaserCloner" type="Area2D" parent="." unique_id=696534250 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(70.000015, 394.99997)
+scale = Vector2(-4.7339525, -4.7339525)
+collision_layer = 4
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("13_4knmm")
+rotate_button = NodePath("../Tools/RotateTool")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LaserCloner" unique_id=1155180975]
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="LaserCloner" unique_id=2144621415]
+scale = Vector2(-0.010315237, 0.010206742)
+texture = ExtResource("14_aqtuo")
+
+[node name="WheelCloner" type="Area2D" parent="." unique_id=120399294 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(70.00002, 166)
+rotation = 3.1415927
+scale = Vector2(-1.1387826, -1.1387826)
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("15_kkrdg")
+rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="WheelCloner" unique_id=408816850]
+position = Vector2(-0.87815, -1.7562675)
+scale = Vector2(0.038438495, 0.037817504)
+texture = ExtResource("16_q255a")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="WheelCloner" unique_id=1330583409]
+position = Vector2(-7.6293945e-06, -2.4274254)
+scale = Vector2(4.156936, -3.904389)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="SawCloner" type="Area2D" parent="." unique_id=511054249 node_paths=PackedStringArray("rotate_button")]
+position = Vector2(204.99997, 400)
+rotation = 3.1415927
+scale = Vector2(-1.1387826, -1.1387826)
+script = ExtResource("2_kb1y2")
+part_scene = ExtResource("17_m5cuo")
+rotate_button = NodePath("../Tools/RotateTool")
+max_parts = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="SawCloner" unique_id=401658998]
+position = Vector2(-0.87815, -1.7562675)
+scale = Vector2(0.038438495, 0.037817504)
+texture = ExtResource("16_q255a")
+
+[node name="Sprite2D2" type="Sprite2D" parent="SawCloner" unique_id=1329183841]
+position = Vector2(-0.8781088, 9.659432)
+scale = Vector2(0.027598951, 0.027153078)
+texture = ExtResource("18_mbkt4")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="SawCloner" unique_id=986146057]
+position = Vector2(-7.6293945e-06, -2.4274254)
+scale = Vector2(4.156936, -3.904389)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Tools" type="Node" parent="." unique_id=2068795873]
+
+[node name="SelectTool" type="Area2D" parent="Tools" unique_id=1768975826]
+position = Vector2(437, 491)
+scale = Vector2(0.21868585, 0.21868585)
+script = ExtResource("19_iws4q")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/SelectTool" unique_id=1152373873]
+position = Vector2(1182.857, 708.5714)
+scale = Vector2(0.22378896, 0.22378896)
+texture = ExtResource("20_yd7qp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/SelectTool" unique_id=837493369]
+position = Vector2(1185.7144, 708.5714)
+scale = Vector2(0.99999964, 0.99999964)
+shape = SubResource("RectangleShape2D_aj3s1")
+
+[node name="BuildTool" type="Area2D" parent="Tools" unique_id=295933461]
+position = Vector2(550, 600)
+scale = Vector2(0.2252933, 0.2252933)
+script = ExtResource("21_fgwyu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/BuildTool" unique_id=670084493]
+position = Vector2(1168.5713, 217.14288)
+scale = Vector2(0.24284133, 0.24284133)
+texture = ExtResource("22_4oysv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/BuildTool" unique_id=792160556]
+position = Vector2(1171.4286, 217.14282)
+scale = Vector2(0.99999964, 0.99999964)
+shape = SubResource("RectangleShape2D_aj3s1")
+
+[node name="DeleteTool" type="Area2D" parent="Tools" unique_id=1464393887]
+position = Vector2(675, 600)
+scale = Vector2(0.22627313, 0.22627313)
+script = ExtResource("23_3e37l")
+
+[node name="ClosedLid" type="Sprite2D" parent="Tools/DeleteTool" unique_id=102306250]
+position = Vector2(1168.5713, 217.14288)
+scale = Vector2(0.22611389, 0.20840646)
+texture = ExtResource("24_mn0ge")
+
+[node name="OpenedLid" type="Sprite2D" parent="Tools/DeleteTool" unique_id=1064541021]
+visible = false
+position = Vector2(1168.5713, 217.14288)
+scale = Vector2(0.22398283, 0.20644228)
+texture = ExtResource("25_04di6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/DeleteTool" unique_id=1462903936]
+position = Vector2(1171.4286, 217.14282)
+scale = Vector2(0.99999964, 0.99999964)
+shape = SubResource("RectangleShape2D_aj3s1")
+
+[node name="BuildingArea" type="Area2D" parent="Tools" unique_id=372788814 groups=["building_area"]]
+position = Vector2(994, 254)
+scale = Vector2(0.6444024, 0.35147038)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/BuildingArea" unique_id=505646001]
+position = Vector2(-328.26797, 103.71699)
+scale = Vector2(35.46462, 308.01855)
+shape = SubResource("RectangleShape2D_yf5fn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/BuildingArea" unique_id=2066735478]
+oversampling_with_scale = 2
+position = Vector2(-342.5405, 110.40839)
+scale = Vector2(-23.78286, 24.835442)
+texture = SubResource("GradientTexture2D_cegan")
+
+[node name="PlayButton" type="Area2D" parent="Tools" unique_id=559970560]
+position = Vector2(1209.9999, 649)
+scale = Vector2(0.19525662, 0.19525662)
+script = ExtResource("26_mbils")
+target_scene_path = "uid://dnrljnk6sljl7"
+warning_label_path = NodePath("../../Warning/Label")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/PlayButton" unique_id=2105066597]
+position = Vector2(-5, 0)
+scale = Vector2(55.724785, 27.544525)
+shape = SubResource("RectangleShape2D_57qmd")
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/PlayButton" unique_id=407851751]
+scale = Vector2(0.29435614, 0.29435614)
+texture = ExtResource("27_hchuw")
+
+[node name="RotateTool" type="Area2D" parent="Tools" unique_id=2126286032]
+position = Vector2(1194.0001, 625.00006)
+scale = Vector2(0.25411582, 0.25411582)
+
+[node name="Sprite2D" type="Sprite2D" parent="Tools/RotateTool" unique_id=1516860905]
+position = Vector2(-502.857, 97.14285)
+scale = Vector2(0.20352912, 0.20352912)
+texture = ExtResource("28_cjnei")
+flip_v = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tools/RotateTool" unique_id=747764647]
+position = Vector2(-499.9998, 97.14285)
+scale = Vector2(19.861141, 19.861141)
+shape = SubResource("RectangleShape2D_d0u6y")
+
+[node name="Properties" type="Control" parent="." unique_id=2005985156]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = -498.0
+offset_top = -115.00001
+offset_right = -498.0
+offset_bottom = -115.00001
+scale = Vector2(0.9009507, 1.0210657)
+script = ExtResource("29_r25l5")
+
+[node name="Wheel" type="Control" parent="Properties" unique_id=1028014662]
+visible = false
+anchors_preset = 0
+offset_left = 571.0233
+offset_top = 301.78436
+offset_right = 611.0233
+offset_bottom = 341.78436
+
+[node name="Forward" type="Label" parent="Properties/Wheel" unique_id=870127814]
+layout_mode = 0
+offset_left = 2.9586627
+offset_top = -178.50642
+offset_right = 262.95865
+offset_bottom = -109.506424
+text = "Assign
+forward key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Backward" type="Label" parent="Properties/Wheel" unique_id=88652943]
+layout_mode = 0
+offset_left = 3.9448938
+offset_top = -65.090744
+offset_right = 263.9449
+offset_bottom = 3.909256
+text = "Assign 
+reverse key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button2" type="Button" parent="Properties/Wheel" unique_id=2100661217]
+layout_mode = 0
+offset_left = 4.931117
+offset_top = 49.311165
+offset_right = 37.96609
+offset_bottom = 80.311165
+text = "->"
+
+[node name="Forwards" type="LineEdit" parent="Properties/Wheel" unique_id=1701230825]
+layout_mode = 0
+offset_left = 3.9448934
+offset_top = -95.66367
+offset_right = 72.44489
+offset_bottom = -64.66367
+max_length = 1
+
+[node name="Reverse" type="LineEdit" parent="Properties/Wheel" unique_id=1969909667]
+layout_mode = 0
+offset_left = 6.9035616
+offset_top = 11.834671
+offset_right = 75.403564
+offset_bottom = 42.83467
+max_length = 1
+
+[node name="Saw" type="Control" parent="Properties" unique_id=466385248]
+anchors_preset = 0
+offset_left = 571.0233
+offset_top = 301.78436
+offset_right = 611.0233
+offset_bottom = 341.78436
+
+[node name="Forward" type="Label" parent="Properties/Saw" unique_id=397948379]
+layout_mode = 0
+offset_left = 2.9586627
+offset_top = -178.50642
+offset_right = 262.95865
+offset_bottom = -109.506424
+text = "Assign key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button2" type="Button" parent="Properties/Saw" unique_id=1642669033]
+layout_mode = 0
+offset_left = 4.931117
+offset_top = 49.311165
+offset_right = 37.96609
+offset_bottom = 80.311165
+text = "->"
+
+[node name="Forwards" type="LineEdit" parent="Properties/Saw" unique_id=1328062872]
+layout_mode = 0
+offset_left = 3.9448934
+offset_top = -95.66367
+offset_right = 72.44489
+offset_bottom = -64.66367
+max_length = 1
+
+[node name="Piston" type="Control" parent="Properties" unique_id=228583439]
+visible = false
+anchors_preset = 0
+offset_left = 571.0233
+offset_top = 301.78436
+offset_right = 611.0233
+offset_bottom = 341.78436
+
+[node name="Extend2" type="Label" parent="Properties/Piston" unique_id=1086073034]
+layout_mode = 0
+offset_left = 2.9586627
+offset_top = -178.50642
+offset_right = 241.95866
+offset_bottom = -145.50642
+text = "Assign
+extend key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Retract2" type="Label" parent="Properties/Piston" unique_id=13589278]
+layout_mode = 0
+offset_left = 3.9448938
+offset_top = -65.090744
+offset_right = 263.9449
+offset_bottom = 3.909256
+text = "Assign 
+retract key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button2" type="Button" parent="Properties/Piston" unique_id=1091029612]
+layout_mode = 0
+offset_left = 4.931117
+offset_top = 49.311165
+offset_right = 37.96609
+offset_bottom = 80.311165
+text = "->"
+
+[node name="Extend" type="LineEdit" parent="Properties/Piston" unique_id=998533785]
+layout_mode = 0
+offset_left = 3.9448934
+offset_top = -95.66367
+offset_right = 72.44489
+offset_bottom = -64.66367
+max_length = 1
+
+[node name="Retract" type="LineEdit" parent="Properties/Piston" unique_id=1196811289]
+layout_mode = 0
+offset_left = 6.9035616
+offset_top = 11.834671
+offset_right = 75.403564
+offset_bottom = 42.83467
+max_length = 1
+
+[node name="Thruster" type="Control" parent="Properties" unique_id=1158551012]
+visible = false
+anchors_preset = 0
+offset_left = -106.512115
+offset_top = 0.98622894
+offset_right = -66.512115
+offset_bottom = 40.98623
+
+[node name="Label" type="Label" parent="Properties/Thruster" unique_id=2070063287]
+layout_mode = 0
+offset_left = 681.0
+offset_top = 120.99999
+offset_right = 920.0
+offset_bottom = 154.0
+text = "Assign key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button" type="Button" parent="Properties/Thruster" unique_id=198278550]
+layout_mode = 0
+offset_left = 684.99994
+offset_top = 205.0
+offset_right = 718.0349
+offset_bottom = 236.0
+text = "->"
+
+[node name="LineEdit" type="LineEdit" parent="Properties/Thruster" unique_id=243991480]
+layout_mode = 0
+offset_left = 682.46655
+offset_top = 163.71307
+offset_right = 750.96655
+offset_bottom = 194.71307
+max_length = 1
+
+[node name="Laser" type="Control" parent="Properties" unique_id=1856723780]
+visible = false
+anchors_preset = 0
+offset_left = -106.512115
+offset_top = 0.98622894
+offset_right = -66.512115
+offset_bottom = 40.98623
+
+[node name="Label" type="Label" parent="Properties/Laser" unique_id=774646749]
+layout_mode = 0
+offset_left = 681.0
+offset_top = 120.99999
+offset_right = 920.0
+offset_bottom = 154.0
+text = "Assign key:"
+label_settings = SubResource("LabelSettings_yf5fn")
+
+[node name="Button" type="Button" parent="Properties/Laser" unique_id=1856769960]
+layout_mode = 0
+offset_left = 684.99994
+offset_top = 205.0
+offset_right = 718.0349
+offset_bottom = 236.0
+text = "->"
+
+[node name="LineEdit" type="LineEdit" parent="Properties/Laser" unique_id=1473642883]
+layout_mode = 0
+offset_left = 682.46655
+offset_top = 163.71307
+offset_right = 750.96655
+offset_bottom = 194.71307
+max_length = 1
+
+[node name="Warning" type="Control" parent="." unique_id=2045776672]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 814.0
+offset_top = 1149.0
+offset_right = 854.0
+offset_bottom = 1189.0
+
+[node name="Label" type="Label" parent="Warning" unique_id=1425482012]
+visible = false
+layout_mode = 0
+offset_left = -528.99976
+offset_top = -568.99994
+offset_right = -274.99976
+offset_bottom = -545.99994
+text = "Please add a command block!"
+label_settings = SubResource("LabelSettings_g4v7s")

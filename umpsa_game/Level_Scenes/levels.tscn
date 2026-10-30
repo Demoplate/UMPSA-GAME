@@ -2,9 +2,10 @@
 
 [ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="1_fxt5w"]
 [ext_resource type="Texture2D" uid="uid://msfgrrxeovh1" path="res://Media/Images/Main menu.png" id="1_p2mrp"]
+[ext_resource type="Script" uid="uid://bb4vwwr7cxin7" path="res://Level_Scenes/levelselector.gd" id="2_ibf4y"]
 [ext_resource type="Script" uid="uid://cfteag3kyrgl" path="res://Game Scripts/scene_changer.gd" id="2_mlju4"]
 
-[node name="Control" type="Control" unique_id=590505188]
+[node name="Control" type="Control" unique_id=590505188 node_paths=PackedStringArray("level_1_button", "level_2_button", "level_3_button", "level_4_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +14,11 @@ offset_right = -1280.0
 offset_bottom = -720.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_ibf4y")
+level_1_button = NodePath("VBoxContainer/level1")
+level_2_button = NodePath("VBoxContainer/level2")
+level_3_button = NodePath("VBoxContainer/level3")
+level_4_button = NodePath("VBoxContainer/level4")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1862402842]
 texture_filter = 1
@@ -67,18 +73,20 @@ text = "LEVEL 3
 script = ExtResource("2_mlju4")
 next_scene_path = "uid://ysvwah7ae145"
 
-[node name="level6" type="Button" parent="VBoxContainer" unique_id=299907542]
+[node name="level4" type="Button" parent="VBoxContainer" unique_id=299907542]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_fxt5w")
 theme_override_font_sizes/font_size = 125
-text = "LEVEL 5
+text = "LEVEL 4
+
 "
 
 [node name="level5" type="Button" parent="VBoxContainer" unique_id=193635705]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_fxt5w")
 theme_override_font_sizes/font_size = 125
-text = "LEVEL 4
+text = "LEVEL 5
+
 
 
 "

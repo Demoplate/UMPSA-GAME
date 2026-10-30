@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://d25lyjqnqy5vh"]
+
+[ext_resource type="Texture2D" uid="uid://couai7dsh5hok" path="res://Parts/Misc/handSaw.png" id="1_v2i6t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+
+[node name="Node2D" type="RigidBody2D" unique_id=1952538675]
+
+[node name="Saw" type="Sprite2D" parent="." unique_id=1838762710]
+scale = Vector2(0.04822893, 0.04822893)
+texture = ExtResource("1_v2i6t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=630132566]
+scale = Vector2(4.6222606, -1.3959948)
+shape = SubResource("RectangleShape2D_g4v7s")

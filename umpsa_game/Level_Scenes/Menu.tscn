@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://msfgrrxeovh1" path="res://Media/Images/Main menu.png" id="1_2x18w"]
 [ext_resource type="FontFile" uid="uid://bcsp17oaonr0t" path="res://Fonts/VCR_OSD_MONO_1.001.ttf" id="1_yjgbq"]
-[ext_resource type="Script" uid="uid://cfteag3kyrgl" path="res://Game Scripts/scene_changer.gd" id="2_r384w"]
+[ext_resource type="Script" uid="uid://dsjf3fu37oluw" path="res://Level_Scenes/playbuttonmenu.gd" id="3_2x18w"]
 [ext_resource type="Texture2D" uid="uid://bs4niv4r62h5k" path="res://Media/Images/Arrow45°.png" id="4_3ex7h"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
@@ -59,8 +59,9 @@ theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("1_yjgbq")
 theme_override_font_sizes/font_size = 91
 text = "PLAY"
-script = ExtResource("2_r384w")
+script = ExtResource("3_2x18w")
 next_scene_path = "uid://bbhbkad18h10n"
+fallback_scene_path = "uid://cgwhvs6dj06gh"
 
 [node name="Arrow45°" type="Sprite2D" parent="VBoxContainer/play" unique_id=1863238113]
 texture_filter = 1

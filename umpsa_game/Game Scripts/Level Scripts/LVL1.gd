@@ -5,6 +5,7 @@ extends Node2D
 @export var wheel_power: float = 20000.0
 @export var saw_power: float = 20000.0
 @export_file("*.tscn") var next_scene_path: String
+@export var level_id: String = ""
 
 @export_group("Piston")
 @export_range(1.0, 500.0, 1.0, "or_greater") var piston_max_extension: float = 40.0
@@ -47,6 +48,7 @@ var ui_root: Control
 var toggle_edit_btn: Button
 var is_ui_unlocked: bool = false
 var button_count: int = 0
+var level_finished: bool = false
 
 func _ready():
 	_build_ui()
@@ -218,11 +220,7 @@ func _ready():
 				var target_name = area.name.to_lower()
 				var parent_name = area.get_parent().name.to_lower() if area.get_parent() else ""
 				if "flagpole" in target_name or "flagpole" in parent_name or area.is_in_group("flagpole"):
-					if next_scene_path and not next_scene_path.is_empty():
-						GameData.saved_parts.clear()
-						get_tree().change_scene_to_file(next_scene_path)
-					else:
-						print("[ERROR] Next scene path is not assigned on the Level Loader node!")
+					_on_level_finished()
 			)
 
 		for inst in island:
@@ -507,6 +505,24 @@ func _ready():
 	for inst in part_nodes:
 		inst.queue_free()
 
+func _on_level_finished() -> void:
+	if level_finished:
+		return
+	level_finished = true
+
+	var id = level_id
+	if id.is_empty():
+		id = get_tree().current_scene.scene_file_path.get_file().get_basename()
+
+	LevelManager.mark_level_completed(id)
+	GameData.saved_parts.clear()
+
+	if next_scene_path.is_empty():
+		push_error("Next scene path is not assigned on the Level Loader node!")
+		return
+
+	get_tree().change_scene_to_file.call_deferred(next_scene_path)
+
 func _is_piston(p_data) -> bool:
 	var scene_path = p_data.get("scene_path", "").to_lower()
 	var p_type = p_data.get("type", "").to_lower()
@@ -616,14 +632,13 @@ func _unhandled_input(event: InputEvent):
 					ui_buttons[key].modulate = Color(0.6, 1.0, 0.6) if event.pressed else Color.WHITE
 
 func _physics_process(delta: float):
-	# Apply toggle state for saws continuously and check collisions for destruction
 	for key in saw_groups.keys():
 		if toggle_keys.get(key, false):
 			for d in saw_groups[key]:
 				var saw_body = d["rolling_body"]
 				if is_instance_valid(saw_body):
 					saw_body.apply_torque(saw_power)
-					
+
 					if saw_body.has_method("get_colliding_bodies"):
 						for collider in saw_body.get_colliding_bodies():
 							_check_and_destroy_target(collider)
@@ -733,6 +748,7 @@ func _fade_out_target(target: Node) -> void:
 			_disable_target_collisions(target)
 			target.queue_free()
 		)
+
 func _disable_target_collisions(target: Node) -> void:
 	if not is_instance_valid(target):
 		return
@@ -740,10 +756,11 @@ func _disable_target_collisions(target: Node) -> void:
 		collision_shape.set_deferred("disabled", true)
 	for collision_shape in target.find_children("*", "CollisionPolygon2D", true, false):
 		collision_shape.set_deferred("disabled", true)
-		
+
 	if target is CollisionObject2D:
 		target.set_deferred("collision_layer", 0)
 		target.set_deferred("collision_mask", 0)
+
 func _drive_piston(p_data: Dictionary, delta: float):
 	var head: RigidBody2D = p_data["head"]
 	var chassis: RigidBody2D = p_data["chassis"]

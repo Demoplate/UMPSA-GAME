@@ -364,6 +364,7 @@ height = 33
 
 [node name="Node2D" type="Node2D" unique_id=212715720]
 script = ExtResource("6_4ynoy")
+next_scene_path = "uid://cushpgbh0ujbm"
 
 [node name="Tilemaps" type="Node2D" parent="." unique_id=157823496]
 
@@ -449,7 +450,7 @@ z_index = -1
 position = Vector2(363, 484)
 amount = 18
 texture = SubResource("GradientTexture2D_x8dke")
-lifetime = 1.1300000000000001
+lifetime = 1.13
 randomness = 0.37
 emission_shape = 1
 emission_sphere_radius = 25.25

@@ -209,6 +209,7 @@ offset_bottom = 40.0
 script = ExtResource("6_h4lvc")
 dialogue_speakers = Array[int]([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
 dialogue_lines = Array[String](["By the binary moons of Orik... atmospheric pressure is optimal, but my lateral thrusters are completely scorched!", "Whoa! Okay, definitely not a weather balloon.", "Oh, great. A local carbon-based lifeform. Listen, carbon-biped, I don't suppose you have a spare quantum-flux capacitor lying around? Or at least a wrench that works in sub-zero plasma?", "A what? Look, buddy, you just crash-landed in my backyard. The whole town heard the boom. You're lucky the local authorities aren't out here right now.", "Great. Just great. Stranded on a mud-ball third planet from a mediocre star. I'll be stuck here for cycles.", "Hey, don't knock Earth. It’s got... well, ULTRAKILL, for one. But seriously, what are you even doing out here?", "I was charting deep-space trade routes when your planet's massive cloud of atmospheric pollution threw off my sensors. Honestly, your world is a complete mess. Smog choking the skies, oceans full of plastic... it's a hazard zone!", "Tell me about it. We’ve been trying to fix things for decades, but progress is slow.", "Wait. You want your planet fixed, and I want off this rock.", "Are you suggesting what I think you’re suggesting?", "My ship’s onboard computer has advanced terraforming tech and cleanup machines that could scrub  oceans in a fraction of a standard year. But I can't power it without my warp-drive core fully intact.", "And my part in this?", "You help me scavenge the local alloys, electronics, and technical components I need to rebuild my warp drive. In exchange, I use my ship's systems to help heal your ecosystem. A mutually beneficial alliance. What do you say, Earthling?", "It’s a deal. But on one condition: you have to let me ride in the spaceship once it's fixed.", "If it means getting home, it's a deal. Now... where do we find these electronics?", "Follow me. We're going to my uncle’s garage. It's basically a goldmine of junk."])
+next_scene_path = "uid://bljhwsjdh8nqv"
 alien_blip_sound = ExtResource("7_4q07b")
 human_blip_sound = ExtResource("8_x4du8")
 
@@ -279,7 +280,7 @@ z_index = -1
 position = Vector2(353, 510)
 amount = 18
 texture = SubResource("GradientTexture2D_g4v7s")
-lifetime = 1.1300000000000001
+lifetime = 1.13
 randomness = 0.37
 emission_shape = 1
 emission_sphere_radius = 25.25

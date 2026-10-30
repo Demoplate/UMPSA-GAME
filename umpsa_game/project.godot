@@ -19,6 +19,7 @@ config/icon="res://Textures/Icons/icon.svg"
 
 GameData="*uid://88mohl87n6yr"
 Mainmenumusic="*uid://4ukkswiataky"
+LevelManager="*uid://bfu7lknc0m2aw"
 
 [display]
 

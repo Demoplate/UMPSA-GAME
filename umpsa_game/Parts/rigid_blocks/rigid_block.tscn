@@ -10,25 +10,31 @@ collision_mask = 3
 mass = 0.5
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=675145379]
+texture_filter = 1
 scale = Vector2(0.025, 0.025)
 texture = ExtResource("1_ga7ff")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1572802918]
+texture_filter = 1
 scale = Vector2(2.394, 2.394)
 shape = SubResource("RectangleShape2D_g4v7s")
 
 [node name="RayCast2D_Top" type="RayCast2D" parent="." unique_id=1199927128]
+texture_filter = 1
 scale = Vector2(0.5, 0.5)
 target_position = Vector2(0, -60)
 
 [node name="RayCast2D_Bottom" type="RayCast2D" parent="." unique_id=645364651]
+texture_filter = 1
 scale = Vector2(0.5, 0.5)
 target_position = Vector2(0, 60)
 
 [node name="RayCast2D_Left" type="RayCast2D" parent="." unique_id=1732006256]
+texture_filter = 1
 scale = Vector2(0.5, 0.5)
 target_position = Vector2(-60, 0)
 
 [node name="RayCast2D_Right" type="RayCast2D" parent="." unique_id=476740747]
+texture_filter = 1
 scale = Vector2(0.5, 0.5)
 target_position = Vector2(60, 0)
